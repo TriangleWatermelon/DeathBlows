@@ -15,17 +15,25 @@ public class PlayerController : MonoBehaviour
     #region STATS
     [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
+    [Tooltip("I'll never die!")]
     [SerializeField] float maxHealth;
     private float health;
     [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
+    [Tooltip("ZOOOOOOOOOM!!!")]
     [SerializeField] float moveSpeed;
     [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
+    [Tooltip("...How high?")]
     [SerializeField] float jumpHeight;
     #endregion
 
     #region Control
+    [TitleGroup("Control")]
+    [BoxGroup("Control/Movement")]
+    [Range(0, 3)]
+    [Tooltip("This will slow the player's movement in the air by dividing the input value")]
+    [SerializeField] float airSpeedDivider;
     PlayerActions playerActions;
     Vector2 moveDir;
     bool isAttacking = false;
@@ -37,10 +45,12 @@ public class PlayerController : MonoBehaviour
     bool isGrounded;
     [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
+    [Tooltip("This is an empty GameObject placed at the bottom of the player's collider")]
     [SerializeField] Transform groundCheck;
     const float groundCheckRadius = 0.2f;
     [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
+    [Tooltip("Whatever layer you use for the ground")]
     [SerializeField] LayerMask groundLayer;
     Rigidbody2D rb2d;
     bool isFacingRight = true;
@@ -94,7 +104,11 @@ public class PlayerController : MonoBehaviour
 
     void OnJump()
     {
-        Jump(jumpHeight);
+        if (isGrounded)
+        {
+            isGrounded = false;
+            rb2d.AddForce(new Vector2(0f, jumpHeight * 100));
+        }
     }
 
     public void Move(Vector2 moveDir, float moveSpeed)
@@ -107,6 +121,8 @@ public class PlayerController : MonoBehaviour
         {
             FlipSprite();
         }
+        if (!isGrounded)
+            moveDir = moveDir / airSpeedDivider;
         if (Mathf.Abs(moveDir.x) < 0.2f)
         {
             // Move the character by finding the target velocity
@@ -120,15 +136,6 @@ public class PlayerController : MonoBehaviour
             Vector3 targetVelocity = new Vector2((moveDir.x * moveSpeed), rb2d.velocity.y);
             // And then smoothing it out and applying it to the character
             rb2d.velocity = Vector3.SmoothDamp(rb2d.velocity, targetVelocity, ref velocity, movementSmoothing);
-        }
-    }
-
-    public void Jump(float jumpForce)
-    {
-        if (isGrounded)
-        {
-            isGrounded = false;
-            rb2d.AddForce(new Vector2(0f, jumpForce * 100));
         }
     }
 
