@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
+using UnityEngine.VFX;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class PlayerController : MonoBehaviour
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite playerSprite;
     SpriteRenderer spriteRenderer;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] VisualEffect bodyVFX;
+    Vector2 idleParticleDirection = new Vector2 (0 , 10);
+    float idleParticleSpeed = 1;
     #endregion
 
     #region STATS
@@ -80,8 +86,21 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        //Input & Movement
         moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
         Move(moveDir, moveSpeed);
+
+        //Body VFX
+        if (moveDir.x == 0 && moveDir.y == 0)
+        {
+            bodyVFX.SetVector3("PlayerDirection", idleParticleDirection);
+            bodyVFX.SetFloat("PlayerSpeed", idleParticleSpeed);
+        }
+        else
+        {
+            bodyVFX.SetVector3("PlayerDirection", -rb2d.velocity);
+            bodyVFX.SetFloat("PlayerSpeed", rb2d.velocity.x/4);
+        }
     }
 
     void FixedUpdate()
