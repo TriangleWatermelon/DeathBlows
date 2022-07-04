@@ -1,7 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class TwoWayEnemyController : Entity
 {
     #region Visuals
@@ -17,7 +16,6 @@ public class TwoWayEnemyController : Entity
     [BoxGroup("Control/Movement")]
     [SerializeField] float moveSpeed;
     Vector2 horizontal = new Vector2 (1, 0);
-    Rigidbody2D rb2d;
     bool isGrounded;
     [BoxGroup("Control/Movement")]
     [Tooltip("This is an empty GameObject placed at the bottom of the enemy's collider")]
@@ -34,8 +32,8 @@ public class TwoWayEnemyController : Entity
 
     private void Start()
     {
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         rb2d = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         spriteRenderer.sprite = sprite;
     }
 
@@ -107,7 +105,6 @@ public class TwoWayEnemyController : Entity
         {
             spriteRenderer.gameObject.transform.Rotate(0, 0, -90);
             isDead = true;
-            Debug.Log("Dying");
         }
     }
 
@@ -115,17 +112,16 @@ public class TwoWayEnemyController : Entity
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            TakeDamage(collision.gameObject.GetComponent<PlayerController>().damage);
-            hitTimer = 0;
-            isHit = true;
-
             collision.gameObject.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
+        }
+        else if (!collision.gameObject.CompareTag("Ground"))
+        {
+            isRight = !isRight;
         }
         if(isDead && collision.gameObject.CompareTag("Ground"))
         {
             corpsePosition = collision.collider.ClosestPoint(transform.position);
             this.GetComponent<Collider2D>().enabled = false;
-            Debug.Log("Dead");
         }
     }
 }

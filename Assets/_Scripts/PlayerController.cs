@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using UnityEngine.VFX;
+using System;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -11,12 +12,23 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite playerSprite;
-    SpriteRenderer spriteRenderer;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] GameObject playerSpriteObj;
+    SpriteRenderer playerSpriteRenderer;
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] VisualEffect bodyVFX;
     Vector2 idleParticleDirection = new Vector2 (0 , 10);
     float idleParticleSpeed = 1;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [PreviewField(70, ObjectFieldAlignment.Left)]
+    [SerializeField] Sprite attackSprite;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] GameObject attackSpriteObj;
+    SpriteRenderer attackSpriteRenderer;
     #endregion
 
     #region STATS
@@ -38,7 +50,7 @@ public class PlayerController : MonoBehaviour
     public float damage;
     #endregion
 
-    #region Control
+    #region Movement Control
     [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [Range(0, 3)]
@@ -46,7 +58,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float airSpeedDivider;
     PlayerActions playerActions;
     Vector2 moveDir;
-    bool isAttacking = false;
     bool isBubbling = false;
     [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
@@ -64,30 +75,49 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     Rigidbody2D rb2d;
     bool isFacingRight = true;
-    bool isHit = false;
     [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [SerializeField] float stunTime;
-    float hitTimer = 0;
+    float hitTimer;
+    #endregion
+
+    #region Combat Control
+    [TitleGroup("Control")]
+    [BoxGroup("Control/Combat")]
+    [SerializeField] float slashDistance;
+    bool isHit = false;
+    bool hasAttacked = false;
+    [TitleGroup("Control")]
+    [BoxGroup("Control/Combat")]
+    [SerializeField] float attackCooldown;
+    float attackTimer;
+    [TitleGroup("Control")]
+    [BoxGroup("Control/Combat")]
+    [SerializeField] float knockbackForce;
     #endregion
 
     public UnityEvent OnDeath;
 
     private void Awake()
     {
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        spriteRenderer.sprite = playerSprite;
+        playerSpriteRenderer = playerSpriteObj.GetComponent<SpriteRenderer>();
+        playerSpriteRenderer.sprite = playerSprite;
+        attackSpriteRenderer = attackSpriteObj.GetComponent<SpriteRenderer>();
+        attackSpriteRenderer.sprite = attackSprite;
 
         playerActions = new PlayerActions();
 
         rb2d = GetComponent<Rigidbody2D>();
+
+        health = maxHealth;
+
+        playerActions.Gameplay.Jump.performed += ctx => OnJump();
+        playerActions.Gameplay.Slash.performed += ctx => OnSlash();
     }
 
     void Start()
     {
-        health = maxHealth;
-
-        playerActions.Gameplay.Jump.performed += ctx => OnJump();
+        attackSpriteObj.SetActive(false);
     }
 
     private void Update()
@@ -104,6 +134,16 @@ public class PlayerController : MonoBehaviour
             if(hitTimer >= stunTime)
             {
                 isHit = false;
+            }
+        }
+
+        if (hasAttacked)
+        {
+            attackTimer += Time.deltaTime;
+            if(attackTimer >= attackCooldown)
+            {
+                hasAttacked = false;
+                attackSpriteObj.SetActive(false);
             }
         }
 
@@ -133,6 +173,38 @@ public class PlayerController : MonoBehaviour
             {
                 isGrounded = true;
             }
+        }
+    }
+
+    private void OnSlash()
+    {
+        if (!hasAttacked)
+        {
+            if(moveDir == Vector2.zero)
+            {
+                moveDir = Vector2.right;
+            }
+            Vector2 slashPos = moveDir * slashDistance;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos);
+            if (hit.collider != null)
+            {
+                if (hit.collider.GetComponent<Entity>() != null)
+                {
+                    hit.collider.GetComponent<Entity>().TakeDamage(damage);
+                }
+                //rb2d.AddForce(-Vector2.right * knockbackForce);                   //FIX ME MOTHER FUCKER!!!!!!!!!!!!!!!!!!!!!!
+                //Debug.Log(hit.collider.gameObject.name);
+            }
+            else
+            {
+                Debug.Log("Miss");
+            }
+            Debug.DrawRay(transform.position, slashPos, Color.red);
+            attackTimer = 0;
+            hasAttacked = true;
+            attackSpriteObj.SetActive(true);
+            attackSpriteObj.transform.localPosition = new Vector2 (Mathf.Abs(slashPos.x), slashPos.y);
+            Debug.Log(slashPos);
         }
     }
 

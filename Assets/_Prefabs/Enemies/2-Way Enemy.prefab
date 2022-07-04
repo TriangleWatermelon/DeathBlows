@@ -49,15 +49,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 10
-  sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  isHit: 0
+  hitTimer: 0
+  stunTime: 2
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6313607773139133224}
+        m_TargetAssemblyTypeName: TwoWayEnemyController, Assembly-CSharp
+        m_MethodName: Die
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  sprite: {fileID: 21300000, guid: ac47ed8ccc79cf04dae198b9cc5b3a6f, type: 3}
   damage: 10
   moveSpeed: 2
-  isRight: 1
   groundCheck: {fileID: 6313607773965508646}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  stunTime: 2
+  isRight: 1
 --- !u!50 &6313607773139133225
 Rigidbody2D:
   serializedVersion: 4
