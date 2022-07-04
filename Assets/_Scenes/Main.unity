@@ -562,6 +562,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6313607773139133224, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
+      propertyPath: sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ac47ed8ccc79cf04dae198b9cc5b3a6f, type: 3}
+    - target: {fileID: 6313607773139133224, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
       propertyPath: OnDeath.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}

@@ -28,6 +28,8 @@ public class TwoWayEnemyController : Entity
     [SerializeField] LayerMask groundLayer;
     [BoxGroup("Control")]
     [SerializeField] bool isRight = true;
+    bool isDead = false;
+    Vector2 corpsePosition;
     #endregion
 
     private void Start()
@@ -39,26 +41,33 @@ public class TwoWayEnemyController : Entity
 
     private void Update()
     {
-        if (!isHit)
+        if (!isDead)
         {
-            if (isRight)
-                Move(horizontal);
+            if (!isHit)
+            {
+                if (isRight)
+                    Move(horizontal);
+                else
+                    Move(-horizontal);
+            }
             else
-                Move(-horizontal);
+            {
+                rb2d.velocity = new Vector2(rb2d.velocity.x / 4, rb2d.velocity.y / 4);
+                hitTimer += Time.deltaTime;
+                if (hitTimer >= stunTime)
+                    isHit = false;
+            }
+
+            if (rb2d.velocity.x > 0 && !isRight)
+                FlipSprite();
+            if (rb2d.velocity.x < 0 && isRight)
+                FlipSprite();
         }
         else
         {
-            rb2d.velocity = new Vector2(rb2d.velocity.x/4, rb2d.velocity.y/4);
-            hitTimer += Time.deltaTime;
-            if (hitTimer >= stunTime)
-                isHit = false;
+            if(corpsePosition != Vector2.zero)
+                transform.position = corpsePosition;
         }
-
-        if (rb2d.velocity.x > 0 && !isRight)
-            FlipSprite();
-        if (rb2d.velocity.x < 0 && isRight)
-            FlipSprite();
-
     }
 
     void FixedUpdate()
@@ -94,7 +103,12 @@ public class TwoWayEnemyController : Entity
 
     public void Die()
     {
-        this.GetComponent<TwoWayEnemyController>().enabled = false;
+        if (!isDead)
+        {
+            spriteRenderer.gameObject.transform.Rotate(0, 0, -90);
+            isDead = true;
+            Debug.Log("Dying");
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -107,6 +121,11 @@ public class TwoWayEnemyController : Entity
 
             collision.gameObject.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
         }
+        if(isDead && collision.gameObject.CompareTag("Ground"))
+        {
+            corpsePosition = collision.collider.ClosestPoint(transform.position);
+            this.GetComponent<Collider2D>().enabled = false;
+            Debug.Log("Dead");
+        }
     }
-
 }
