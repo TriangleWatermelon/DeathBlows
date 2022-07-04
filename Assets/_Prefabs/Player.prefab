@@ -200,13 +200,15 @@ MonoBehaviour:
   maxHealth: 100
   moveSpeed: 15
   jumpHeight: 13
+  damage: 10
   airSpeedDivider: 1.5
   movementSmoothing: 0.5
   groundCheck: {fileID: 8926062307353608119}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  OnLandEvent:
+  stunTime: 1
+  OnDeath:
     m_PersistentCalls:
       m_Calls: []
 --- !u!50 &8780758143471092682

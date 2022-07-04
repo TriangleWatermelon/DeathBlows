@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using UnityEngine.VFX;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     #region Visuals
@@ -32,6 +33,9 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Main/Stats")]
     [Tooltip("...How high?")]
     [SerializeField] float jumpHeight;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Stats")]
+    public float damage;
     #endregion
 
     #region Control
@@ -60,9 +64,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     Rigidbody2D rb2d;
     bool isFacingRight = true;
+    bool isHit = false;
+    [TitleGroup("Control")]
+    [BoxGroup("Control/Movement")]
+    [SerializeField] float stunTime;
+    float hitTimer = 0;
     #endregion
 
-    public UnityEvent OnLandEvent;
+    public UnityEvent OnDeath;
 
     private void Awake()
     {
@@ -72,9 +81,6 @@ public class PlayerController : MonoBehaviour
         playerActions = new PlayerActions();
 
         rb2d = GetComponent<Rigidbody2D>();
-
-        if (OnLandEvent == null)
-            OnLandEvent = new UnityEvent();
     }
 
     void Start()
@@ -87,8 +93,19 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Input & Movement
-        moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
-        Move(moveDir, moveSpeed);
+        if (!isHit)
+        {
+            moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
+            Move(moveDir, moveSpeed);
+        }
+        else
+        {
+            hitTimer += Time.deltaTime;
+            if(hitTimer >= stunTime)
+            {
+                isHit = false;
+            }
+        }
 
         //Body VFX
         if (moveDir.x == 0 && moveDir.y == 0)
@@ -108,15 +125,13 @@ public class PlayerController : MonoBehaviour
         bool wasGrounded = isGrounded;
         isGrounded = false;
 
-        // The player is grounded if a circlecast to the groundcheck position hits anything designated on the ground layer
+        // The player is grounded if a circlecast to the groundCheck position hits anything designated on the ground layer
         Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, groundCheckRadius, groundLayer);
         for (int i = 0; i < colliders.Length; i++)
         {
             if (colliders[i].gameObject != gameObject)
             {
                 isGrounded = true;
-                if (!wasGrounded)
-                    OnLandEvent.Invoke();
             }
         }
     }
@@ -166,7 +181,17 @@ public class PlayerController : MonoBehaviour
         flipScale.x *= -1;
         transform.localScale = flipScale;
     }
-
+    
+    public void TakeDamage(float _damage)
+    {
+        health -= damage;
+        isHit = true;
+        if(health <= 0)
+        {
+            OnDeath.Invoke();
+        }
+    }
+    
     private void OnEnable()
     {
         playerActions.Enable();
