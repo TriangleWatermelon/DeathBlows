@@ -27,8 +27,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Sprite attackSprite;
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
-    [SerializeField] GameObject attackSpriteObj;
+    [SerializeField] GameObject attackObj;
     SpriteRenderer attackSpriteRenderer;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [PreviewField(70, ObjectFieldAlignment.Left)]
+    [SerializeField] Sprite bubbleSprite;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] GameObject bubbleObj;
+    SpriteRenderer bubbleSpriteRenderer;
     #endregion
 
     #region STATS
@@ -58,7 +66,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float airSpeedDivider;
     PlayerActions playerActions;
     Vector2 moveDir;
-    bool isBubbling = false;
     [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [SerializeField] float movementSmoothing;
@@ -96,14 +103,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float knockbackForce;
     #endregion
 
+    #region Bubble Control
+    [TitleGroup("Control")]
+    [BoxGroup("Control/Bubble")]
+    [SerializeField] float bubbleDistance;
+    [HideInInspector]
+    public bool isBubbling = false;
+    #endregion
+
     public UnityEvent OnDeath;
 
-    private void Awake()
+    void Awake()
     {
         playerSpriteRenderer = playerSpriteObj.GetComponent<SpriteRenderer>();
         playerSpriteRenderer.sprite = playerSprite;
-        attackSpriteRenderer = attackSpriteObj.GetComponent<SpriteRenderer>();
+        attackObj = Instantiate(attackObj);
+        attackObj.SetActive(false);
+        attackSpriteRenderer = attackObj.GetComponent<SpriteRenderer>();
         attackSpriteRenderer.sprite = attackSprite;
+        bubbleObj = Instantiate(bubbleObj);
+        bubbleObj.SetActive(false);
+        bubbleSpriteRenderer = bubbleObj.GetComponentInChildren<SpriteRenderer>();
+        bubbleSpriteRenderer.sprite = bubbleSprite;
 
         playerActions = new PlayerActions();
 
@@ -113,15 +134,10 @@ public class PlayerController : MonoBehaviour
 
         playerActions.Gameplay.Jump.performed += ctx => OnJump();
         playerActions.Gameplay.Slash.performed += ctx => OnSlash();
+        playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
     }
 
-    void Start()
-    {
-        attackSpriteObj = Instantiate(attackSpriteObj);
-        attackSpriteObj.SetActive(false);
-    }
-
-    private void Update()
+    void Update()
     {
         //Input & Movement
         if (!isHit)
@@ -143,7 +159,7 @@ public class PlayerController : MonoBehaviour
             attackTimer += Time.deltaTime;
             if(attackTimer >= 0.2f)
             {
-                attackSpriteObj.SetActive(false);
+                attackObj.SetActive(false);
             }
             if(attackTimer >= attackCooldown)
             {
@@ -180,20 +196,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnSlash()
+    void OnSlash()
     {
         if (!hasAttacked)
         {
             Vector2 slashPos = moveDir * slashDistance;
 
             //Sprite Position
-            attackSpriteObj.transform.parent = gameObject.transform;
-            attackSpriteObj.transform.localPosition = new Vector2(Mathf.Abs(slashPos.x), slashPos.y);
+            attackObj.transform.parent = gameObject.transform;
+            attackObj.transform.localPosition = new Vector2(Mathf.Abs(slashPos.x), slashPos.y);
 
             RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos, slashDistance);
             if (hit.collider != null)
             {
-                attackSpriteObj.transform.position = hit.collider.ClosestPoint(transform.position);
+                attackObj.transform.position = hit.collider.ClosestPoint(transform.position);
                 if (hit.collider.GetComponent<Entity>() != null)
                 {
                     hit.collider.GetComponent<Entity>().TakeDamage(damage);
@@ -207,15 +223,36 @@ public class PlayerController : MonoBehaviour
             }
             attackTimer = 0;
             hasAttacked = true;
-            attackSpriteObj.SetActive(true);
+            attackObj.SetActive(true);
 
             //Sprite Rotation
             float x = moveDir.x;
             float y = moveDir.y;
             float rads = Mathf.Atan2(y, x);
             float degrees = rads * Mathf.Rad2Deg;
-            attackSpriteObj.transform.parent = null; //This helps to rotate without being impacted by the player rotation
-            attackSpriteObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
+            attackObj.transform.parent = null; //This helps to rotate without being impacted by the player rotation
+            attackObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
+        }
+    }
+
+    void OnBubble()
+    {
+        if (!isBubbling)
+        {
+            Vector2 bubblePos;
+            if (isFacingRight)
+            {
+                bubblePos = (new Vector2(moveDir.x, 0) * bubbleDistance) + Vector2.up;
+            }
+            else
+            {
+                bubblePos = (new Vector2(-moveDir.x, 0) * bubbleDistance) + Vector2.up;
+            }
+            bubbleObj.SetActive(true);
+            bubbleObj.transform.parent = gameObject.transform;
+            bubbleObj.transform.localPosition = bubblePos;
+            bubbleObj.transform.parent = null;
+            isBubbling = true;
         }
     }
 
@@ -228,7 +265,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Move(Vector2 moveDir, float moveSpeed)
+    void Move(Vector2 moveDir, float moveSpeed)
     {
         if (moveDir.x < 0 && isFacingRight)
         {

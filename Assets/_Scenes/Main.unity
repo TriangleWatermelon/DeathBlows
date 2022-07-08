@@ -785,6 +785,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8780758143471092681, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
+      propertyPath: bubbleObj
+      value: 
+      objectReference: {fileID: 449120241805340275, guid: ee5e5bea1c22f446d90a0bdb298c4fe4, type: 3}
+    - target: {fileID: 8780758143471092681, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
+      propertyPath: bubbleSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3b6552b71e7494c4cb606a0484e51cd7, type: 3}
     - target: {fileID: 8780758143471092687, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
       propertyPath: m_Name
       value: Player
