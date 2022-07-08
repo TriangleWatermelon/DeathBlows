@@ -117,6 +117,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        attackSpriteObj = Instantiate(attackSpriteObj);
         attackSpriteObj.SetActive(false);
     }
 
@@ -140,10 +141,13 @@ public class PlayerController : MonoBehaviour
         if (hasAttacked)
         {
             attackTimer += Time.deltaTime;
+            if(attackTimer >= 0.2f)
+            {
+                attackSpriteObj.SetActive(false);
+            }
             if(attackTimer >= attackCooldown)
             {
                 hasAttacked = false;
-                attackSpriteObj.SetActive(false);
             }
         }
 
@@ -180,31 +184,38 @@ public class PlayerController : MonoBehaviour
     {
         if (!hasAttacked)
         {
-            if(moveDir == Vector2.zero)
-            {
-                moveDir = Vector2.right;
-            }
             Vector2 slashPos = moveDir * slashDistance;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos);
+
+            //Sprite Position
+            attackSpriteObj.transform.parent = gameObject.transform;
+            attackSpriteObj.transform.localPosition = new Vector2(Mathf.Abs(slashPos.x), slashPos.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos, slashDistance);
             if (hit.collider != null)
             {
+                attackSpriteObj.transform.position = hit.collider.ClosestPoint(transform.position);
                 if (hit.collider.GetComponent<Entity>() != null)
                 {
                     hit.collider.GetComponent<Entity>().TakeDamage(damage);
                 }
-                //rb2d.AddForce(-Vector2.right * knockbackForce);                   //FIX ME MOTHER FUCKER!!!!!!!!!!!!!!!!!!!!!!
-                //Debug.Log(hit.collider.gameObject.name);
+                rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
+                Debug.Log(hit.collider.gameObject.name);
             }
             else
             {
                 Debug.Log("Miss");
             }
-            Debug.DrawRay(transform.position, slashPos, Color.red);
             attackTimer = 0;
             hasAttacked = true;
             attackSpriteObj.SetActive(true);
-            attackSpriteObj.transform.localPosition = new Vector2 (Mathf.Abs(slashPos.x), slashPos.y);
-            Debug.Log(slashPos);
+
+            //Sprite Rotation
+            float x = moveDir.x;
+            float y = moveDir.y;
+            float rads = Mathf.Atan2(y, x);
+            float degrees = rads * Mathf.Rad2Deg;
+            attackSpriteObj.transform.parent = null; //This helps to rotate without being impacted by the player rotation
+            attackSpriteObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
         }
     }
 
