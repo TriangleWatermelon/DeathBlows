@@ -52,6 +52,7 @@ MonoBehaviour:
   isHit: 0
   hitTimer: 0
   stunTime: 2
+  rb2d: {fileID: 0}
   OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -154,7 +155,7 @@ GameObject:
   - component: {fileID: 6313607774069313895}
   - component: {fileID: 6313607774069313894}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
