@@ -216,6 +216,8 @@ MonoBehaviour:
   slashDistance: 1.5
   attackCooldown: 0.4
   knockbackForce: 12
+  bubbleDistance: 0
+  isBubbling: 0
   OnDeath:
     m_PersistentCalls:
       m_Calls: []

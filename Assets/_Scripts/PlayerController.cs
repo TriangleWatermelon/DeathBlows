@@ -37,6 +37,14 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject bubbleObj;
     SpriteRenderer bubbleSpriteRenderer;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [PreviewField(70, ObjectFieldAlignment.Left)]
+    [SerializeField] Sprite impactSprite;
+    [TitleGroup("Main")]
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] GameObject impactObj;
+    SpriteRenderer impactSpriteRenderer;
     #endregion
 
     #region STATS
@@ -71,6 +79,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float movementSmoothing;
     Vector3 velocity = Vector3.zero;
     bool isGrounded;
+    bool isJumping = false;
     [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [Tooltip("This is an empty GameObject placed at the bottom of the player's collider")]
@@ -109,12 +118,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float bubbleDistance;
     [HideInInspector]
     public bool isBubbling = false;
+    Vector2 bubbleRight = new Vector2(2, 0);
+    Vector2 bubbleLeft = new Vector2(-2, 0);
     #endregion
 
     public UnityEvent OnDeath;
 
     void Awake()
     {
+        //Sprites 'n Things
         playerSpriteRenderer = playerSpriteObj.GetComponent<SpriteRenderer>();
         playerSpriteRenderer.sprite = playerSprite;
         attackObj = Instantiate(attackObj);
@@ -125,14 +137,19 @@ public class PlayerController : MonoBehaviour
         bubbleObj.SetActive(false);
         bubbleSpriteRenderer = bubbleObj.GetComponentInChildren<SpriteRenderer>();
         bubbleSpriteRenderer.sprite = bubbleSprite;
-
-        playerActions = new PlayerActions();
+        impactObj = Instantiate(impactObj);
+        impactObj.SetActive(false);
+        impactSpriteRenderer = impactObj.GetComponent<SpriteRenderer>();
+        impactSpriteRenderer.sprite = impactSprite;
 
         rb2d = GetComponent<Rigidbody2D>();
 
         health = maxHealth;
 
+        //Input Stuff
+        playerActions = new PlayerActions();
         playerActions.Gameplay.Jump.performed += ctx => OnJump();
+        playerActions.Gameplay.Jump.canceled += ctx => StopJump();
         playerActions.Gameplay.Slash.performed += ctx => OnSlash();
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
     }
@@ -154,9 +171,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        //Attack Delay
         if (hasAttacked)
         {
             attackTimer += Time.deltaTime;
+            if(attackTimer >= 0.1f)
+            {
+                impactObj.SetActive(false);
+            }
             if(attackTimer >= 0.2f)
             {
                 attackObj.SetActive(false);
@@ -202,18 +224,26 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 slashPos = moveDir * slashDistance;
 
-            //Sprite Position
+            //Slash Sprite Position
             attackObj.transform.parent = gameObject.transform;
             attackObj.transform.localPosition = new Vector2(Mathf.Abs(slashPos.x), slashPos.y);
 
+            //Does it hit?
             RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos, slashDistance);
             if (hit.collider != null)
             {
+                //Slash and Impact Sprite Positions
                 attackObj.transform.position = hit.collider.ClosestPoint(transform.position);
+                impactObj.transform.position = hit.collider.ClosestPoint(transform.position);
+                impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
+                impactObj.SetActive(true);
+
                 if (hit.collider.GetComponent<Entity>() != null)
                 {
                     hit.collider.GetComponent<Entity>().TakeDamage(damage);
+                    impactObj.transform.position = hit.collider.transform.position;
                 }
+                //Knockback the player on successful contact
                 rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
                 Debug.Log(hit.collider.gameObject.name);
             }
@@ -225,7 +255,7 @@ public class PlayerController : MonoBehaviour
             hasAttacked = true;
             attackObj.SetActive(true);
 
-            //Sprite Rotation
+            //Slash Sprite Rotation
             float x = moveDir.x;
             float y = moveDir.y;
             float rads = Mathf.Atan2(y, x);
@@ -242,11 +272,11 @@ public class PlayerController : MonoBehaviour
             Vector2 bubblePos;
             if (isFacingRight)
             {
-                bubblePos = (new Vector2(moveDir.x, 0) * bubbleDistance) + Vector2.up;
+                bubblePos = (new Vector2(moveDir.x, 0) * bubbleDistance) + bubbleRight;
             }
             else
             {
-                bubblePos = (new Vector2(-moveDir.x, 0) * bubbleDistance) + Vector2.up;
+                bubblePos = (new Vector2(-moveDir.x, 0) * bubbleDistance) - bubbleLeft;
             }
             bubbleObj.SetActive(true);
             bubbleObj.transform.parent = gameObject.transform;
@@ -261,7 +291,17 @@ public class PlayerController : MonoBehaviour
         if (isGrounded)
         {
             isGrounded = false;
+            isJumping = true;
             rb2d.AddForce(new Vector2(0f, jumpHeight * 100));
+        }
+    }
+
+    void StopJump()
+    {
+        if (!isGrounded && isJumping && rb2d.velocity.y > 0)
+        {
+            rb2d.velocity = new Vector2(rb2d.velocity.x, rb2d.velocity.y/2);
+            isJumping = false;
         }
     }
 
