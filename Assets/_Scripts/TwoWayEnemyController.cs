@@ -35,6 +35,11 @@ public class TwoWayEnemyController : Entity
         rb2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         spriteRenderer.sprite = sprite;
+        if (!isRight)
+        {
+            FlipSprite();
+            isRight = !isRight;
+        }
     }
 
     private void Update()
@@ -114,14 +119,20 @@ public class TwoWayEnemyController : Entity
         {
             collision.gameObject.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
         }
-        else if (!collision.gameObject.CompareTag("Ground"))
+        else if (!collision.gameObject.CompareTag("Ground") && !isDead)
         {
-            isRight = !isRight;
+            FlipSprite();
         }
         if(isDead && collision.gameObject.CompareTag("Ground"))
         {
             corpsePosition = collision.collider.ClosestPoint(transform.position);
             this.GetComponent<Collider2D>().enabled = false;
         }
+    }
+
+    //This handles the border interactions
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        FlipSprite();
     }
 }

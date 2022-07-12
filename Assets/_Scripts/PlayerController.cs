@@ -222,6 +222,17 @@ public class PlayerController : MonoBehaviour
     {
         if (!hasAttacked)
         {
+            if(Mathf.Abs(moveDir.x) <= 0.2f && Mathf.Abs(moveDir.y) <= 0.2f)
+            {
+                if (isFacingRight)
+                {
+                    moveDir = Vector2.right;
+                }
+                else
+                {
+                    moveDir = -Vector2.right;
+                }
+            }
             Vector2 slashPos = moveDir * slashDistance;
 
             //Slash Sprite Position

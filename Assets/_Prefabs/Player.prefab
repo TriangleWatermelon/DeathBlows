@@ -202,6 +202,8 @@ MonoBehaviour:
   attackObj: {fileID: 7940727690577371817, guid: 27868ee1d00754a10957af0b65f51da8, type: 3}
   bubbleSprite: {fileID: 21300000, guid: 3b6552b71e7494c4cb606a0484e51cd7, type: 3}
   bubbleObj: {fileID: 449120241805340275, guid: ee5e5bea1c22f446d90a0bdb298c4fe4, type: 3}
+  impactSprite: {fileID: 21300000, guid: 40c1213759ff243edade58c36aebe460, type: 3}
+  impactObj: {fileID: 5902354058418092041, guid: 7e3d0f976e48a4237b32a6a6b065ba3f, type: 3}
   maxHealth: 100
   moveSpeed: 15
   jumpHeight: 13
@@ -211,7 +213,7 @@ MonoBehaviour:
   groundCheck: {fileID: 8926062307353608119}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   stunTime: 1
   slashDistance: 1.5
   attackCooldown: 0.4
