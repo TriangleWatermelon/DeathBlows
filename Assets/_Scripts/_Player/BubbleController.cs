@@ -47,9 +47,9 @@ public class BubbleController : MonoBehaviour
         if (!collision.gameObject.CompareTag("Player"))
         {
             Pop();
-            Debug.Log("Pop!");
+            //Debug.Log("Pop!");
         }
-        Debug.Log("Collision: " + collision.gameObject.name);
+        //Debug.Log("Collision: " + collision.gameObject.name);
     }
 
     private void OnEnable()

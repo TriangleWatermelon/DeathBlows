@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region STATS
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
     [Tooltip("I'll never die!")]
@@ -98,6 +99,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Combat Control
+    [Space]
     [TitleGroup("Control")]
     [BoxGroup("Control/Combat")]
     [SerializeField] float slashDistance;
@@ -113,6 +115,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Bubble Control
+    [Space]
     [TitleGroup("Control")]
     [BoxGroup("Control/Bubble")]
     [SerializeField] float bubbleDistance;
@@ -123,6 +126,8 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     public UnityEvent OnDeath;
+
+    PlayerUI playerUI;
 
     void Awake()
     {
@@ -144,13 +149,17 @@ public class PlayerController : MonoBehaviour
 
         rb2d = GetComponent<Rigidbody2D>();
 
+        playerUI = GetComponentInChildren<PlayerUI>();
+        playerUI.ActivatePlayerUI(maxHealth);
+
         health = maxHealth;
 
         //Input Stuff
         playerActions = new PlayerActions();
         playerActions.Gameplay.Jump.performed += ctx => OnJump();
         playerActions.Gameplay.Jump.canceled += ctx => StopJump();
-        playerActions.Gameplay.Slash.performed += ctx => OnSlash();
+        playerActions.Gameplay.Slash.performed += ctx => HoldSlash();
+        playerActions.Gameplay.Slash.canceled += ctx => OnSlash();
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
     }
 
@@ -218,6 +227,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Triggered when the player hits the attack button.
+    /// Handles attack warmup effects and animations.
+    /// </summary>
+    void HoldSlash()
+    {
+        //Do stuff
+    }
+
+    /// <summary>
+    /// Triggered when the player releases the attack button.
+    /// Handles the player attack (sprites and effects) based on the direction of the controller (-1 to 1 on XY axis).
+    /// </summary>
     void OnSlash()
     {
         if (!hasAttacked)
@@ -256,11 +278,11 @@ public class PlayerController : MonoBehaviour
                 }
                 //Knockback the player on successful contact
                 rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
-                Debug.Log(hit.collider.gameObject.name);
+                //Debug.Log(hit.collider.gameObject.name);
             }
             else
             {
-                Debug.Log("Miss");
+                //Debug.Log("Miss");
             }
             attackTimer = 0;
             hasAttacked = true;
@@ -276,6 +298,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Spawns a bubble and handles the positioning of said bubble.
+    /// </summary>
     void OnBubble()
     {
         if (!isBubbling)
@@ -297,6 +323,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Makes the player jump.
+    /// </summary>
     void OnJump()
     {
         if (isGrounded)
@@ -307,6 +336,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Stops the player from jumping when they release the jump button.
+    /// </summary>
     void StopJump()
     {
         if (!isGrounded && isJumping && rb2d.velocity.y > 0)
@@ -316,6 +348,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Moves the player based on moveSpeed and the direction the controller is aiming (between -1 and 1 on XY axis).
+    /// </summary>
+    /// <param name="moveDir"></param>
+    /// <param name="moveSpeed"></param>
     void Move(Vector2 moveDir, float moveSpeed)
     {
         if (moveDir.x < 0 && isFacingRight)
@@ -344,6 +381,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Flips the player sprite depending on if they are facing right or not.
+    /// </summary>
     void FlipSprite()
     {
         isFacingRight = !isFacingRight;
@@ -352,10 +392,16 @@ public class PlayerController : MonoBehaviour
         flipScale.x *= -1;
         transform.localScale = flipScale;
     }
-    
+
+    /// <summary>
+    /// Applies damage to the entity.
+    /// Starts the hit timer to prevent multiple hits in a single attack.
+    /// Invokes death if health is less than 0 after applying damage.
+    /// </summary>
+    /// <param name="_damage"></param>
     public void TakeDamage(float _damage)
     {
-        health -= damage;
+        health -= _damage;
         isHit = true;
         if(health <= 0)
         {

@@ -18,15 +18,21 @@ public class Entity : MonoBehaviour
 
     public UnityEvent OnDeath;
 
-    public void TakeDamage(float damage)
+    /// <summary>
+    /// Applies damage to the entity.
+    /// Starts the hit timer to prevent multiple hits in a single attack.
+    /// Invokes death if health is less than 0 after applying damage.
+    /// </summary>
+    /// <param name="_damage"></param>
+    public void TakeDamage(float _damage)
     {
-        health -= damage;
+        health -= _damage;
         hitTimer = 0;
         isHit = true;
         if(health <= 0)
         {
             OnDeath.Invoke();
         }
-        Debug.Log(gameObject.name + " Ouch!");
+        //Debug.Log(gameObject.name + " Ouch!");
     }
 }
