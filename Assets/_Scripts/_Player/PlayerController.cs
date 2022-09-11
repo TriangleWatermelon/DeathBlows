@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using UnityEngine.VFX;
 using System;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -406,14 +407,18 @@ public class PlayerController : MonoBehaviour
     /// <param name="_damage"></param>
     public void TakeDamage(float _damage)
     {
-        health -= _damage;
-        isHit = true;
-        if(health <= 0)
+        if (!isHit)
         {
-            OnDeath.Invoke();
-        }
+            health -= _damage;
+            isHit = true;
+            if (health <= 0)
+            {
+                Die();
+                OnDeath.Invoke();
+            }
 
-        playerUI.AdjustHealth(health);
+            playerUI.AdjustHealth(health);
+        }
     }
 
     /// <summary>
@@ -427,6 +432,11 @@ public class PlayerController : MonoBehaviour
             health = maxHealth;
 
         playerUI.AdjustHealth(health);
+    }
+
+    void Die()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
     private void OnEnable()
