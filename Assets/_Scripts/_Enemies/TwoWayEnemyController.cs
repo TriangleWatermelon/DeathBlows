@@ -6,8 +6,12 @@ public class TwoWayEnemyController : Entity
     #region Visuals
     [BoxGroup("Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
-    [SerializeField] Sprite sprite;
+    [SerializeField] Sprite livingSprite;
     SpriteRenderer spriteRenderer;
+    [Space]
+    [BoxGroup("Visuals")]
+    [PreviewField(70, ObjectFieldAlignment.Left)]
+    [SerializeField] Sprite graveSprite;
     #endregion
 
     #region Control
@@ -28,18 +32,22 @@ public class TwoWayEnemyController : Entity
     [SerializeField] bool isRight = true;
     bool isDead = false;
     Vector2 corpsePosition;
+    Vector2 corpseOffset;
     #endregion
 
     private void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        spriteRenderer.sprite = sprite;
+
+        spriteRenderer.sprite = livingSprite;
         if (!isRight)
         {
             FlipSprite();
             isRight = !isRight;
         }
+
+        corpseOffset = new Vector2(0, gameObject.transform.localScale.y / 2);
     }
 
     private void Update()
@@ -115,7 +123,7 @@ public class TwoWayEnemyController : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") && !isDead)
         {
             collision.gameObject.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
         }
@@ -125,7 +133,11 @@ public class TwoWayEnemyController : Entity
         }
         if(isDead && collision.gameObject.CompareTag("Ground"))
         {
-            corpsePosition = collision.collider.ClosestPoint(transform.position);
+            spriteRenderer.gameObject.transform.Rotate(0, 0, 90);
+            spriteRenderer.sprite = graveSprite;
+            if (!isRight)
+                FlipSprite();
+            corpsePosition = collision.collider.ClosestPoint(transform.position) + corpseOffset;
             this.GetComponent<Collider2D>().enabled = false;
         }
     }

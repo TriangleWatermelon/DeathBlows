@@ -12,35 +12,43 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite playerSprite;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject playerSpriteObj;
     SpriteRenderer playerSpriteRenderer;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] VisualEffect bodyVFX;
     Vector2 idleParticleDirection = new Vector2 (0 , 10);
     float idleParticleSpeed = 1;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite attackSprite;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject attackObj;
     SpriteRenderer attackSpriteRenderer;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite bubbleSprite;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject bubbleObj;
     SpriteRenderer bubbleSpriteRenderer;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite impactSprite;
+    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject impactObj;
@@ -48,7 +56,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region STATS
-    [Space]
     [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
     [Tooltip("I'll never die!")]
@@ -99,7 +106,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Combat Control
-    [Space]
     [TitleGroup("Control")]
     [BoxGroup("Control/Combat")]
     [SerializeField] float slashDistance;
@@ -112,19 +118,17 @@ public class PlayerController : MonoBehaviour
     [TitleGroup("Control")]
     [BoxGroup("Control/Combat")]
     [SerializeField] float knockbackForce;
+    Vector2 slashPos;
     #endregion
 
     #region Bubble Control
-    [Space]
-    [TitleGroup("Control")]
-    [BoxGroup("Control/Bubble")]
-    [SerializeField] float bubbleDistance;
     [HideInInspector]
     public bool isBubbling = false;
-    Vector2 bubbleRight = new Vector2(2, 0);
-    Vector2 bubbleLeft = new Vector2(-2, 0);
+    Vector2 bubblePos;
+    Vector2 bubbleOffset = new Vector2(2, 0);
     #endregion
 
+    [Space]
     public UnityEvent OnDeath;
 
     PlayerUI playerUI;
@@ -134,7 +138,7 @@ public class PlayerController : MonoBehaviour
         //Sprites 'n Things
         playerSpriteRenderer = playerSpriteObj.GetComponent<SpriteRenderer>();
         playerSpriteRenderer.sprite = playerSprite;
-        attackObj = Instantiate(attackObj);
+        attackObj = Instantiate(attackObj, transform);
         attackObj.SetActive(false);
         attackSpriteRenderer = attackObj.GetComponent<SpriteRenderer>();
         attackSpriteRenderer.sprite = attackSprite;
@@ -142,15 +146,13 @@ public class PlayerController : MonoBehaviour
         bubbleObj.SetActive(false);
         bubbleSpriteRenderer = bubbleObj.GetComponentInChildren<SpriteRenderer>();
         bubbleSpriteRenderer.sprite = bubbleSprite;
-        impactObj = Instantiate(impactObj);
+        impactObj = Instantiate(impactObj, transform);
         impactObj.SetActive(false);
         impactSpriteRenderer = impactObj.GetComponent<SpriteRenderer>();
         impactSpriteRenderer.sprite = impactSprite;
 
+        //Physics
         rb2d = GetComponent<Rigidbody2D>();
-
-        playerUI = GetComponentInChildren<PlayerUI>();
-        playerUI.ActivatePlayerUI(maxHealth);
 
         health = maxHealth;
 
@@ -161,6 +163,14 @@ public class PlayerController : MonoBehaviour
         playerActions.Gameplay.Slash.performed += ctx => HoldSlash();
         playerActions.Gameplay.Slash.canceled += ctx => OnSlash();
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
+    }
+
+    //Everything in Start needs to be here to avoid racing
+    private void Start()
+    {
+        //UI Stuff
+        playerUI = GetComponentInChildren<PlayerUI>();
+        playerUI.AdjustPlayerHealthUI(maxHealth);
     }
 
     void Update()
@@ -209,6 +219,11 @@ public class PlayerController : MonoBehaviour
             bodyVFX.SetVector3("PlayerDirection", -rb2d.velocity);
             bodyVFX.SetFloat("PlayerSpeed", rb2d.velocity.x/4);
         }
+
+        if(Input.GetKeyDown(KeyCode.Equals))
+        {
+            Heal(1);
+        }
     }
 
     void FixedUpdate()
@@ -255,11 +270,10 @@ public class PlayerController : MonoBehaviour
                     moveDir = -Vector2.right;
                 }
             }
-            Vector2 slashPos = moveDir * slashDistance;
+            slashPos = moveDir * slashDistance;
 
             //Slash Sprite Position
-            attackObj.transform.parent = gameObject.transform;
-            attackObj.transform.localPosition = new Vector2(Mathf.Abs(slashPos.x), slashPos.y);
+            attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
 
             //Does it hit?
             RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos, slashDistance);
@@ -276,13 +290,9 @@ public class PlayerController : MonoBehaviour
                     hit.collider.GetComponent<Entity>().TakeDamage(damage);
                     impactObj.transform.position = hit.collider.transform.position;
                 }
+
                 //Knockback the player on successful contact
                 rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
-                //Debug.Log(hit.collider.gameObject.name);
-            }
-            else
-            {
-                //Debug.Log("Miss");
             }
             attackTimer = 0;
             hasAttacked = true;
@@ -293,7 +303,6 @@ public class PlayerController : MonoBehaviour
             float y = moveDir.y;
             float rads = Mathf.Atan2(y, x);
             float degrees = rads * Mathf.Rad2Deg;
-            attackObj.transform.parent = null; //This helps to rotate without being impacted by the player rotation
             attackObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
         }
     }
@@ -306,19 +315,17 @@ public class PlayerController : MonoBehaviour
     {
         if (!isBubbling)
         {
-            Vector2 bubblePos;
+            bubblePos = transform.position + new Vector3(moveDir.x, 0);
             if (isFacingRight)
             {
-                bubblePos = (new Vector2(moveDir.x, 0) * bubbleDistance) + bubbleRight;
+                bubblePos += bubbleOffset;
             }
             else
             {
-                bubblePos = (new Vector2(-moveDir.x, 0) * bubbleDistance) - bubbleLeft;
+                bubblePos -= bubbleOffset;
             }
             bubbleObj.SetActive(true);
-            bubbleObj.transform.parent = gameObject.transform;
-            bubbleObj.transform.localPosition = bubblePos;
-            bubbleObj.transform.parent = null;
+            bubbleObj.transform.position = bubblePos;
             isBubbling = true;
         }
     }
@@ -356,15 +363,13 @@ public class PlayerController : MonoBehaviour
     void Move(Vector2 moveDir, float moveSpeed)
     {
         if (moveDir.x < 0 && isFacingRight)
-        {
             FlipSprite();
-        }
         if (moveDir.x > 0 && !isFacingRight)
-        {
             FlipSprite();
-        }
+
         if (!isGrounded)
             moveDir = moveDir / airSpeedDivider;
+
         if (Mathf.Abs(moveDir.x) < 0.2f)
         {
             // Move the character by finding the target velocity
@@ -388,9 +393,9 @@ public class PlayerController : MonoBehaviour
     {
         isFacingRight = !isFacingRight;
 
-        Vector3 flipScale = transform.localScale;
+        Vector3 flipScale = playerSpriteObj.transform.localScale;
         flipScale.x *= -1;
-        transform.localScale = flipScale;
+        playerSpriteObj.transform.localScale = flipScale;
     }
 
     /// <summary>
@@ -407,6 +412,21 @@ public class PlayerController : MonoBehaviour
         {
             OnDeath.Invoke();
         }
+
+        playerUI.AdjustHealth(health);
+    }
+
+    /// <summary>
+    /// Heals the player by the value provided as _additionalHealth.
+    /// </summary>
+    /// <param name="_additionalHealth"></param>
+    public void Heal(float _additionalHealth)
+    {
+        health += _additionalHealth;
+        if (health > maxHealth)
+            health = maxHealth;
+
+        playerUI.AdjustHealth(health);
     }
     
     private void OnEnable()

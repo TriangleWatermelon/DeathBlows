@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a9e00a86dfd4e16a7033283d588ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 1
   isHit: 0
   hitTimer: 0
   stunTime: 2
@@ -68,8 +68,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  sprite: {fileID: 21300000, guid: 90a7eb52444c046c7ac0d4649cbfaa1f, type: 3}
-  damage: 10
+  livingSprite: {fileID: 21300000, guid: 90a7eb52444c046c7ac0d4649cbfaa1f, type: 3}
+  graveSprite: {fileID: 21300000, guid: 1ca9f4c57446647589738c39ae0f83a1, type: 3}
+  damage: 1
   moveSpeed: 2
   groundCheck: {fileID: 6313607773965508646}
   groundLayer:
