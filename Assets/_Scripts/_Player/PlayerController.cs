@@ -436,7 +436,7 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
     private void OnEnable()
