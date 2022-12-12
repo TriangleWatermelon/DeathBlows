@@ -13,64 +13,60 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite playerSprite;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject playerSpriteObj;
     SpriteRenderer playerSpriteRenderer;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] VisualEffect bodyVFX;
     Vector2 idleParticleDirection = new Vector2 (0 , 10);
     float idleParticleSpeed = 1;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite attackSprite;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject attackObj;
     SpriteRenderer attackSpriteRenderer;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite bubbleSprite;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject bubbleObj;
     SpriteRenderer bubbleSpriteRenderer;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [PreviewField(70, ObjectFieldAlignment.Left)]
     [SerializeField] Sprite impactSprite;
+
     [Space]
-    [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject impactObj;
     SpriteRenderer impactSpriteRenderer;
     #endregion
 
     #region STATS
-    [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
     [Tooltip("I'll never die!")]
     [SerializeField] float maxHealth;
     private float health;
-    [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
     [Tooltip("ZOOOOOOOOOM!!!")]
     [SerializeField] float moveSpeed;
-    [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
     [Tooltip("...How high?")]
     [SerializeField] float jumpHeight;
-    [TitleGroup("Main")]
     [BoxGroup("Main/Stats")]
     public float damage;
     #endregion
@@ -83,40 +79,33 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float airSpeedDivider;
     PlayerActions playerActions;
     Vector2 moveDir;
-    [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [SerializeField] float movementSmoothing;
     Vector3 velocity = Vector3.zero;
     bool isGrounded;
     bool isJumping = false;
-    [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [Tooltip("This is an empty GameObject placed at the bottom of the player's collider")]
     [SerializeField] Transform groundCheck;
     const float groundCheckRadius = 0.2f;
-    [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [Tooltip("Whatever layer you use for the ground")]
     [SerializeField] LayerMask groundLayer;
     Rigidbody2D rb2d;
     bool isFacingRight = true;
-    [TitleGroup("Control")]
     [BoxGroup("Control/Movement")]
     [SerializeField] float stunTime;
     float hitTimer;
     #endregion
 
     #region Combat Control
-    [TitleGroup("Control")]
     [BoxGroup("Control/Combat")]
     [SerializeField] float slashDistance;
     bool isHit = false;
     bool hasAttacked = false;
-    [TitleGroup("Control")]
     [BoxGroup("Control/Combat")]
     [SerializeField] float attackCooldown;
     float attackTimer;
-    [TitleGroup("Control")]
     [BoxGroup("Control/Combat")]
     [SerializeField] float knockbackForce;
     Vector2 slashPos;
@@ -136,7 +125,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        //Sprites 'n Things
+        // Sprites 'n Things
         playerSpriteRenderer = playerSpriteObj.GetComponent<SpriteRenderer>();
         playerSpriteRenderer.sprite = playerSprite;
         attackObj = Instantiate(attackObj, transform);
@@ -152,12 +141,12 @@ public class PlayerController : MonoBehaviour
         impactSpriteRenderer = impactObj.GetComponent<SpriteRenderer>();
         impactSpriteRenderer.sprite = impactSprite;
 
-        //Physics
+        // Physics
         rb2d = GetComponent<Rigidbody2D>();
 
         health = maxHealth;
 
-        //Input Stuff
+        // Input Stuff
         playerActions = new PlayerActions();
         playerActions.Gameplay.Jump.performed += ctx => OnJump();
         playerActions.Gameplay.Jump.canceled += ctx => StopJump();
@@ -166,17 +155,17 @@ public class PlayerController : MonoBehaviour
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
     }
 
-    //Everything in Start needs to be here to avoid racing
+    // Everything in Start needs to be here to avoid racing
     private void Start()
     {
-        //UI Stuff
+        // UI Stuff
         playerUI = GetComponentInChildren<PlayerUI>();
         playerUI.AdjustPlayerHealthUI(maxHealth);
     }
 
     void Update()
     {
-        //Input & Movement
+        // Input & Movement
         if (!isHit)
         {
             moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
@@ -191,7 +180,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        //Attack Delay
+        // Attack Delay
         if (hasAttacked)
         {
             attackTimer += Time.deltaTime;
@@ -207,18 +196,6 @@ public class PlayerController : MonoBehaviour
             {
                 hasAttacked = false;
             }
-        }
-
-        //Body VFX
-        if (moveDir.x == 0 && moveDir.y == 0)
-        {
-            bodyVFX.SetVector3("PlayerDirection", idleParticleDirection);
-            bodyVFX.SetFloat("PlayerSpeed", idleParticleSpeed);
-        }
-        else
-        {
-            bodyVFX.SetVector3("PlayerDirection", -rb2d.velocity);
-            bodyVFX.SetFloat("PlayerSpeed", rb2d.velocity.x/4);
         }
 
         if(Input.GetKeyDown(KeyCode.Equals))
@@ -243,13 +220,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Body VFX follow the player motion so wait for all movement calculations to happen before effects change
+    private void LateUpdate()
+    {
+        // Body VFX
+        if (moveDir.x == 0 && moveDir.y == 0)
+        {
+            bodyVFX.SetVector3("PlayerDirection", idleParticleDirection);
+            bodyVFX.SetFloat("PlayerSpeed", idleParticleSpeed);
+        }
+        else
+        {
+            bodyVFX.SetVector3("PlayerDirection", -rb2d.velocity);
+            bodyVFX.SetFloat("PlayerSpeed", rb2d.velocity.x / 4);
+        }
+    }
+
     /// <summary>
     /// Triggered when the player hits the attack button.
     /// Handles attack warmup effects and animations.
     /// </summary>
     void HoldSlash()
     {
-        //Do stuff
+        // Do stuff
     }
 
     /// <summary>
@@ -273,14 +266,14 @@ public class PlayerController : MonoBehaviour
             }
             slashPos = moveDir * slashDistance;
 
-            //Slash Sprite Position
+            // Slash Sprite Position
             attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
 
-            //Does it hit?
+            // Does it hit?
             RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos, slashDistance);
             if (hit.collider != null)
             {
-                //Slash and Impact Sprite Positions
+                // Slash and Impact Sprite Positions
                 attackObj.transform.position = hit.collider.ClosestPoint(transform.position);
                 impactObj.transform.position = hit.collider.ClosestPoint(transform.position);
                 impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
@@ -292,14 +285,19 @@ public class PlayerController : MonoBehaviour
                     impactObj.transform.position = hit.collider.transform.position;
                 }
 
-                //Knockback the player on successful contact
+                // Knockback the player on successful contact
                 rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
+            }
+            else
+            {
+                // Gives the player a little push forward if they don't hit anything
+                rb2d.AddForce(moveDir * (knockbackForce * 10));
             }
             attackTimer = 0;
             hasAttacked = true;
             attackObj.SetActive(true);
 
-            //Slash Sprite Rotation
+            // Slash Sprite Rotation
             float x = moveDir.x;
             float y = moveDir.y;
             float rads = Mathf.Atan2(y, x);

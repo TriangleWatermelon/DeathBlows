@@ -3,18 +3,8 @@ using Sirenix.OdinInspector;
 
 public class TwoWayEnemyController : Entity
 {
-    #region Visuals
-    [BoxGroup("Visuals")]
-    [PreviewField(70, ObjectFieldAlignment.Left)]
-    [SerializeField] Sprite livingSprite;
-    SpriteRenderer spriteRenderer;
-    [Space]
-    [BoxGroup("Visuals")]
-    [PreviewField(70, ObjectFieldAlignment.Left)]
-    [SerializeField] Sprite graveSprite;
-    #endregion
-
     #region Control
+    [TitleGroup("Control")]
     [BoxGroup("Control/Stats")]
     [SerializeField] float damage;
     [BoxGroup("Control/Movement")]
@@ -28,8 +18,6 @@ public class TwoWayEnemyController : Entity
     [BoxGroup("Control/Movement")]
     [Tooltip("Whatever layer you use for the ground")]
     [SerializeField] LayerMask groundLayer;
-    [BoxGroup("Control")]
-    [SerializeField] bool isRight = true;
     bool isDead = false;
     Vector2 corpsePosition;
     Vector2 corpseOffset;
@@ -38,9 +26,7 @@ public class TwoWayEnemyController : Entity
     private void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
-        spriteRenderer.sprite = livingSprite;
         if (!isRight)
         {
             FlipSprite();
@@ -73,6 +59,8 @@ public class TwoWayEnemyController : Entity
                 FlipSprite();
             if (rb2d.velocity.x < 0 && isRight)
                 FlipSprite();
+
+            animator.SetFloat("MoveSpeed", Mathf.Abs(rb2d.velocity.x));
         }
         else
         {
@@ -103,21 +91,12 @@ public class TwoWayEnemyController : Entity
             rb2d.velocity = moveDir * moveSpeed;
     }
 
-    void FlipSprite()
-    {
-        isRight = !isRight;
-
-        Vector3 flipScale = transform.localScale;
-        flipScale.x *= -1;
-        transform.localScale = flipScale;
-    }
-
     public void Die()
     {
         if (!isDead)
         {
-            spriteRenderer.gameObject.transform.Rotate(0, 0, -90);
             isDead = true;
+            this.GetComponent<Collider2D>().enabled = false;
         }
     }
 
@@ -131,18 +110,9 @@ public class TwoWayEnemyController : Entity
         {
             FlipSprite();
         }
-        if(isDead && collision.gameObject.CompareTag("Ground"))
-        {
-            spriteRenderer.gameObject.transform.Rotate(0, 0, 90);
-            spriteRenderer.sprite = graveSprite;
-            if (!isRight)
-                FlipSprite();
-            corpsePosition = collision.collider.ClosestPoint(transform.position) + corpseOffset;
-            this.GetComponent<Collider2D>().enabled = false;
-        }
     }
 
-    //This handles the border interactions
+    // This handles the border interactions
     private void OnTriggerEnter2D(Collider2D collision)
     {
         FlipSprite();
