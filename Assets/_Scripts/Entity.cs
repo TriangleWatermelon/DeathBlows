@@ -5,6 +5,15 @@ using Sirenix.OdinInspector;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Entity : MonoBehaviour
 {
+    public enum state
+    {
+        idle = 0,
+        walking = 1,
+        pursuing = 2,
+        attacking = 3,
+        dying = 4
+    }
+
     [TitleGroup("Entity Base")]
     [BoxGroup("Stats")]
     public float health;
