@@ -15,21 +15,49 @@ public class Entity : MonoBehaviour
     }
 
     [TitleGroup("Entity Base")]
-    [BoxGroup("Stats")]
+    [BoxGroup("Entity Base/Stats")]
     public float health;
+
+    [BoxGroup("Entity Base/Stats")]
+    public float damage;
+
+    [BoxGroup("Entity Base/Stats")]
+    public float pursuingDistance;
+
+    [BoxGroup("Entity Base/Stats")]
+    public float attackDistance;
+
     [HideInInspector]
     public bool isHit;
     [HideInInspector]
     public float hitTimer = 0;
-    [BoxGroup("Movement")]
+
+    [BoxGroup("Entity Base/Movement")]
+    public bool isRight = true;
+
+    [BoxGroup("Entity Base/Movement")]
     public float stunTime;
     [HideInInspector]
     public Rigidbody2D rb2d;
-    [BoxGroup("Movement")]
-    public bool isRight = true;
-    [BoxGroup("Visual")]
+
+    [BoxGroup("Entity Base/Movement")]
+    public float moveSpeed;
+
+    [HideInInspector]
+    public bool isGrounded;
+    [BoxGroup("Entity Base/Movement")]
+    [Tooltip("This is an empty GameObject placed at the bottom of the enemy's collider")]
+    public Transform groundCheck;
+    public const float groundCheckRadius = 0.2f;
+
+    [BoxGroup("Entity Base/Movement")]
+    [Tooltip("Whatever layer you use for the ground")]
+    public LayerMask groundLayer;
+
+    [BoxGroup("Entity Base/Visual")]
     public GameObject spriteParentObj;
-    [BoxGroup("Visual")]
+
+    [BoxGroup("Entity Base/Visual")]
     public Animator animator;
 
     public UnityEvent OnDeath;
@@ -50,7 +78,6 @@ public class Entity : MonoBehaviour
             OnDeath.Invoke();
             animator.SetBool("isDead", true);
         }
-        //Debug.Log(gameObject.name + " Ouch!");
     }
 
     /// <summary>
@@ -63,5 +90,15 @@ public class Entity : MonoBehaviour
         Vector3 flipScale = spriteParentObj.transform.localScale;
         flipScale.x *= -1;
         spriteParentObj.transform.localScale = flipScale;
+    }
+
+    /// <summary>
+    /// Moves the entity in the provided direction
+    /// </summary>
+    /// <param name="moveDir"></param>
+    public void Move(Vector2 moveDir)
+    {
+        if (isGrounded)
+            rb2d.velocity = moveDir * moveSpeed;
     }
 }

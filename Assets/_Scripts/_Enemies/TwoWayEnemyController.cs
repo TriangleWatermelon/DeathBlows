@@ -1,24 +1,21 @@
+using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class TwoWayEnemyController : Entity
 {
-    #region Control
-    [TitleGroup("Control")]
-    [BoxGroup("Control/Stats")]
-    [SerializeField] float damage;
-    [BoxGroup("Control/Movement")]
-    [SerializeField] float moveSpeed;
-    bool isGrounded;
-    [BoxGroup("Control/Movement")]
-    [Tooltip("This is an empty GameObject placed at the bottom of the enemy's collider")]
-    [SerializeField] Transform groundCheck;
-    const float groundCheckRadius = 0.2f;
-    [BoxGroup("Control/Movement")]
-    [Tooltip("Whatever layer you use for the ground")]
-    [SerializeField] LayerMask groundLayer;
+    [BoxGroup("Attacking")]
+    [SerializeField] float leapDistance;
+    [BoxGroup("Attacking")]
+    [SerializeField] float leapDelay;
+    float attackDelay;
+
+    Vector2 facingDirection;
     bool isDead = false;
-    #endregion
+
+    GameObject latestGroundObj;
+    [BoxGroup("Components")]
+    [SerializeField] ParticleSystem smokeParticles;
 
     state motionState;
 
@@ -39,18 +36,48 @@ public class TwoWayEnemyController : Entity
     {
         if (!isDead)
         {
+            if (isRight)
+                facingDirection = Vector2.right;
+            else
+                facingDirection = -Vector2.right;
+
             switch (motionState)
             {
                 case state.idle:
                     animator.SetBool("isMoving", false);
+
+                    RaycastHit2D pHit = Physics2D.Raycast(transform.position, facingDirection, pursuingDistance);
+                    Debug.DrawRay(transform.position, facingDirection * pursuingDistance, Color.blue);
+                    if (pHit.collider != null)
+                    {
+                        if (pHit.collider.gameObject.CompareTag("Player"))
+                        {
+                            motionState = state.pursuing;
+                            Debug.Log("Starting to pursue the enemy");
+                            animator.SetBool("isMoving", true);
+                        }
+                    }
                     break;
-                case state.walking:
+                case state.pursuing:
                     if (!isHit)
                     {
                         if (isRight)
                             Move(Vector2.right);
                         else
                             Move(-Vector2.right);
+
+                        RaycastHit2D aHit = Physics2D.Raycast(transform.position, facingDirection, attackDistance);
+                        Debug.DrawRay(transform.position, facingDirection * attackDistance, Color.red);
+                        if (aHit.collider != null)
+                        {
+                            if (aHit.collider.gameObject.CompareTag("Player"))
+                            {
+                                motionState = state.attacking;
+                                attackDelay = 0;
+                                smokeParticles.Play();
+                                Debug.Log("Attacking the enemy");
+                            }
+                        }
                     }
                     else
                     {
@@ -64,8 +91,13 @@ public class TwoWayEnemyController : Entity
                         FlipSprite();
                     if (rb2d.velocity.x < 0 && isRight)
                         FlipSprite();
-
-                    animator.SetBool("isMoving", true);
+                    break;
+                case state.attacking:
+                    attackDelay += Time.deltaTime;
+                    if (leapDelay < attackDelay && attackDelay < 0.5f)
+                        rb2d.AddForce(facingDirection * leapDistance);
+                    else if (attackDelay > 1.5f)
+                        motionState = state.idle;
                     break;
             }
         }
@@ -83,14 +115,9 @@ public class TwoWayEnemyController : Entity
             if (colliders[i].gameObject != gameObject)
             {
                 isGrounded = true;
+                latestGroundObj = colliders[i].gameObject;
             }
         }
-    }
-
-    private void Move(Vector2 moveDir)
-    {
-        if(isGrounded)
-            rb2d.velocity = moveDir * moveSpeed;
     }
 
     public void Die()
@@ -98,8 +125,20 @@ public class TwoWayEnemyController : Entity
         if (!isDead)
         {
             isDead = true;
+
+            // Stop physics and movement
             this.GetComponent<Collider2D>().enabled = false;
             rb2d.isKinematic = true;
+            rb2d.velocity = Vector2.zero;
+
+            // Match ground rotation
+            transform.rotation = latestGroundObj.transform.rotation;
+
+            // Flip for animation to look more convincing with rotation
+            if (latestGroundObj.transform.rotation.z > 0 && isRight)
+                FlipSprite();
+            else if (latestGroundObj.transform.rotation.x < 0 && !isRight)
+                FlipSprite();
         }
     }
 
@@ -115,7 +154,7 @@ public class TwoWayEnemyController : Entity
         }
     }
 
-    // This handles the border interactions
+    // This handles the edge interactions
     private void OnTriggerEnter2D(Collider2D collision)
     {
         FlipSprite();

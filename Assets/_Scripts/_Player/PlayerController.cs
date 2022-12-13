@@ -415,6 +415,9 @@ public class PlayerController : MonoBehaviour
                 OnDeath.Invoke();
             }
 
+            // Knock the player back when they take damage
+            rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
+
             playerUI.AdjustHealth(health);
         }
     }
