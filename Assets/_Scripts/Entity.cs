@@ -48,6 +48,7 @@ public class Entity : MonoBehaviour
         if(health <= 0)
         {
             OnDeath.Invoke();
+            animator.SetBool("isDead", true);
         }
         //Debug.Log(gameObject.name + " Ouch!");
     }
