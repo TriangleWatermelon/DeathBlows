@@ -4,9 +4,10 @@ using Sirenix.OdinInspector;
 
 public class TwoWayEnemyController : Entity
 {
-    [BoxGroup("Attacking")]
+    [TitleGroup("Two-Way Specific")]
+    [BoxGroup("Two-Way Specific/Attacking")]
     [SerializeField] float leapDistance;
-    [BoxGroup("Attacking")]
+    [BoxGroup("Two-Way Specific/Attacking")]
     [SerializeField] float leapDelay;
     float attackDelay;
 
@@ -14,7 +15,7 @@ public class TwoWayEnemyController : Entity
     bool isDead = false;
 
     GameObject latestGroundObj;
-    [BoxGroup("Components")]
+    [BoxGroup("Two-Way Specific/Components")]
     [SerializeField] ParticleSystem smokeParticles;
 
     state motionState;
@@ -73,6 +74,7 @@ public class TwoWayEnemyController : Entity
                             if (aHit.collider.gameObject.CompareTag("Player"))
                             {
                                 motionState = state.attacking;
+                                rb2d.velocity = Vector2.zero;
                                 attackDelay = 0;
                                 smokeParticles.Play();
                                 Debug.Log("Attacking the enemy");

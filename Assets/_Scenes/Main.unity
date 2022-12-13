@@ -130,14 +130,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6313607773139133224, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
-      propertyPath: isRight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6313607773139133224, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
-      propertyPath: groundLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 6313607773139133227, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -185,18 +177,6 @@ PrefabInstance:
     - target: {fileID: 6313607773139133231, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
       propertyPath: m_Name
       value: 2-Way Enemy_1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6313607773139133231, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6313607773965508647, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6313607774069313892, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
-      propertyPath: m_Layer
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
@@ -860,6 +840,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6313607773139133224, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
+      propertyPath: isRight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6313607773139133224, guid: 466289c040b1b4fd0b23c9c7526f9228, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 8
