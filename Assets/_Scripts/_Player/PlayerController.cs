@@ -264,7 +264,7 @@ public class PlayerController : MonoBehaviour
                     moveDir = -Vector2.right;
                 }
             }
-            slashPos = moveDir * slashDistance;
+            slashPos = moveDir * (slashDistance * 0.75f);
 
             // Slash Sprite Position
             attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
