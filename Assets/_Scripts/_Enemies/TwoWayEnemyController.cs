@@ -77,6 +77,7 @@ public class TwoWayEnemyController : Entity
                                 rb2d.velocity = Vector2.zero;
                                 attackDelay = 0;
                                 smokeParticles.Play();
+                                animator.SetTrigger("isAttacking");
                                 Debug.Log("Attacking the enemy");
                             }
                         }
