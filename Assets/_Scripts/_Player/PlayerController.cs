@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine.VFX;
 using System;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -101,6 +102,8 @@ public class PlayerController : MonoBehaviour
     #region Combat Control
     [BoxGroup("Control/Combat")]
     [SerializeField] float slashDistance;
+    [BoxGroup("Control/Combat")]
+    [SerializeField] float attackRadius;
     bool isHit = false;
     bool hasAttacked = false;
     [BoxGroup("Control/Combat")]
@@ -270,28 +273,32 @@ public class PlayerController : MonoBehaviour
             attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
 
             // Does it hit?
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, slashPos, slashDistance);
-            if (hit.collider != null)
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, attackRadius, moveDir, slashDistance);
+            foreach (var hit in hits)
             {
-                // Slash and Impact Sprite Positions
-                attackObj.transform.position = hit.collider.ClosestPoint(transform.position);
-                impactObj.transform.position = hit.collider.ClosestPoint(transform.position);
-                impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
-                impactObj.SetActive(true);
-
-                if (hit.collider.GetComponent<Entity>() != null)
+                if (hit.collider != null)
                 {
-                    hit.collider.GetComponent<Entity>().TakeDamage(damage);
-                    impactObj.transform.position = hit.collider.transform.position;
-                }
+                    // Slash and Impact Sprite Positions
+                    Vector2 closestPoint = hit.collider.ClosestPoint(transform.position);
+                    attackObj.transform.position = closestPoint;
+                    impactObj.transform.position = closestPoint;
+                    impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
+                    impactObj.SetActive(true);
 
-                // Knockback the player on successful contact
-                rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
-            }
-            else
-            {
-                // Gives the player a little push forward if they don't hit anything
-                rb2d.AddForce(moveDir * (knockbackForce * 10));
+                    if (hit.collider.GetComponent<Entity>() != null)
+                    {
+                        hit.collider.GetComponent<Entity>().TakeDamage(damage);
+                        impactObj.transform.position = hit.collider.transform.position;
+                    }
+
+                    // Knockback the player on successful contact
+                    rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
+                }
+                else
+                {
+                    // Gives the player a little push forward if they don't hit anything
+                    rb2d.AddForce(moveDir * (knockbackForce * 10));
+                }
             }
             attackTimer = 0;
             hasAttacked = true;

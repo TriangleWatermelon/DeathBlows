@@ -618,6 +618,7 @@ MonoBehaviour:
     m_Bits: 72
   stunTime: 1
   slashDistance: 2
+  attackRadius: 1
   attackCooldown: 0.4
   knockbackForce: 12
   isBubbling: 0
