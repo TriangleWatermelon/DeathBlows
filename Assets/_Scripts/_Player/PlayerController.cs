@@ -273,7 +273,18 @@ public class PlayerController : MonoBehaviour
             attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
 
             // Does it hit?
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, attackRadius, moveDir, slashDistance);
+            Vector3 circleStartOffset;
+            if (isFacingRight) circleStartOffset = new Vector3(-1, 0, 0);
+            else circleStartOffset = new Vector3(1, 0, 0);
+
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(
+                transform.position + circleStartOffset,
+                attackRadius,
+                moveDir,
+                slashDistance,
+                LayerMask.NameToLayer("Boundary")
+                );
+
             foreach (var hit in hits)
             {
                 if (hit.collider != null)
@@ -322,14 +333,10 @@ public class PlayerController : MonoBehaviour
         if (!isBubbling)
         {
             bubblePos = transform.position + new Vector3(moveDir.x, 0);
-            if (isFacingRight)
-            {
-                bubblePos += bubbleOffset;
-            }
-            else
-            {
-                bubblePos -= bubbleOffset;
-            }
+
+            if (isFacingRight) bubblePos += bubbleOffset;
+            else bubblePos -= bubbleOffset;
+
             bubbleObj.SetActive(true);
             bubbleObj.transform.position = bubblePos;
             isBubbling = true;
