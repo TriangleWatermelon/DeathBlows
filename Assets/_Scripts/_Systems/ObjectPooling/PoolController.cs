@@ -8,42 +8,36 @@ public class PoolController : MonoBehaviour
     [BoxGroup("Control")]
     [SerializeField] int poolThisMany;
     [BoxGroup("Control")]
-    [SerializeField] PooledObject pooledObjectPrefab;
+    [SerializeField] GameObject pooledObjectPrefab;
 
-    List<PooledObject> objectPool = new List<PooledObject>();
+    List<GameObject> objectPool = new List<GameObject>();
 
     private void Start()
     {
         for (int i = 0; i < poolThisMany; i++)
         {
-            PooledObject newObject = Instantiate(pooledObjectPrefab);
+            GameObject newObject = Instantiate(pooledObjectPrefab);
             objectPool.Add(newObject);
             newObject.gameObject.SetActive(false);
         }
     }
 
-    public PooledObject PullFromPool()
+    public GameObject PullFromPool(Vector3 position)
     {
-        int index = 0;
-
         for (int i = 0; i < objectPool.Count; i++) {
-            if (!objectPool[i].inUse)
+            if (!objectPool[i].activeInHierarchy)
             {
-                index = i;
-                break;
+                objectPool[i].transform.position = position;
+                objectPool[i].SetActive(true);
+                return objectPool[i];
             }
         }
 
-        PooledObject obj = objectPool[index];
-        obj.inUse = true;
-        obj.gameObject.SetActive(true);
-
-        return obj;
+        return null;
     }
 
-    public void ReturnToPool(PooledObject obj)
+    public void ReturnToPool(GameObject obj)
     {
-        obj.inUse = false;
         obj.gameObject.SetActive(false);
     }
 
@@ -51,7 +45,6 @@ public class PoolController : MonoBehaviour
     {
         foreach(var obj in objectPool)
         {
-            obj.inUse = false;
             obj.gameObject.SetActive(false);
         }
     }

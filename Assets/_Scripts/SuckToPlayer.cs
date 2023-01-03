@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections;
+using Sirenix.OdinInspector;
 
 public class SuckToPlayer : MonoBehaviour
 {
@@ -10,11 +11,6 @@ public class SuckToPlayer : MonoBehaviour
     float distanceToPlayer;
     Vector3 lerpStartPos;
     Vector3 playerLatestPos;
-
-    private void Start()
-    {
-        player = FindObjectOfType<PlayerController>().gameObject;
-    }
 
     private void Update()
     {
@@ -36,6 +32,7 @@ public class SuckToPlayer : MonoBehaviour
 
     public void Activate()
     {
+        player = FindObjectOfType<PlayerController>().gameObject;
         lerpStartPos = transform.position;
         playerLatestPos = player.transform.position;
         isActive = true;

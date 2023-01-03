@@ -5147,10 +5147,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7852099898698162131}
-        m_TargetAssemblyTypeName: SuckToPlayer, Assembly-CSharp
-        m_MethodName: Activate
-        m_Mode: 1
+      - m_Target: {fileID: 6318433537712796086}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5261,8 +5261,6 @@ GameObject:
   - component: {fileID: 5634183221497314924}
   - component: {fileID: 5150480974685889264}
   - component: {fileID: 4425535417686999964}
-  - component: {fileID: 7852099898698162131}
-  - component: {fileID: 6920466219327330373}
   m_Layer: 0
   m_Name: Eye
   m_TagString: Untagged
@@ -5362,34 +5360,6 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &7852099898698162131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6318433537712796086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ccb5251a51194f0fa9c4b55b527602a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!58 &6920466219327330373
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6318433537712796086}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1
 --- !u!1 &7316840330261730250
 GameObject:
   m_ObjectHideFlags: 0

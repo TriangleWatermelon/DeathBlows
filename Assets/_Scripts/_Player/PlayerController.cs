@@ -1,10 +1,10 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using Sirenix.OdinInspector;
-using UnityEngine.VFX;
-using System;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using UnityEngine.VFX;
+using Sirenix.OdinInspector;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -153,8 +153,7 @@ public class PlayerController : MonoBehaviour
         playerActions = new PlayerActions();
         playerActions.Gameplay.Jump.performed += ctx => OnJump();
         playerActions.Gameplay.Jump.canceled += ctx => StopJump();
-        playerActions.Gameplay.Slash.performed += ctx => HoldSlash();
-        playerActions.Gameplay.Slash.canceled += ctx => OnSlash();
+        playerActions.Gameplay.Slash.performed += ctx => OnSlash();
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
     }
 
@@ -241,15 +240,6 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>
     /// Triggered when the player hits the attack button.
-    /// Handles attack warmup effects and animations.
-    /// </summary>
-    void HoldSlash()
-    {
-        // Do stuff
-    }
-
-    /// <summary>
-    /// Triggered when the player releases the attack button.
     /// Handles the player attack (sprites and effects) based on the direction of the controller (-1 to 1 on XY axis).
     /// </summary>
     void OnSlash()
@@ -259,13 +249,9 @@ public class PlayerController : MonoBehaviour
             if(Mathf.Abs(moveDir.x) <= 0.2f && Mathf.Abs(moveDir.y) <= 0.2f)
             {
                 if (isFacingRight)
-                {
                     moveDir = Vector2.right;
-                }
                 else
-                {
                     moveDir = -Vector2.right;
-                }
             }
             slashPos = moveDir * (slashDistance * 0.75f);
 
@@ -303,7 +289,7 @@ public class PlayerController : MonoBehaviour
                     }
 
                     // Knockback the player on successful contact
-                    rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
+                    KnockbackPlayer();
                 }
                 else
                 {
@@ -421,8 +407,9 @@ public class PlayerController : MonoBehaviour
     {
         if (!isHit)
         {
-            health -= _damage;
+            hitTimer = 0;
             isHit = true;
+            health -= _damage;
             if (health <= 0)
             {
                 Die();
@@ -430,10 +417,18 @@ public class PlayerController : MonoBehaviour
             }
 
             // Knock the player back when they take damage
-            rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
+            KnockbackPlayer();
 
             playerUI.AdjustHealth(health);
         }
+    }
+
+    /// <summary>
+    /// Applies a knockback force to the player.
+    /// </summary>
+    void KnockbackPlayer()
+    {
+        rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
     }
 
     /// <summary>

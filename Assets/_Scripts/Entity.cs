@@ -62,6 +62,13 @@ public class Entity : MonoBehaviour
 
     public UnityEvent OnDeath;
 
+    PoolController poolController;
+
+    private void Awake()
+    {
+        poolController = FindObjectOfType<PoolController>();
+    }
+
     /// <summary>
     /// Applies damage to the entity.
     /// Starts the hit timer to prevent multiple hits in a single attack.
@@ -77,7 +84,16 @@ public class Entity : MonoBehaviour
         {
             OnDeath.Invoke();
             animator.SetBool("isDead", true);
+            EjectSoul();
         }
+    }
+
+    void EjectSoul()
+    {
+        Debug.Log("Ejecting soul...");
+        GameObject soul = poolController.PullFromPool(transform.position);
+        soul.GetComponent<SuckToPlayer>().Activate();
+        Debug.Log("Soul ejected.");
     }
 
     /// <summary>
