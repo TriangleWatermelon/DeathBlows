@@ -56,6 +56,7 @@ public class Entity : MonoBehaviour
 
     [BoxGroup("Entity Base/Movement")]
     public float knockbackForce;
+    [HideInInspector]
     public Vector2 lookDirection;
 
     [BoxGroup("Entity Base/Visual")]
