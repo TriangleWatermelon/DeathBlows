@@ -90,10 +90,8 @@ public class Entity : MonoBehaviour
 
     void EjectSoul()
     {
-        Debug.Log("Ejecting soul...");
         GameObject soul = poolController.PullFromPool(transform.position);
         soul.GetComponent<SuckToPlayer>().Activate();
-        Debug.Log("Soul ejected.");
     }
 
     /// <summary>

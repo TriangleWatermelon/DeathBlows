@@ -5,43 +5,33 @@ using Sirenix.OdinInspector;
 
 public class SuckToPlayer : MonoBehaviour
 {
+    [BoxGroup("Control")]
+    [SerializeField] float speed = 0.005f;
+
     GameObject player;
 
     bool isActive = false;
-    float distanceToPlayer;
-    Vector3 lerpStartPos;
-    Vector3 playerLatestPos;
 
     private void Update()
     {
         // When active, we move towards the plaer over time then deactivate.
         if (isActive)
         {
-            distanceToPlayer += Time.deltaTime;
-            transform.position = Vector3.Lerp(lerpStartPos, playerLatestPos, distanceToPlayer);
+            Vector3 direction = (player.transform.position - transform.position).normalized;
 
-            // If we finish the lerp and haven't collided with the player, get new points.
-            if (distanceToPlayer >= 1)
-            {
-                distanceToPlayer = 0;
-                lerpStartPos = transform.position;
-                playerLatestPos = player.transform.position;
-            }
+            transform.position += direction * speed;
         }
     }
 
     public void Activate()
     {
         player = FindObjectOfType<PlayerController>().gameObject;
-        lerpStartPos = transform.position;
-        playerLatestPos = player.transform.position;
         isActive = true;
     }
 
     private void ResetSuck()
     {
         isActive = false;
-        distanceToPlayer = 0;
         gameObject.SetActive(false);
     }
 

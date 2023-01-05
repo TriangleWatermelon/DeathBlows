@@ -11,7 +11,7 @@ public class TwoWayEnemyController : Entity
     [SerializeField] float leapDelay;
     float attackDelay;
 
-    Vector2 facingDirection;
+    Vector2 lookDirection;
     bool isDead = false;
 
     GameObject latestGroundObj;
@@ -38,23 +38,23 @@ public class TwoWayEnemyController : Entity
         if (!isDead)
         {
             if (isRight)
-                facingDirection = Vector2.right;
+                lookDirection = Vector2.right;
             else
-                facingDirection = -Vector2.right;
+                lookDirection = -Vector2.right;
 
+            // This switch controls the various update loops that occur for each state.
             switch (motionState)
             {
                 case state.idle:
                     animator.SetBool("isMoving", false);
 
-                    RaycastHit2D pHit = Physics2D.Raycast(transform.position, facingDirection, pursuingDistance);
-                    Debug.DrawRay(transform.position, facingDirection * pursuingDistance, Color.blue);
+                    RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance);
+                    Debug.DrawRay(transform.position, lookDirection * pursuingDistance, Color.blue);
                     if (pHit.collider != null)
                     {
                         if (pHit.collider.gameObject.CompareTag("Player"))
                         {
                             motionState = state.pursuing;
-                            Debug.Log("Starting to pursue the enemy");
                             animator.SetBool("isMoving", true);
                         }
                     }
@@ -67,8 +67,8 @@ public class TwoWayEnemyController : Entity
                         else
                             Move(-Vector2.right);
 
-                        RaycastHit2D aHit = Physics2D.Raycast(transform.position, facingDirection, attackDistance);
-                        Debug.DrawRay(transform.position, facingDirection * attackDistance, Color.red);
+                        RaycastHit2D aHit = Physics2D.Raycast(transform.position, lookDirection, attackDistance);
+                        Debug.DrawRay(transform.position, lookDirection * attackDistance, Color.red);
                         if (aHit.collider != null)
                         {
                             if (aHit.collider.gameObject.CompareTag("Player"))
@@ -78,7 +78,6 @@ public class TwoWayEnemyController : Entity
                                 attackDelay = 0;
                                 smokeParticles.Play();
                                 animator.SetTrigger("isAttacking");
-                                Debug.Log("Attacking the enemy");
                             }
                         }
                     }
@@ -98,7 +97,7 @@ public class TwoWayEnemyController : Entity
                 case state.attacking:
                     attackDelay += Time.deltaTime;
                     if (leapDelay < attackDelay && attackDelay < 0.5f)
-                        rb2d.AddForce(facingDirection * leapDistance);
+                        rb2d.AddForce(lookDirection * leapDistance);
                     else if (attackDelay > 1.5f)
                         motionState = state.idle;
                     break;
