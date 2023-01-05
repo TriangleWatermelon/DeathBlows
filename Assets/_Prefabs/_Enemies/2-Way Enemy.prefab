@@ -5115,7 +5115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a9e00a86dfd4e16a7033283d588ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
+  health: 2
   damage: 1
   pursuingDistance: 10
   attackDistance: 4
@@ -5130,6 +5130,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  knockbackForce: 6
+  lookDirection: {x: 0, y: 0}
   spriteParentObj: {fileID: 7316840330261730250}
   animator: {fileID: 872135647298913497}
   OnDeath:

@@ -284,7 +284,9 @@ public class PlayerController : MonoBehaviour
 
                     if (hit.collider.GetComponent<Entity>() != null)
                     {
-                        hit.collider.GetComponent<Entity>().TakeDamage(damage);
+                        Entity enemy = hit.collider.GetComponent<Entity>();
+                        enemy.TakeDamage(damage);
+                        enemy.KnockbackEntity(moveDir);
                         impactObj.transform.position = hit.collider.transform.position;
                     }
 

@@ -11,7 +11,6 @@ public class TwoWayEnemyController : Entity
     [SerializeField] float leapDelay;
     float attackDelay;
 
-    Vector2 lookDirection;
     bool isDead = false;
 
     GameObject latestGroundObj;
@@ -31,17 +30,17 @@ public class TwoWayEnemyController : Entity
         }
 
         motionState = state.idle;
+
+        if (isRight)
+            lookDirection = Vector2.right;
+        else
+            lookDirection = -Vector2.right;
     }
 
     private void Update()
     {
         if (!isDead)
         {
-            if (isRight)
-                lookDirection = Vector2.right;
-            else
-                lookDirection = -Vector2.right;
-
             // This switch controls the various update loops that occur for each state.
             switch (motionState)
             {
@@ -49,7 +48,6 @@ public class TwoWayEnemyController : Entity
                     animator.SetBool("isMoving", false);
 
                     RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance);
-                    Debug.DrawRay(transform.position, lookDirection * pursuingDistance, Color.blue);
                     if (pHit.collider != null)
                     {
                         if (pHit.collider.gameObject.CompareTag("Player"))
@@ -68,7 +66,6 @@ public class TwoWayEnemyController : Entity
                             Move(-Vector2.right);
 
                         RaycastHit2D aHit = Physics2D.Raycast(transform.position, lookDirection, attackDistance);
-                        Debug.DrawRay(transform.position, lookDirection * attackDistance, Color.red);
                         if (aHit.collider != null)
                         {
                             if (aHit.collider.gameObject.CompareTag("Player"))
@@ -103,6 +100,8 @@ public class TwoWayEnemyController : Entity
                     break;
             }
         }
+        else
+            rb2d.velocity = Vector2.zero;
     }
 
     void FixedUpdate()

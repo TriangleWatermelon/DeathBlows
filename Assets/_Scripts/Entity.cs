@@ -54,6 +54,10 @@ public class Entity : MonoBehaviour
     [Tooltip("Whatever layer you use for the ground")]
     public LayerMask groundLayer;
 
+    [BoxGroup("Entity Base/Movement")]
+    public float knockbackForce;
+    public Vector2 lookDirection;
+
     [BoxGroup("Entity Base/Visual")]
     public GameObject spriteParentObj;
 
@@ -104,6 +108,11 @@ public class Entity : MonoBehaviour
         Vector3 flipScale = spriteParentObj.transform.localScale;
         flipScale.x *= -1;
         spriteParentObj.transform.localScale = flipScale;
+
+        if (isRight)
+            lookDirection = Vector2.right;
+        else
+            lookDirection = -Vector2.right;
     }
 
     /// <summary>
@@ -114,5 +123,14 @@ public class Entity : MonoBehaviour
     {
         if (isGrounded)
             rb2d.velocity = moveDir * moveSpeed;
+    }
+
+    /// <summary>
+    /// Applies knockback in the direction supplied.
+    /// </summary>
+    /// <param name="dir"></param>
+    public void KnockbackEntity(Vector2 dir)
+    {
+        rb2d.velocity = (rb2d.velocity / 2) + (dir * knockbackForce);
     }
 }
