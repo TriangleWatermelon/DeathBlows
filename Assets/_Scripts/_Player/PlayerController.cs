@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviour
     public bool isBubbling = false;
     Vector2 bubblePos;
     Vector2 bubbleOffset = new Vector2(2, 0);
+    BubbleController bubbleController;
     #endregion
 
     [Space]
@@ -149,6 +150,7 @@ public class PlayerController : MonoBehaviour
         attackSpriteRenderer.sprite = attackSprite;
         bubbleObj = Instantiate(bubbleObj);
         bubbleObj.SetActive(false);
+        bubbleController = bubbleObj.GetComponent<BubbleController>();
         bubbleSpriteRenderer = bubbleObj.GetComponentInChildren<SpriteRenderer>();
         bubbleSpriteRenderer.sprite = bubbleSprite;
         impactObj = Instantiate(impactObj, transform);
@@ -341,6 +343,12 @@ public class PlayerController : MonoBehaviour
             bubbleObj.SetActive(true);
             bubbleObj.transform.position = bubblePos;
             isBubbling = true;
+        }
+        else
+        {
+            // If the player is close enough, let them pop the bubble.
+            if (Vector3.Distance(transform.position, bubbleObj.transform.position) < 1.8f)
+                bubbleController.Pop();
         }
     }
 

@@ -9,6 +9,7 @@ TagManager:
   - Bubble
   - Boundary
   - EotW
+  - Slash
   layers:
   - Default
   - TransparentFX
