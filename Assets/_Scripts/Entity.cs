@@ -85,6 +85,7 @@ public class Entity : MonoBehaviour
         health -= _damage;
         hitTimer = 0;
         isHit = true;
+        animator.SetTrigger("TookDamage");
         if(health <= 0)
         {
             OnDeath.Invoke();
