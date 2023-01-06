@@ -55,6 +55,10 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Main/Visuals")]
     [SerializeField] GameObject impactObj;
     SpriteRenderer impactSpriteRenderer;
+
+    [Space]
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] Animator animator;
     #endregion
 
     #region STATS
@@ -426,6 +430,8 @@ public class PlayerController : MonoBehaviour
                 Die();
                 OnDeath.Invoke();
             }
+            else
+                animator.SetTrigger("TookDamage");
 
             // Knock the player back when they take damage
             KnockbackPlayer();
