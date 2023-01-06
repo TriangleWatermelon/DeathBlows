@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] VisualEffect bodyVFX;
     Vector2 idleParticleDirection = new Vector2 (0 , 10);
     float idleParticleSpeed = 1;
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] VisualEffect healVFX;
 
     [Space]
     [BoxGroup("Main/Visuals")]
@@ -460,6 +462,8 @@ public class PlayerController : MonoBehaviour
             health = maxHealth;
 
         animator.SetTrigger("GotHealed");
+        healVFX.Play();
+
         playerUI.AdjustHealth(health);
     }
 
