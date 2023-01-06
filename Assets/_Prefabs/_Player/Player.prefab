@@ -230,6 +230,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heartObj: {fileID: 2387707259526872197, guid: 5594d0aab59d948c48c203e6e0150a14, type: 3}
+  goodHeartColor: {r: 0, g: 0.827451, b: 1, a: 1}
+  badHeartColor: {r: 0, g: 0.827451, b: 1, a: 0.2509804}
 --- !u!1 &3658853357738568733
 GameObject:
   m_ObjectHideFlags: 0

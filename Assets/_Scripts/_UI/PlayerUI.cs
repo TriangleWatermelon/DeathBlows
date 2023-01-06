@@ -7,8 +7,10 @@ public class PlayerUI : MonoBehaviour
 {
     [BoxGroup("Health")]
     [SerializeField] GameObject heartObj;
-    Color goodHeartColor = new Color(1, 1, 1, 1);
-    Color badHeartColor = new Color(1, 1, 1, 0.25f);
+    [BoxGroup("Health")]
+    [SerializeField] Color goodHeartColor;
+    [BoxGroup("Health")]
+    [SerializeField] Color badHeartColor;
 
     List<HeartContainer> heartContainers = new List<HeartContainer>();
     Vector3 heartContainerOffset;
