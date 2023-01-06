@@ -61,7 +61,8 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Main/Stats")]
     [Tooltip("I'll never die!")]
     [SerializeField] float maxHealth;
-    private float health;
+    [HideInInspector]
+    public float health { get; private set; }
     [BoxGroup("Main/Stats")]
     [Tooltip("ZOOOOOOOOOM!!!")]
     [SerializeField] float moveSpeed;
@@ -125,6 +126,11 @@ public class PlayerController : MonoBehaviour
     public UnityEvent OnDeath;
 
     PlayerUI playerUI;
+
+    #region Public Variables
+    [HideInInspector]
+    public Vector3 lastPlaceBeforeJump { get; private set; }
+    #endregion
 
     void Awake()
     {
@@ -340,6 +346,9 @@ public class PlayerController : MonoBehaviour
         {
             isGrounded = false;
             isJumping = true;
+
+            lastPlaceBeforeJump = transform.position;
+
             rb2d.AddForce(new Vector2(0f, jumpHeight * 100));
         }
     }
@@ -446,9 +455,18 @@ public class PlayerController : MonoBehaviour
         playerUI.AdjustHealth(health);
     }
 
+    /// <summary>
+    /// Places the player at the given position.
+    /// </summary>
+    /// <param name="newPos"></param>
+    public void RepositionPlayer(Vector3 newPos)
+    {
+        transform.position = newPos;
+    }
+
     void Die()
     {
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneController.ReloadCurrentScene();
     }
     
     private void OnEnable()
