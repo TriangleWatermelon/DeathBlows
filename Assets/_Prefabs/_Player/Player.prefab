@@ -528,7 +528,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 72
-  stunTime: 0.65
+  stunTime: 0.6
+  dashTime: 5
+  dashForce: 3
   slashDistance: 2
   attackRadius: 1
   attackCooldown: 0.4

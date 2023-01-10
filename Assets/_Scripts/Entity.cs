@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
@@ -11,7 +12,8 @@ public class Entity : MonoBehaviour
         walking = 1,
         pursuing = 2,
         attacking = 3,
-        dying = 4
+        frozen = 4,
+        dying = 5
     }
 
     [TitleGroup("Entity Base")]
@@ -30,7 +32,7 @@ public class Entity : MonoBehaviour
     [HideInInspector]
     public bool isHit;
     [HideInInspector]
-    public float hitTimer = 0;
+    public float hitTimer;
 
     [BoxGroup("Entity Base/Movement")]
     public bool isRight = true;
@@ -38,7 +40,15 @@ public class Entity : MonoBehaviour
     [BoxGroup("Entity Base/Movement")]
     public float stunTime;
     [HideInInspector]
-    public Rigidbody2D rb2d;
+    public Rigidbody2D rb2d { get; private set; }
+    [HideInInspector]
+    public Collider2D entityCollider { get; private set; }
+    [HideInInspector]
+    public bool brookEffectActive;
+    [HideInInspector]
+    public float brookEffectTimer;
+    [HideInInspector]
+    public float brookEffectDamage { get; private set; }
 
     [BoxGroup("Entity Base/Movement")]
     public float moveSpeed;
@@ -72,6 +82,13 @@ public class Entity : MonoBehaviour
     private void Awake()
     {
         poolController = FindObjectOfType<PoolController>();
+        rb2d = GetComponent<Rigidbody2D>();
+        entityCollider = GetComponent<Collider2D>();
+    }
+
+    private void Update()
+    {
+        
     }
 
     /// <summary>
@@ -134,5 +151,15 @@ public class Entity : MonoBehaviour
     public void KnockbackEntity(Vector2 dir)
     {
         rb2d.velocity = (rb2d.velocity / 2) + (dir * knockbackForce);
+    }
+
+    //In-Progress
+    public void ActivateBrookEffect(float _damage)
+    {
+        brookEffectDamage = _damage;
+        brookEffectTimer = 0;
+        brookEffectActive = true;
+        entityCollider.enabled = false;
+        Debug.Log("Activating Brook effect");
     }
 }

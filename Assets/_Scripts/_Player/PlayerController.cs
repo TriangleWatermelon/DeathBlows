@@ -104,6 +104,13 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Control/Movement")]
     [SerializeField] float stunTime;
     float hitTimer;
+    [BoxGroup("Control/Movement")]
+    [SerializeField] float dashTime;
+    [BoxGroup("Control/Movement")]
+    [SerializeField] float dashForce;
+    Vector2 dashDir;
+    bool isDashing = false;
+    float dashTimer;
     #endregion
 
     #region Combat Control
@@ -119,6 +126,7 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Control/Combat")]
     [SerializeField] float knockbackForce;
     Vector2 slashPos;
+    Vector3 circleStartOffset;
     #endregion
 
     #region Bubble Control
@@ -169,6 +177,7 @@ public class PlayerController : MonoBehaviour
         playerActions.Gameplay.Jump.canceled += ctx => StopJump();
         playerActions.Gameplay.Slash.performed += ctx => OnSlash();
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
+        playerActions.Gameplay.Dash.performed += ctx => OnDash();
     }
 
     // Everything in Start needs to be here to avoid racing
@@ -194,6 +203,13 @@ public class PlayerController : MonoBehaviour
             {
                 isHit = false;
             }
+        }
+
+        if (isDashing)
+        {
+            dashTimer += Time.deltaTime;
+            if (dashTimer >= dashTime)
+                isDashing = false;
         }
 
         // Attack Delay
@@ -274,10 +290,6 @@ public class PlayerController : MonoBehaviour
             attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
 
             // Does it hit?
-            Vector3 circleStartOffset;
-            if (isFacingRight) circleStartOffset = new Vector3(-1, 0, 0);
-            else circleStartOffset = new Vector3(1, 0, 0);
-
             RaycastHit2D[] hits = Physics2D.CircleCastAll(
                 transform.position + circleStartOffset,
                 attackRadius,
@@ -347,8 +359,65 @@ public class PlayerController : MonoBehaviour
         else
         {
             // If the player is close enough, let them pop the bubble.
-            if (Vector3.Distance(transform.position, bubbleObj.transform.position) < 1.8f)
+            if (Vector3.Distance(transform.position, bubbleObj.transform.position) < 1.85f)
                 bubbleController.Pop();
+        }
+    }
+
+    //In-Progress
+    void OnDash()
+    {
+        if (!isDashing)
+        {
+            // Set the directional force.
+            if (isGrounded)
+            {
+                if (isFacingRight)
+                    dashDir = Vector2.right * (dashForce * 1000);
+                else
+                    dashDir = -Vector2.right * (dashForce * 1000);
+            }
+            else
+            {
+                if (isFacingRight)
+                    dashDir = new Vector2 (1, 0.1f) * (dashForce * 1000);
+                else
+                    dashDir = new Vector2(-1, 0.1f) * (dashForce * 1000);
+            }
+
+            CheckForBrookEffect();
+
+            // Add the directional force.
+            //rb2d.AddForce(dashDir);
+
+            dashTimer = 0;
+            isDashing = true;
+        }
+    }
+
+    //In-Progress
+    void CheckForBrookEffect()
+    {
+        // Are there enemies in my way?
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(
+            transform.position + circleStartOffset,
+            attackRadius,
+            moveDir,
+            5,
+            LayerMask.NameToLayer("Boundary")
+            );
+
+        foreach (var hit in hits)
+        {
+            if (hit.collider != null)
+            {
+                Debug.Log($"Hit! {hit.collider.name}");
+                if (hit.collider.GetComponent<Entity>() != null)
+                {
+                    Entity enemy = hit.collider.GetComponent<Entity>();
+                    enemy.ActivateBrookEffect(damage);
+                }
+            }
         }
     }
 
@@ -413,6 +482,7 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>
     /// Flips the player sprite depending on if they are facing right or not.
+    /// Also adjusts any values specific to the direction the sprite is facing.
     /// </summary>
     void FlipSprite()
     {
@@ -421,6 +491,9 @@ public class PlayerController : MonoBehaviour
         Vector3 flipScale = playerSpriteObj.transform.localScale;
         flipScale.x *= -1;
         playerSpriteObj.transform.localScale = flipScale;
+
+        if (isFacingRight) circleStartOffset = -Vector2.right;
+        else circleStartOffset = Vector2.right;
     }
 
     /// <summary>

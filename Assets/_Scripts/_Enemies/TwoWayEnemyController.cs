@@ -21,8 +21,6 @@ public class TwoWayEnemyController : Entity
 
     private void Start()
     {
-        rb2d = GetComponent<Rigidbody2D>();
-
         if (!isRight)
         {
             FlipSprite();
@@ -96,8 +94,25 @@ public class TwoWayEnemyController : Entity
                     if (leapDelay < attackDelay && attackDelay < 0.5f)
                         rb2d.AddForce(lookDirection * leapDistance);
                     else if (attackDelay > 1.5f)
-                        motionState = state.idle;
+                        motionState = state.pursuing;
                     break;
+                case state.frozen:
+                    rb2d.velocity = Vector2.zero;
+                    break;
+            }
+
+            if (brookEffectActive)
+            {
+                brookEffectTimer += Time.deltaTime;
+                motionState = state.frozen;
+
+                if (brookEffectTimer >= 1)
+                {
+                    entityCollider.enabled = true;
+                    TakeDamage(brookEffectDamage);
+                    brookEffectActive = false;
+                    Debug.Log("Damage from Brook effect has been applied");
+                }
             }
         }
         else

@@ -5206,7 +5206,7 @@ MonoBehaviour:
   isHit: 0
   hitTimer: 0
   isRight: 1
-  stunTime: 2
+  stunTime: 1
   rb2d: {fileID: 0}
   moveSpeed: 2
   isGrounded: 0
@@ -5282,8 +5282,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.17460674}
-  m_Size: {x: 1, y: 1.7007865}
+  m_Offset: {x: 0, y: -0.13781905}
+  m_Size: {x: 1, y: 1.6272111}
   m_Direction: 0
 --- !u!95 &872135647298913497
 Animator:
@@ -5329,7 +5329,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6313607773965508647}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -0.962, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
