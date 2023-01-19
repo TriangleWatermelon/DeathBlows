@@ -17,8 +17,6 @@ public class TwoWayEnemyController : Entity
     [BoxGroup("Two-Way Specific/Components")]
     [SerializeField] ParticleSystem smokeParticles;
 
-    state motionState;
-
     private void Start()
     {
         if (!isRight)
@@ -104,13 +102,13 @@ public class TwoWayEnemyController : Entity
             if (brookEffectActive)
             {
                 brookEffectTimer += Time.deltaTime;
-                motionState = state.frozen;
-
                 if (brookEffectTimer >= 1)
                 {
                     entityCollider.enabled = true;
                     TakeDamage(brookEffectDamage);
                     brookEffectActive = false;
+
+                    motionState = state.pursuing;
                     Debug.Log("Damage from Brook effect has been applied");
                 }
             }

@@ -52,6 +52,8 @@ public class Entity : MonoBehaviour
 
     [BoxGroup("Entity Base/Movement")]
     public float moveSpeed;
+    [HideInInspector]
+    public state motionState;
 
     [HideInInspector]
     public bool isGrounded;
@@ -163,7 +165,9 @@ public class Entity : MonoBehaviour
         brookEffectActive = true;
         entityCollider.enabled = false;
 
-        iceAnimator.SetTrigger(Random.Range(0, 1));
+        motionState = state.frozen;
+
+        iceAnimator.SetTrigger($"Type {Random.Range(1, 3)}");
         Debug.Log("Activating Brook effect");
     }
 }

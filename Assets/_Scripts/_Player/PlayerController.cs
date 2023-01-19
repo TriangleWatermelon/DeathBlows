@@ -364,7 +364,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //In-Progress
+    /// <summary>
+    /// Checks for the Brook Effect and then applies force in the direction the player
+    /// is facing.
+    /// </summary>
     void OnDash()
     {
         if (!isDashing)
@@ -395,7 +398,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //In-Progress
+    /// <summary>
+    /// Checks the space in front of the player for entities.
+    /// If they exist, activate the Brook effect on them.
+    /// </summary>
     void CheckForBrookEffect()
     {
         // Are there enemies in my way?
@@ -411,7 +417,6 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.collider != null)
             {
-                Debug.Log($"Hit! {hit.collider.name}");
                 if (hit.collider.GetComponent<Entity>() != null)
                 {
                     Entity enemy = hit.collider.GetComponent<Entity>();
