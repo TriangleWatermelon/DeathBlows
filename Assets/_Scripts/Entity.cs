@@ -73,7 +73,9 @@ public class Entity : MonoBehaviour
     public GameObject spriteParentObj;
 
     [BoxGroup("Entity Base/Visual")]
-    public Animator animator;
+    public Animator bodyAnimator;
+    [BoxGroup("Entity Base/Visual")]
+    public Animator iceAnimator;
 
     public UnityEvent OnDeath;
 
@@ -102,11 +104,11 @@ public class Entity : MonoBehaviour
         health -= _damage;
         hitTimer = 0;
         isHit = true;
-        animator.SetTrigger("TookDamage");
+        bodyAnimator.SetTrigger("TookDamage");
         if(health <= 0)
         {
             OnDeath.Invoke();
-            animator.SetBool("isDead", true);
+            bodyAnimator.SetBool("isDead", true);
             EjectSoul();
         }
     }
@@ -160,6 +162,8 @@ public class Entity : MonoBehaviour
         brookEffectTimer = 0;
         brookEffectActive = true;
         entityCollider.enabled = false;
+
+        iceAnimator.SetTrigger(Random.Range(0, 1));
         Debug.Log("Activating Brook effect");
     }
 }

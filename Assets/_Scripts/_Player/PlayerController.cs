@@ -388,7 +388,7 @@ public class PlayerController : MonoBehaviour
             CheckForBrookEffect();
 
             // Add the directional force.
-            //rb2d.AddForce(dashDir);
+            rb2d.AddForce(dashDir);
 
             dashTimer = 0;
             isDashing = true;
@@ -402,7 +402,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D[] hits = Physics2D.CircleCastAll(
             transform.position + circleStartOffset,
             attackRadius,
-            moveDir,
+            dashDir,
             5,
             LayerMask.NameToLayer("Boundary")
             );

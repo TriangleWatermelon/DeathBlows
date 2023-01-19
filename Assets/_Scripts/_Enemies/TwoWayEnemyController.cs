@@ -43,7 +43,7 @@ public class TwoWayEnemyController : Entity
             switch (motionState)
             {
                 case state.idle:
-                    animator.SetBool("isMoving", false);
+                    bodyAnimator.SetBool("isMoving", false);
 
                     RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance);
                     if (pHit.collider != null)
@@ -51,7 +51,7 @@ public class TwoWayEnemyController : Entity
                         if (pHit.collider.gameObject.CompareTag("Player"))
                         {
                             motionState = state.pursuing;
-                            animator.SetBool("isMoving", true);
+                            bodyAnimator.SetBool("isMoving", true);
                         }
                     }
                     break;
@@ -72,7 +72,7 @@ public class TwoWayEnemyController : Entity
                                 rb2d.velocity = Vector2.zero;
                                 attackDelay = 0;
                                 smokeParticles.Play();
-                                animator.SetTrigger("isAttacking");
+                                bodyAnimator.SetTrigger("isAttacking");
                             }
                         }
                     }
