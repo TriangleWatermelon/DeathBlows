@@ -15,17 +15,25 @@ public class PlayerUI : MonoBehaviour
     List<HeartContainer> heartContainers = new List<HeartContainer>();
     Vector3 heartContainerOffset;
 
+    [BoxGroup("Abilities")]
+    [SerializeField] Slider dashSlider;
+
+    [BoxGroup("Damage Effects")]
+    [SerializeField] GameObject impactObj;
+
     private void Awake()
     {
         float sizeX = heartObj.GetComponent<RectTransform>().sizeDelta.x;
         heartContainerOffset = new Vector3(sizeX + (sizeX / 2), 0, 0);
+
+        DisplayHitEffect(false);
     }
 
     /// <summary>
     /// Takes the players max health and creates the correct amount of heart containers on the canvas.
     /// </summary>
     /// <param name="_maxHealth"></param>
-    public void AdjustPlayerHealthUI(float _maxHealth)
+    public void SetPlayerHealthUI(float _maxHealth)
     {;
         for(int i = 0; i < _maxHealth; i++)
         {
@@ -56,6 +64,27 @@ public class PlayerUI : MonoBehaviour
                 heart.heartContainerImage.color = goodHeartColor;
             }
         }
+    }
+
+    /// <summary>
+    /// Toggles the active state of the hit effect as well as positioning it over the player.
+    /// </summary>
+    /// <param name="isShown"></param>
+    /// <param name="screenPos"></param>
+    public void DisplayHitEffect(bool isShown, Vector3? screenPos = null)
+    {
+        if(screenPos != null)
+            impactObj.transform.position = (Vector3)screenPos;
+        impactObj.SetActive(isShown);
+    }
+
+    /// <summary>
+    /// Adjusts the value of the dash cooldown slider based on the supplied float.
+    /// </summary>
+    /// <param name="dashTime"></param>
+    public void AdjustDashTimer(float dashTime)
+    {
+        dashSlider.value = dashTime;
     }
 }
 

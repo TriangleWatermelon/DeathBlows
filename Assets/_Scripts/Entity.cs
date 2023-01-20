@@ -43,12 +43,15 @@ public class Entity : MonoBehaviour
     public Rigidbody2D rb2d { get; private set; }
     [HideInInspector]
     public Collider2D entityCollider { get; private set; }
+
     [HideInInspector]
     public bool brookEffectActive;
     [HideInInspector]
     public float brookEffectTimer;
     [HideInInspector]
     public float brookEffectDamage { get; private set; }
+    [HideInInspector]
+    public Vector3 brookEffectPosition { get; private set; }
 
     [BoxGroup("Entity Base/Movement")]
     public float moveSpeed;
@@ -160,12 +163,15 @@ public class Entity : MonoBehaviour
     //In-Progress
     public void ActivateBrookEffect(float _damage)
     {
+        // Saving the position here because the rigidbody sinks without the collider enabled.
+        brookEffectPosition = transform.position;
+        motionState = state.frozen;
+        rb2d.velocity = Vector2.zero;
+
         brookEffectDamage = _damage;
         brookEffectTimer = 0;
         brookEffectActive = true;
         entityCollider.enabled = false;
-
-        motionState = state.frozen;
 
         iceAnimator.SetTrigger($"Type {Random.Range(1, 3)}");
         Debug.Log("Activating Brook effect");

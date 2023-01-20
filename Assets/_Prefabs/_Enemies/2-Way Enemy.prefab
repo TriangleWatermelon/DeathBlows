@@ -5211,6 +5211,7 @@ MonoBehaviour:
   brookEffectActive: 0
   brookEffectTimer: 0
   moveSpeed: 2
+  motionState: 0
   isGrounded: 0
   groundCheck: {fileID: 6313607773965508646}
   groundLayer:

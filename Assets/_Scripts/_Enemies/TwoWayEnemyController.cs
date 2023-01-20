@@ -95,7 +95,7 @@ public class TwoWayEnemyController : Entity
                         motionState = state.pursuing;
                     break;
                 case state.frozen:
-                    rb2d.velocity = Vector2.zero;
+                    transform.position = brookEffectPosition;
                     break;
             }
 

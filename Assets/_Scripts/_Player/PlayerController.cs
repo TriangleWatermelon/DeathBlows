@@ -9,6 +9,12 @@ using Sirenix.OdinInspector;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
+    #region Game Components
+    [TitleGroup("Game Control")]
+    [BoxGroup("Game Control/Components")]
+    [SerializeField] Camera mainCamera;
+    #endregion
+
     #region Visuals
     [TitleGroup("Main")]
     [BoxGroup("Main/Visuals")]
@@ -105,7 +111,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float stunTime;
     float hitTimer;
     [BoxGroup("Control/Movement")]
-    [SerializeField] float dashTime;
+    [SerializeField] float dashCooldown;
     [BoxGroup("Control/Movement")]
     [SerializeField] float dashForce;
     Vector2 dashDir;
@@ -169,6 +175,7 @@ public class PlayerController : MonoBehaviour
         // Physics
         rb2d = GetComponent<Rigidbody2D>();
 
+        // Base Values
         health = maxHealth;
 
         // Input Stuff
@@ -185,7 +192,8 @@ public class PlayerController : MonoBehaviour
     {
         // UI Stuff
         playerUI = GetComponentInChildren<PlayerUI>();
-        playerUI.AdjustPlayerHealthUI(maxHealth);
+        playerUI.SetPlayerHealthUI(maxHealth);
+        playerUI.AdjustDashTimer(dashCooldown);
     }
 
     void Update()
@@ -199,16 +207,19 @@ public class PlayerController : MonoBehaviour
         else
         {
             hitTimer += Time.deltaTime;
+            if (hitTimer > 0.1f)
+                playerUI.DisplayHitEffect(false);
             if(hitTimer >= stunTime)
-            {
                 isHit = false;
-            }
         }
 
         if (isDashing)
         {
             dashTimer += Time.deltaTime;
-            if (dashTimer >= dashTime)
+
+            playerUI.AdjustDashTimer(dashTimer);
+
+            if (dashTimer >= dashCooldown)
                 isDashing = false;
         }
 
@@ -390,7 +401,8 @@ public class PlayerController : MonoBehaviour
 
             CheckForBrookEffect();
 
-            // Add the directional force.
+            // Add the directional force but stop any motion first to avoid crazy dash.
+            rb2d.velocity = Vector2.zero;
             rb2d.AddForce(dashDir);
 
             dashTimer = 0;
@@ -526,6 +538,7 @@ public class PlayerController : MonoBehaviour
             KnockbackPlayer();
 
             playerUI.AdjustHealth(health);
+            playerUI.DisplayHitEffect(true, mainCamera.WorldToScreenPoint(transform.position));
         }
     }
 
