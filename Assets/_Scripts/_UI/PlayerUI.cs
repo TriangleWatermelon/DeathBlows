@@ -26,6 +26,7 @@ public class PlayerUI : MonoBehaviour
     {
         float sizeX = heartObj.GetComponent<RectTransform>().rect.width;
         heartContainerOffset = new Vector3(sizeX + (sizeX / 2), 0, 0);
+        heartObj.SetActive(false);
 
         DisplayHitEffect(false);
     }
@@ -39,10 +40,11 @@ public class PlayerUI : MonoBehaviour
         for(int i = 0; i < _maxHealth; i++)
         {
             GameObject heartClone = Instantiate(heartObj, gameObject.transform);
+            heartClone.SetActive(true);
             HeartContainer heartContainer = new HeartContainer(heartClone, heartClone.GetComponent<Image>(), i);
             heartContainers.Add(heartContainer);
             if (i == 0)
-                heartContainers[i].heartContainerObj.transform.position = new Vector3(heartContainerOffset.x, Screen.height - heartContainerOffset.x, 0);
+                heartContainers[i].heartContainerObj.transform.position = new Vector3(heartContainerOffset.x, gameObject.GetComponent<Canvas>().pixelRect.height - heartContainerOffset.x, 0);
             else
                 heartContainers[i].heartContainerObj.transform.position = heartContainers[i - 1].heartContainerObj.transform.position + heartContainerOffset;
         }
