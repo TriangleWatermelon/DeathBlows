@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using System.Collections;
 
 public class PlayerUI : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class PlayerUI : MonoBehaviour
 
     private void Awake()
     {
-        float sizeX = heartObj.GetComponent<RectTransform>().sizeDelta.x;
+        float sizeX = heartObj.GetComponent<RectTransform>().rect.width;
         heartContainerOffset = new Vector3(sizeX + (sizeX / 2), 0, 0);
 
         DisplayHitEffect(false);
@@ -34,7 +35,7 @@ public class PlayerUI : MonoBehaviour
     /// </summary>
     /// <param name="_maxHealth"></param>
     public void SetPlayerHealthUI(float _maxHealth)
-    {;
+    {
         for(int i = 0; i < _maxHealth; i++)
         {
             GameObject heartClone = Instantiate(heartObj, gameObject.transform);
