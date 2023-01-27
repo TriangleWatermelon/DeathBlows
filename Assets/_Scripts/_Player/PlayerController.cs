@@ -285,69 +285,74 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnSlash()
     {
-        if (!hasAttacked)
+        if (hasAttacked)
+            return;
+
+        if (isFacingRight)
+            animator.SetTrigger("AttackRight");
+        else
+            animator.SetTrigger("AttackLeft");
+
+        if (Mathf.Abs(moveDir.x) <= 0.2f && Mathf.Abs(moveDir.y) <= 0.2f)
         {
-            if(Mathf.Abs(moveDir.x) <= 0.2f && Mathf.Abs(moveDir.y) <= 0.2f)
-            {
-                if (isFacingRight)
-                    moveDir = Vector2.right;
-                else
-                    moveDir = -Vector2.right;
-            }
-            slashPos = moveDir * (slashDistance * 0.75f);
-            slashPos = slashPos.normalized;
-
-            // Slash Sprite Position
-            attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
-
-            // Does it hit?
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(
-                transform.position + circleStartOffset,
-                attackRadius,
-                moveDir,
-                slashDistance,
-                LayerMask.NameToLayer("Boundary")
-                );
-
-            foreach (var hit in hits)
-            {
-                if (hit.collider != null)
-                {
-                    // Slash and Impact Sprite Positions
-                    Vector2 closestPoint = hit.collider.ClosestPoint(transform.position);
-                    attackObj.transform.position = closestPoint;
-                    impactObj.transform.position = closestPoint;
-                    impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
-                    impactObj.SetActive(true);
-
-                    if (hit.collider.GetComponent<Entity>() != null)
-                    {
-                        Entity enemy = hit.collider.GetComponent<Entity>();
-                        enemy.TakeDamage(damage);
-                        enemy.KnockbackEntity(moveDir);
-                        impactObj.transform.position = hit.collider.transform.position;
-                    }
-
-                    // Knockback the player on successful contact
-                    KnockbackPlayer();
-                }
-                else
-                {
-                    // Gives the player a little push forward if they don't hit anything
-                    rb2d.AddForce(moveDir * (knockbackForce * 10));
-                }
-            }
-            attackTimer = 0;
-            hasAttacked = true;
-            attackObj.SetActive(true);
-
-            // Slash Sprite Rotation
-            float x = moveDir.x;
-            float y = moveDir.y;
-            float rads = Mathf.Atan2(y, x);
-            float degrees = rads * Mathf.Rad2Deg;
-            attackObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
+            if (isFacingRight)
+                moveDir = Vector2.right;
+            else
+                moveDir = -Vector2.right;
         }
+        slashPos = moveDir * (slashDistance * 0.75f);
+        slashPos = slashPos.normalized;
+
+        // Slash Sprite Position
+        attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
+
+        // Does it hit?
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(
+            transform.position + circleStartOffset,
+            attackRadius,
+            moveDir,
+            slashDistance,
+            LayerMask.NameToLayer("Boundary")
+            );
+
+        foreach (var hit in hits)
+        {
+            if (hit.collider != null)
+            {
+                // Slash and Impact Sprite Positions
+                Vector2 closestPoint = hit.collider.ClosestPoint(transform.position);
+                attackObj.transform.position = closestPoint;
+                impactObj.transform.position = closestPoint;
+                impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
+                impactObj.SetActive(true);
+
+                if (hit.collider.GetComponent<Entity>() != null)
+                {
+                    Entity enemy = hit.collider.GetComponent<Entity>();
+                    enemy.TakeDamage(damage);
+                    enemy.KnockbackEntity(moveDir);
+                    impactObj.transform.position = hit.collider.transform.position;
+                }
+
+                // Knockback the player on successful contact
+                KnockbackPlayer();
+            }
+            else
+            {
+                // Gives the player a little push forward if they don't hit anything
+                rb2d.AddForce(moveDir * (knockbackForce * 10));
+            }
+        }
+        attackTimer = 0;
+        hasAttacked = true;
+        attackObj.SetActive(true);
+
+        // Slash Sprite Rotation
+        float x = moveDir.x;
+        float y = moveDir.y;
+        float rads = Mathf.Atan2(y, x);
+        float degrees = rads * Mathf.Rad2Deg;
+        attackObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
     }
 
 
@@ -381,33 +386,33 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnDash()
     {
-        if (!isDashing)
+        if (isDashing)
+            return;
+
+        // Set the directional force.
+        if (isGrounded)
         {
-            // Set the directional force.
-            if (isGrounded)
-            {
-                if (isFacingRight)
-                    dashDir = Vector2.right * (dashForce * 1000);
-                else
-                    dashDir = -Vector2.right * (dashForce * 1000);
-            }
+            if (isFacingRight)
+                dashDir = Vector2.right * (dashForce * 1000);
             else
-            {
-                if (isFacingRight)
-                    dashDir = new Vector2 (1, 0.1f) * (dashForce * 1000);
-                else
-                    dashDir = new Vector2(-1, 0.1f) * (dashForce * 1000);
-            }
-
-            CheckForBrookEffect();
-
-            // Add the directional force but stop any motion first to avoid crazy dash.
-            rb2d.velocity = Vector2.zero;
-            rb2d.AddForce(dashDir);
-
-            dashTimer = 0;
-            isDashing = true;
+                dashDir = -Vector2.right * (dashForce * 1000);
         }
+        else
+        {
+            if (isFacingRight)
+                dashDir = new Vector2(1, 0.1f) * (dashForce * 1000);
+            else
+                dashDir = new Vector2(-1, 0.1f) * (dashForce * 1000);
+        }
+
+        CheckForBrookEffect();
+
+        // Add the directional force but stop any motion first to avoid crazy dash.
+        rb2d.velocity = Vector2.zero;
+        rb2d.AddForce(dashDir);
+
+        dashTimer = 0;
+        isDashing = true;
     }
 
     /// <summary>
@@ -521,25 +526,25 @@ public class PlayerController : MonoBehaviour
     /// <param name="_damage"></param>
     public void TakeDamage(float _damage)
     {
-        if (!isHit)
+        if (isHit)
+            return;
+
+        hitTimer = 0;
+        isHit = true;
+        health -= _damage;
+        if (health <= 0)
         {
-            hitTimer = 0;
-            isHit = true;
-            health -= _damage;
-            if (health <= 0)
-            {
-                Die();
-                OnDeath.Invoke();
-            }
-            else
-                animator.SetTrigger("TookDamage");
-
-            // Knock the player back when they take damage
-            KnockbackPlayer();
-
-            playerUI.AdjustHealth(health);
-            playerUI.DisplayHitEffect(true, mainCamera.WorldToScreenPoint(transform.position));
+            Die();
+            OnDeath.Invoke();
         }
+        else
+            animator.SetTrigger("TookDamage");
+
+        // Knock the player back when they take damage
+        KnockbackPlayer();
+
+        playerUI.AdjustHealth(health);
+        playerUI.DisplayHitEffect(true, mainCamera.WorldToScreenPoint(transform.position));
     }
 
     /// <summary>

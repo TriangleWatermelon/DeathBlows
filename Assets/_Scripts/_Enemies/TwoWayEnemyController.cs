@@ -109,7 +109,6 @@ public class TwoWayEnemyController : Entity
                     brookEffectActive = false;
 
                     motionState = state.pursuing;
-                    Debug.Log("Damage from Brook effect has been applied");
                 }
             }
         }

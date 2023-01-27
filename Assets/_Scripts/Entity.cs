@@ -160,7 +160,11 @@ public class Entity : MonoBehaviour
         rb2d.velocity = (rb2d.velocity / 2) + (dir * knockbackForce);
     }
 
-    //In-Progress
+    /// <summary>
+    /// Holds the entity in place and plays a random varient of the freeze animation.
+    /// Holds value to apply damage later.
+    /// </summary>
+    /// <param name="_damage"></param>
     public void ActivateBrookEffect(float _damage)
     {
         // Saving the position here because the rigidbody sinks without the collider enabled.
@@ -173,7 +177,7 @@ public class Entity : MonoBehaviour
         brookEffectActive = true;
         entityCollider.enabled = false;
 
+        // Increase the max of the range for each aniation type added.
         iceAnimator.SetTrigger($"Type {Random.Range(1, 3)}");
-        Debug.Log("Activating Brook effect");
     }
 }
