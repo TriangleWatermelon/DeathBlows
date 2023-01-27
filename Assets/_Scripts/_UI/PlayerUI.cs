@@ -8,10 +8,6 @@ public class PlayerUI : MonoBehaviour
 {
     [BoxGroup("Health")]
     [SerializeField] GameObject heartObj;
-    [BoxGroup("Health")]
-    [SerializeField] Color goodHeartColor;
-    [BoxGroup("Health")]
-    [SerializeField] Color badHeartColor;
 
     List<HeartContainer> heartContainers = new List<HeartContainer>();
     Vector3 heartContainerOffset;
@@ -41,12 +37,12 @@ public class PlayerUI : MonoBehaviour
         {
             GameObject heartClone = Instantiate(heartObj, gameObject.transform);
             heartClone.SetActive(true);
-            HeartContainer heartContainer = new HeartContainer(heartClone, heartClone.GetComponent<Image>(), i);
+            HeartContainer heartContainer = new HeartContainer(heartClone, heartClone.GetComponent<Image>(), i, heartClone.GetComponent<Animator>());
             heartContainers.Add(heartContainer);
             if (i == 0)
-                heartContainers[i].heartContainerObj.transform.position = new Vector3(heartContainerOffset.x, gameObject.GetComponent<Canvas>().pixelRect.height - heartContainerOffset.x, 0);
+                heartContainers[i].heartObject.transform.position = new Vector3(heartContainerOffset.x, gameObject.GetComponent<Canvas>().pixelRect.height - heartContainerOffset.x, 0);
             else
-                heartContainers[i].heartContainerObj.transform.position = heartContainers[i - 1].heartContainerObj.transform.position + heartContainerOffset;
+                heartContainers[i].heartObject.transform.position = heartContainers[i - 1].heartObject.transform.position + heartContainerOffset;
         }
     }
 
@@ -58,13 +54,16 @@ public class PlayerUI : MonoBehaviour
     {
         foreach(HeartContainer heart in heartContainers)
         {
-            if(heart.heartContainerIndex >= _playerHealth)
+            if(heart.index >= _playerHealth)
             {
-                heart.heartContainerImage.color = badHeartColor;
+                heart.SetHeartStatus(false);
             }
             else
             {
-                heart.heartContainerImage.color = goodHeartColor;
+                if (!heart.isHealed)
+                {
+                    heart.SetHeartStatus(true);
+                }
             }
         }
     }
@@ -91,16 +90,30 @@ public class PlayerUI : MonoBehaviour
     }
 }
 
-struct HeartContainer
+class HeartContainer
 {
-    public GameObject heartContainerObj;
-    public Image heartContainerImage;
-    public int heartContainerIndex;
+    public GameObject heartObject;
+    public Image image;
+    public int index;
 
-    public HeartContainer(GameObject _Obj, Image _image, int _index)
+    public bool isHealed = true;
+    Animator animator;
+
+    public HeartContainer(GameObject _Obj, Image _image, int _index, Animator _animator)
     {
-        this.heartContainerObj = _Obj;
-        this.heartContainerImage = _image;
-        this.heartContainerIndex = _index;
+        this.heartObject = _Obj;
+        this.image = _image;
+        this.index = _index;
+        this.animator = _animator;
+    }
+
+    public void SetHeartStatus(bool _isHealed)
+    {
+        isHealed = _isHealed;
+
+        if (isHealed)
+            animator.SetTrigger("Healed");
+        else
+            animator.SetTrigger("Damaged");
     }
 }

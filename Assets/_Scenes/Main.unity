@@ -4269,16 +4269,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3877217788626249766, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
+      propertyPath: m_Name
+      value: Heart Container Background (Image)
+      objectReference: {fileID: 0}
     - target: {fileID: 5568283694883231539, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5568283694883231539, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7488214264246490075, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
-      propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8780758143471092680, guid: 307eae5f9fa194ce79397c752846b531, type: 3}

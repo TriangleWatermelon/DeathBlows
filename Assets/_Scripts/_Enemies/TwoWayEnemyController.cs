@@ -11,8 +11,6 @@ public class TwoWayEnemyController : Entity
     [SerializeField] float leapDelay;
     float attackDelay;
 
-    bool isDead = false;
-
     GameObject latestGroundObj;
     [BoxGroup("Two-Way Specific/Components")]
     [SerializeField] ParticleSystem smokeParticles;
@@ -153,23 +151,5 @@ public class TwoWayEnemyController : Entity
             else if (latestGroundObj.transform.rotation.x < 0 && !isRight)
                 FlipSprite();
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player") && !isDead)
-        {
-            collision.gameObject.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
-        }
-        else if (!collision.gameObject.CompareTag("Ground") && !isDead)
-        {
-            FlipSprite();
-        }
-    }
-
-    // This handles the edge interactions
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        FlipSprite();
     }
 }

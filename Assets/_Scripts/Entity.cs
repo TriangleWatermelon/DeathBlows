@@ -83,6 +83,7 @@ public class Entity : MonoBehaviour
     public Animator iceAnimator;
 
     public UnityEvent OnDeath;
+    public bool isDead = false;
 
     PoolController poolController;
 
@@ -91,11 +92,6 @@ public class Entity : MonoBehaviour
         poolController = FindObjectOfType<PoolController>();
         rb2d = GetComponent<Rigidbody2D>();
         entityCollider = GetComponent<Collider2D>();
-    }
-
-    private void Update()
-    {
-        
     }
 
     /// <summary>
@@ -179,5 +175,23 @@ public class Entity : MonoBehaviour
 
         // Increase the max of the range for each aniation type added.
         iceAnimator.SetTrigger($"Type {Random.Range(1, 3)}");
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && !isDead)
+        {
+            collision.gameObject.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
+        }
+        else if (!collision.gameObject.CompareTag("Ground") && !isDead)
+        {
+            FlipSprite();
+        }
+    }
+
+    // This handles the edge interactions
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        FlipSprite();
     }
 }
