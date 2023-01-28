@@ -112,8 +112,14 @@ class HeartContainer
         isHealed = _isHealed;
 
         if (isHealed)
-            animator.SetTrigger("Healed");
+        {
+            animator.SetBool("Damaged", false);
+            animator.SetBool("Healed", true);
+        }
         else
-            animator.SetTrigger("Damaged");
+        {
+            animator.SetBool("Healed", false);
+            animator.SetBool("Damaged", true);
+        }
     }
 }
