@@ -107,6 +107,10 @@ class HeartContainer
         this.animator = _animator;
     }
 
+    /// <summary>
+    /// Changes animation booleans depending on if the heart should heal or hurt.
+    /// </summary>
+    /// <param name="_isHealed"></param>
     public void SetHeartStatus(bool _isHealed)
     {
         isHealed = _isHealed;

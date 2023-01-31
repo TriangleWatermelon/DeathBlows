@@ -231,7 +231,7 @@ public class PlayerController : MonoBehaviour
             {
                 impactObj.SetActive(false);
             }
-            if(attackTimer >= 0.2f)
+            if(attackTimer >= 0.3f)
             {
                 attackObj.SetActive(false);
             }
@@ -319,10 +319,8 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.collider != null)
             {
-                // Slash and Impact Sprite Positions
-                Vector2 closestPoint = hit.collider.ClosestPoint(transform.position);
-                attackObj.transform.position = closestPoint;
-                impactObj.transform.position = closestPoint;
+                // Impact Sprite Position
+                impactObj.transform.position = hit.collider.ClosestPoint(transform.position);
                 impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
                 impactObj.SetActive(true);
 

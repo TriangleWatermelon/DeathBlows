@@ -12,11 +12,13 @@ public class Soul : MonoBehaviour
 
     private void Update()
     {
+        Vector3 direction = previousPosition - transform.position;
+
         // Use the movement direction to create a trail.
-        VFX.SetVector3("Direction", previousPosition - transform.position);
+        VFX.SetVector3("Direction", direction);
 
         // Use the movement speed to set particle speed.
-        float speed = (previousPosition - transform.position).magnitude;
+        float speed = direction.magnitude;
         VFX.SetFloat("Speed", speed);
 
         // Create a random position around the soul where new particles can be created.
