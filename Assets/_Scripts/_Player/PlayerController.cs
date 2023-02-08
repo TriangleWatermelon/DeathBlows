@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -96,6 +97,7 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Control/Movement")]
     [SerializeField] float movementSmoothing;
     Vector3 velocity = Vector3.zero;
+    float coyoteTime;
     bool isGrounded;
     bool isJumping = false;
     [BoxGroup("Control/Movement")]
@@ -133,6 +135,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float knockbackForce;
     Vector2 slashPos;
     Vector3 circleStartOffset;
+    List<RaycastHit2D> allHits = new List<RaycastHit2D>();
     #endregion
 
     #region Bubble Control
@@ -199,12 +202,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // Input & Movement
-        if (!isHit)
-        {
-            moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
-            Move(moveDir, moveSpeed);
-        }
-        else
+        moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
+        Move(moveDir, moveSpeed);
+
+        if (isHit)
         {
             hitTimer += Time.deltaTime;
             if (hitTimer > 0.1f)
@@ -212,6 +213,9 @@ public class PlayerController : MonoBehaviour
             if(hitTimer >= stunTime)
                 isHit = false;
         }
+
+        if (!isGrounded)
+            coyoteTime += Time.deltaTime;
 
         if (isDashing)
         {
@@ -231,11 +235,11 @@ public class PlayerController : MonoBehaviour
             {
                 impactObj.SetActive(false);
             }
-            if(attackTimer >= 0.3f)
+            if(attackTimer >= 0.39f)
             {
                 attackObj.SetActive(false);
             }
-            if(attackTimer >= attackCooldown)
+            if (attackTimer >= attackCooldown)
             {
                 hasAttacked = false;
             }
@@ -259,6 +263,7 @@ public class PlayerController : MonoBehaviour
             if (colliders[i].gameObject != gameObject)
             {
                 isGrounded = true;
+                coyoteTime = 0;
             }
         }
     }
@@ -285,13 +290,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnSlash()
     {
-        if (hasAttacked)
+        // Add any guards here
+        #region Guards
+        if (isHit)
             return;
 
-        if (isFacingRight)
-            animator.SetTrigger("AttackRight");
-        else
-            animator.SetTrigger("AttackLeft");
+        if (hasAttacked)
+            return;
+        #endregion
 
         if (Mathf.Abs(moveDir.x) <= 0.2f && Mathf.Abs(moveDir.y) <= 0.2f)
         {
@@ -306,8 +312,15 @@ public class PlayerController : MonoBehaviour
         // Slash Sprite Position
         attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
 
-        // Does it hit?
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(
+        // Does it hit? Doing this twice just in case the first one misses something.
+        RaycastHit2D[] hits1 = Physics2D.CircleCastAll(
+            transform.position + circleStartOffset,
+            attackRadius,
+            moveDir,
+            slashDistance,
+            LayerMask.NameToLayer("Boundary")
+            );
+        RaycastHit2D[] hits2 = Physics2D.CircleCastAll(
             transform.position + circleStartOffset,
             attackRadius,
             moveDir,
@@ -315,7 +328,14 @@ public class PlayerController : MonoBehaviour
             LayerMask.NameToLayer("Boundary")
             );
 
-        foreach (var hit in hits)
+        allHits.Clear();
+        foreach (var hit in hits1)
+            allHits.Add(hit);
+        foreach (var hit in hits2)
+            if(!allHits.Contains(hit))
+                allHits.Add(hit);
+
+        foreach (var hit in allHits)
         {
             if (hit.collider != null)
             {
@@ -332,12 +352,12 @@ public class PlayerController : MonoBehaviour
                     impactObj.transform.position = hit.collider.transform.position;
                 }
 
-                // Knockback the player on successful contact
+                // Knockback the player on successful contact.
                 KnockbackPlayer();
             }
             else
             {
-                // Gives the player a little push forward if they don't hit anything
+                // Gives the player a little push forward if they don't hit anything.
                 rb2d.AddForce(moveDir * (knockbackForce * 10));
             }
         }
@@ -351,6 +371,12 @@ public class PlayerController : MonoBehaviour
         float rads = Mathf.Atan2(y, x);
         float degrees = rads * Mathf.Rad2Deg;
         attackObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
+
+        // Player Slash Animation
+        if (isFacingRight)
+            animator.SetTrigger("AttackRight");
+        else
+            animator.SetTrigger("AttackLeft");
     }
 
 
@@ -387,7 +413,7 @@ public class PlayerController : MonoBehaviour
         if (isDashing)
             return;
 
-        // Set the directional force.
+        // Set the directional force. If the player is in the air we want to give them a slight push upward.
         if (isGrounded)
         {
             if (isFacingRight)
@@ -446,15 +472,16 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnJump()
     {
-        if (isGrounded)
-        {
-            isGrounded = false;
-            isJumping = true;
+        if (!isGrounded && coyoteTime > 0.1f)
+            return;
 
-            lastPlaceBeforeJump = transform.position;
 
-            rb2d.AddForce(new Vector2(0f, jumpHeight * 100));
-        }
+        isGrounded = false;
+        isJumping = true;
+
+        lastPlaceBeforeJump = transform.position;
+
+        rb2d.AddForce(new Vector2(0f, jumpHeight * 100));
     }
 
     /// <summary>

@@ -68,6 +68,8 @@ public class Entity : MonoBehaviour
     [BoxGroup("Entity Base/Movement")]
     [Tooltip("Whatever layer you use for the ground")]
     public LayerMask groundLayer;
+    [HideInInspector]
+    public GameObject latestGroundObj;
 
     [BoxGroup("Entity Base/Movement")]
     public float knockbackForce;
@@ -92,6 +94,19 @@ public class Entity : MonoBehaviour
         poolController = FindObjectOfType<PoolController>();
         rb2d = GetComponent<Rigidbody2D>();
         entityCollider = GetComponent<Collider2D>();
+
+        if (!isRight)
+        {
+            FlipSprite();
+            isRight = !isRight;
+        }
+
+        motionState = state.idle;
+
+        if (isRight)
+            lookDirection = Vector2.right;
+        else
+            lookDirection = -Vector2.right;
     }
 
     /// <summary>

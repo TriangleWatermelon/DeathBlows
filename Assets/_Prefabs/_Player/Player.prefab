@@ -346,8 +346,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heartObj: {fileID: 8067292386472794062}
-  goodHeartColor: {r: 0, g: 0.827451, b: 1, a: 1}
-  badHeartColor: {r: 1, g: 0.20579302, b: 0, a: 0.23529412}
   dashSlider: {fileID: 8087988465022878073}
   impactObj: {fileID: 6281455339912173192}
 --- !u!1 &2668372187912223218
@@ -549,7 +547,7 @@ GameObject:
   - component: {fileID: 2970715542354831173}
   - component: {fileID: 6469030137681607411}
   m_Layer: 5
-  m_Name: Heart Container Template (Image)_1
+  m_Name: Heart Container Background (Image)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1087,7 +1085,7 @@ MonoBehaviour:
   stunTime: 0.6
   dashCooldown: 5
   dashForce: 3
-  slashDistance: 2
+  slashDistance: 2.1
   attackRadius: 1
   attackCooldown: 0.4
   knockbackForce: 12
