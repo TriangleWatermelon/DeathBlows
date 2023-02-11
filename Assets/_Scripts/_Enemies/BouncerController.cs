@@ -10,6 +10,9 @@ public class BouncerController : Entity
     float attackTimer;
     [BoxGroup("Bouncer/Attacking")]
     [SerializeField] float attackSpeed;
+    [BoxGroup("Bouncer/Attacking")]
+    [SerializeField] float attackWaitTime;
+    float waitTimer;
 
     [BoxGroup("Bouncer/Behavior")]
     [SerializeField] float fallSpeed;
@@ -19,8 +22,8 @@ public class BouncerController : Entity
 
     Vector3 directionToPlayer;
 
-    Vector2 risingDirectionRight = new Vector2(0.25f, 1);
-    Vector2 risingDirectionLeft = new Vector2(-0.25f, 1);
+    Vector2 risingDirectionRight = new Vector2(0.3f, 1);
+    Vector2 risingDirectionLeft = new Vector2(-0.3f, 1);
 
     GameObject playerObj;
     bool playerPositionSet = false;
@@ -37,13 +40,12 @@ public class BouncerController : Entity
         switch (motionState)
         {
             case state.idle:
-                //bodyAnimator
-
                 RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance);
                 if (pHit.collider != null)
                 {
                     if (pHit.collider.gameObject.CompareTag("Player"))
                     {
+                        AdjustGravity(0);
                         motionState = state.pursuing;
                         playerObj = pHit.collider.gameObject;
                     }
@@ -59,7 +61,10 @@ public class BouncerController : Entity
 
                     risingTimer += Time.deltaTime;
                     if (risingTimer >= risingTimeMax)
+                    {
                         motionState = state.attacking;
+                        AdjustGravity(1);
+                    }
                 }
                 else
                 {
@@ -80,6 +85,21 @@ public class BouncerController : Entity
                 {
                     SetAttackPosition();
                     transform.position += directionToPlayer * (attackSpeed / 1000);
+                    RaycastHit2D dHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.down, 1, ~groundLayer);
+                    RaycastHit2D lHit = Physics2D.Raycast(groundCheck.transform.position, -Vector2.right, 1, ~groundLayer);
+                    RaycastHit2D rHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.right, 1, ~groundLayer);
+                    if (dHit || lHit || rHit)
+                        rb2d.velocity = Vector2.zero;
+                }
+                else
+                    rb2d.velocity = Vector2.zero;
+                break;
+            case state.waiting:
+                waitTimer += Time.deltaTime;
+                if (waitTimer >= attackWaitTime)
+                {
+                    AdjustGravity(0);
+                    motionState = state.pursuing;
                 }
                 break;
             case state.frozen:
@@ -103,15 +123,36 @@ public class BouncerController : Entity
 
     private void SetAttackPosition()
     {
-        if (!playerPositionSet)
-        {
-            playerPositionSet = true;
-            directionToPlayer = (playerObj.transform.position - transform.position).normalized;
-        }
+        if (playerPositionSet)
+            return;
+
+        playerPositionSet = true;
+        directionToPlayer = (playerObj.transform.position - transform.position).normalized;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void AdjustGravity(float _val) => rb2d.gravityScale = _val;
+
+    private void ResetAttackStates()
     {
-        motionState = state.pursuing;
+        playerPositionSet = false;
+        AdjustGravity(1);
+        attackTimer = 0;
+        waitTimer = 0;
+        risingTimer = 0;
+    }
+
+    private new void OnCollisionEnter2D(Collision2D collision)
+    {
+        switch (motionState)
+        {
+            case state.pursuing:
+                motionState = state.attacking;
+                AdjustGravity(1);
+                break;
+            case state.attacking:
+                ResetAttackStates();
+                motionState = state.waiting;
+                break;
+        }
     }
 }

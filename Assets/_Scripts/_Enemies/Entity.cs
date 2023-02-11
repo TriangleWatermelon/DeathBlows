@@ -8,12 +8,13 @@ public class Entity : MonoBehaviour
 {
     public enum state
     {
-        idle = 0,
-        walking = 1,
-        pursuing = 2,
-        attacking = 3,
-        frozen = 4,
-        dying = 5
+        idle,
+        walking,
+        pursuing,
+        attacking,
+        waiting,
+        frozen,
+        dying
     }
 
     [TitleGroup("Entity Base")]
