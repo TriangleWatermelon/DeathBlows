@@ -116,7 +116,7 @@ public class BouncerController : Entity
                 TakeDamage(brookEffectDamage);
                 brookEffectActive = false;
 
-                motionState = state.pursuing;
+                motionState = state.idle;
             }
         }
     }
@@ -141,8 +141,10 @@ public class BouncerController : Entity
         risingTimer = 0;
     }
 
-    private new void OnCollisionEnter2D(Collision2D collision)
+    public override void OnCollisionEnter2D(Collision2D collision)
     {
+        base.OnCollisionEnter2D(collision); // Make sure we keep the base functionality.
+
         switch (motionState)
         {
             case state.pursuing:

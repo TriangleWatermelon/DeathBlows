@@ -139,7 +139,7 @@ public class Entity : MonoBehaviour
     /// <summary>
     /// Flips the entity sprite
     /// </summary>
-    public void FlipSprite()
+    protected void FlipSprite()
     {
         isRight = !isRight;
 
@@ -157,7 +157,7 @@ public class Entity : MonoBehaviour
     /// Moves the entity in the provided direction
     /// </summary>
     /// <param name="moveDir"></param>
-    public void Move(Vector2 moveDir)
+    protected void Move(Vector2 moveDir)
     {
         if (isGrounded)
             rb2d.velocity = moveDir * moveSpeed;
@@ -193,7 +193,7 @@ public class Entity : MonoBehaviour
         iceAnimator.SetTrigger($"Type {Random.Range(1, 3)}");
     }
 
-    public void OnCollisionEnter2D(Collision2D collision)
+    public virtual void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player") && !isDead)
         {
