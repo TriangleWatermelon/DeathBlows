@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1467760033}
   - component: {fileID: 1467760031}
   - component: {fileID: 1467760032}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BodyParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   - component: {fileID: 6086849330430962959}
   - component: {fileID: 7617363983573596480}
   - component: {fileID: 3387132027221726040}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HealingParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -716,9 +716,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8926062307353608119}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GroundCheck
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -936,7 +936,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5619951679723241090}
   - component: {fileID: 4827206734947245100}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Silhouette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1085,7 +1085,10 @@ MonoBehaviour:
   stunTime: 0.6
   dashCooldown: 5
   dashForce: 3
-  slashDistance: 2.1
+  attackLayerMask:
+    serializedVersion: 2
+    m_Bits: 2046
+  slashDistance: 1.5
   attackRadius: 2
   attackCooldown: 0.4
   knockbackForce: 12
@@ -1160,9 +1163,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8780758144030244495}
   - component: {fileID: 8780758144030244488}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player Sprite
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

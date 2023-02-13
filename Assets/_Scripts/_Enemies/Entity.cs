@@ -85,6 +85,9 @@ public class Entity : MonoBehaviour
     [BoxGroup("Entity Base/Visual")]
     public Animator iceAnimator;
 
+    [BoxGroup("Entity Base/Attack")]
+    public LayerMask attackLayerMask;
+
     public UnityEvent OnDeath;
     [HideInInspector]
     public bool isDead = false;

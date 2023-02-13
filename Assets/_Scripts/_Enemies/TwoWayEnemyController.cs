@@ -28,7 +28,7 @@ public class TwoWayEnemyController : Entity
             case state.idle:
                 bodyAnimator.SetBool("isMoving", false);
 
-                RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance);
+                RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance, ~attackLayerMask);
                 if (pHit.collider != null)
                 {
                     if (pHit.collider.gameObject.CompareTag("Player"))
@@ -46,7 +46,7 @@ public class TwoWayEnemyController : Entity
                     else
                         Move(-Vector2.right);
 
-                    RaycastHit2D aHit = Physics2D.Raycast(transform.position, lookDirection, attackDistance);
+                    RaycastHit2D aHit = Physics2D.Raycast(transform.position, lookDirection, attackDistance, ~attackLayerMask);
                     if (aHit.collider != null)
                     {
                         if (aHit.collider.gameObject.CompareTag("Player"))

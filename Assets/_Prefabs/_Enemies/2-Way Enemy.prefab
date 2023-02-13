@@ -5217,11 +5217,15 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  latestGroundObj: {fileID: 0}
   knockbackForce: 6
   lookDirection: {x: 0, y: 0}
   spriteParentObj: {fileID: 7316840330261730250}
   bodyAnimator: {fileID: 872135647298913497}
   iceAnimator: {fileID: 7529610246519285943}
+  attackLayerMask:
+    serializedVersion: 2
+    m_Bits: 1152
   OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -5249,6 +5253,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  isDead: 0
   leapDistance: 3
   leapDelay: 0.3
   smokeParticles: {fileID: 2391401374170372558}

@@ -123,6 +123,8 @@ public class PlayerController : MonoBehaviour
 
     #region Combat Control
     [BoxGroup("Control/Combat")]
+    [SerializeField] LayerMask attackLayerMask;
+    [BoxGroup("Control/Combat")]
     [SerializeField] float slashDistance;
     [BoxGroup("Control/Combat")]
     [SerializeField] float attackRadius;
@@ -135,7 +137,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float knockbackForce;
     Vector2 slashPos;
     Vector3 circleStartOffset;
-    List<RaycastHit2D> allHits = new List<RaycastHit2D>();
     #endregion
 
     #region Bubble Control
@@ -306,36 +307,21 @@ public class PlayerController : MonoBehaviour
             else
                 moveDir = -Vector2.right;
         }
-        slashPos = moveDir * (slashDistance * 0.75f);
-        slashPos = slashPos.normalized;
+        slashPos = moveDir * slashDistance;
 
         // Slash Sprite Position
-        attackObj.transform.localPosition = new Vector2(slashPos.x, slashPos.y);
+        attackObj.transform.localPosition = slashPos;
 
         // Does it hit? Doing this twice just in case the first one misses something.
-        RaycastHit2D[] hits1 = Physics2D.CircleCastAll(
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(
             transform.position + circleStartOffset,
             attackRadius,
             moveDir,
             slashDistance,
-            LayerMask.NameToLayer("Boundary")
-            );
-        RaycastHit2D[] hits2 = Physics2D.CircleCastAll(
-            transform.position + circleStartOffset,
-            attackRadius,
-            moveDir,
-            slashDistance,
-            LayerMask.NameToLayer("Boundary")
+            ~attackLayerMask
             );
 
-        allHits.Clear();
-        foreach (var hit in hits1)
-            allHits.Add(hit);
-        foreach (var hit in hits2)
-            if(!allHits.Contains(hit))
-                allHits.Add(hit);
-
-        foreach (var hit in allHits)
+        foreach (var hit in hits)
         {
             if (hit.collider != null)
             {
@@ -447,7 +433,7 @@ public class PlayerController : MonoBehaviour
             attackRadius,
             dashDir,
             5,
-            LayerMask.NameToLayer("Boundary")
+            ~attackLayerMask
             );
 
         foreach (var hit in hits)

@@ -15,6 +15,7 @@ public class BouncerController : Entity
     float waitTimer = 0;
     [BoxGroup("Bouncer/Attacking")]
     [SerializeField] GameObject attackObj;
+    Collider2D attackCollider;
 
     [BoxGroup("Bouncer/Behavior")]
     [SerializeField] float fallSpeed;
@@ -23,6 +24,10 @@ public class BouncerController : Entity
     float risingTimer = 0;
 
     Vector3 directionToPlayer;
+    Vector3 lastAttackObjPosition;
+    Vector3 lastAttackObjRotation;
+    Vector3 risingAttackObjRotation = new Vector3(0, 0, -90);
+    float risingAttackRotation;
 
     GameObject playerObj;
     bool playerPositionSet = false;
@@ -30,6 +35,7 @@ public class BouncerController : Entity
     private void Start()
     {
         playerObj = FindObjectOfType<PlayerController>().gameObject;
+        attackCollider = attackObj.GetComponent<Collider2D>();
     }
 
     private void Update()
@@ -44,12 +50,15 @@ public class BouncerController : Entity
         switch (motionState)
         {
             case state.idle:
-                RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance);
+                RaycastHit2D pHit = Physics2D.Raycast(transform.position, lookDirection, pursuingDistance, ~attackLayerMask);
                 if (pHit.collider != null)
                 {
                     if (pHit.collider.gameObject.CompareTag("Player"))
                     {
                         AdjustGravity(0);
+                        lastAttackObjPosition = attackObj.transform.position;
+                        lastAttackObjRotation = attackObj.transform.localEulerAngles;
+                        attackCollider.enabled = false;
                         motionState = state.pursuing;
                     }
                 }
@@ -62,6 +71,7 @@ public class BouncerController : Entity
                     risingTimer += Time.deltaTime;
                     if (risingTimer >= risingTimeMax)
                     {
+                        attackCollider.enabled = true;
                         motionState = state.attacking;
                         AdjustGravity(1);
                     }
@@ -72,6 +82,11 @@ public class BouncerController : Entity
                     if (hitTimer >= stunTime)
                         isHit = false;
                 }
+
+                attackObj.transform.position = Vector3.Lerp(lastAttackObjPosition,
+                    new Vector3(transform.position.x, transform.position.y - 0.8f), risingTimer / risingTimeMax);
+                float zAngle = Mathf.SmoothDampAngle(attackObj.transform.eulerAngles.z, -90, ref risingAttackRotation, risingTimeMax / 2.5f);
+                attackObj.transform.rotation = Quaternion.Euler(0, 0, zAngle);
                 break;
             case state.attacking:
                 attackTimer += Time.deltaTime;
@@ -95,6 +110,9 @@ public class BouncerController : Entity
                 if (waitTimer >= attackWaitTime)
                 {
                     AdjustGravity(0);
+                    lastAttackObjPosition = attackObj.transform.position;
+                    lastAttackObjRotation = attackObj.transform.localEulerAngles;
+                    attackCollider.enabled = false;
                     motionState = state.pursuing;
                 }
                 break;
@@ -125,7 +143,7 @@ public class BouncerController : Entity
         playerPositionSet = true;
         directionToPlayer = (playerObj.transform.position - transform.position).normalized;
 
-        attackObj.transform.localPosition = new Vector2(directionToPlayer.x / 2, directionToPlayer.y / 2);
+        attackObj.transform.localPosition = directionToPlayer / 1.2f;
 
         attackObj.transform.localEulerAngles = new Vector3(0, 0, MathHelper.FindDegreesForRotation(directionToPlayer));
 
@@ -155,7 +173,7 @@ public class BouncerController : Entity
 
     public override void OnCollisionEnter2D(Collision2D collision)
     {
-        base.OnCollisionEnter2D(collision); // Make sure we keep the base functionality.
+        base.OnCollisionEnter2D(collision);
 
         switch (motionState)
         {
