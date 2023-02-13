@@ -78,20 +78,16 @@ public class TwoWayEnemyController : Entity
                 break;
             case state.frozen:
                 transform.position = brookEffectPosition;
+                brookEffectTimer += Time.deltaTime;
+                if (brookEffectTimer >= 1)
+                {
+                    entityCollider.enabled = true;
+                    TakeDamage(brookEffectDamage);
+                    brookEffectActive = false;
+
+                    motionState = state.pursuing;
+                }
                 break;
-        }
-
-        if (brookEffectActive)
-        {
-            brookEffectTimer += Time.deltaTime;
-            if (brookEffectTimer >= 1)
-            {
-                entityCollider.enabled = true;
-                TakeDamage(brookEffectDamage);
-                brookEffectActive = false;
-
-                motionState = state.pursuing;
-            }
         }
     }
 

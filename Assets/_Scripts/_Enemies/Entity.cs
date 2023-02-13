@@ -190,7 +190,7 @@ public class Entity : MonoBehaviour
     /// Holds value to apply damage later.
     /// </summary>
     /// <param name="_damage"></param>
-    public void ActivateBrookEffect(float _damage)
+    public virtual void ActivateBrookEffect(float _damage)
     {
         // Saving the position here because the rigidbody sinks without the collider enabled.
         brookEffectPosition = transform.position;

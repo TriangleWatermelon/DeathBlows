@@ -248,12 +248,11 @@ MonoBehaviour:
       m_Calls: []
   isDead: 0
   attackDelay: 0.5
-  attackSpeed: 40
+  attackSpeed: 50
   attackWaitTime: 2
   attackObj: {fileID: 714660565}
   fallSpeed: 5
   risingTimeMax: 1.5
-  VFX: []
 --- !u!58 &3846491006615243044
 CircleCollider2D:
   m_ObjectHideFlags: 0

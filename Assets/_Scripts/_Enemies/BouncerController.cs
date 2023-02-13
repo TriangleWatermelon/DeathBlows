@@ -118,20 +118,16 @@ public class BouncerController : Entity
                 break;
             case state.frozen:
                 transform.position = brookEffectPosition;
+                brookEffectTimer += Time.deltaTime;
+                if (brookEffectTimer >= 1)
+                {
+                    entityCollider.enabled = true;
+                    TakeDamage(brookEffectDamage);
+                    brookEffectActive = false;
+
+                    motionState = state.pursuing;
+                }
                 break;
-        }
-
-        if (brookEffectActive)
-        {
-            brookEffectTimer += Time.deltaTime;
-            if (brookEffectTimer >= 1)
-            {
-                entityCollider.enabled = true;
-                TakeDamage(brookEffectDamage);
-                brookEffectActive = false;
-
-                motionState = state.idle;
-            }
         }
     }
 
@@ -169,6 +165,13 @@ public class BouncerController : Entity
         base.TakeDamage(_damage);
         if (motionState == state.pursuing)
             risingTimer = risingTimeMax;
+    }
+
+    public override void ActivateBrookEffect(float _damage)
+    {
+        base.ActivateBrookEffect(_damage);
+
+        entityCollider.enabled = false;
     }
 
     public override void OnCollisionEnter2D(Collision2D collision)
