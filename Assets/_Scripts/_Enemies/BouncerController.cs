@@ -13,6 +13,8 @@ public class BouncerController : Entity
     [BoxGroup("Bouncer/Attacking")]
     [SerializeField] float attackWaitTime;
     float waitTimer = 0;
+    [BoxGroup("Bouncer/Attacking")]
+    [SerializeField] GameObject attackObj;
 
     [BoxGroup("Bouncer/Behavior")]
     [SerializeField] float fallSpeed;
@@ -21,9 +23,6 @@ public class BouncerController : Entity
     float risingTimer = 0;
 
     Vector3 directionToPlayer;
-
-    Vector2 risingDirectionRight = new Vector2(0.3f, 1);
-    Vector2 risingDirectionLeft = new Vector2(-0.3f, 1);
 
     GameObject playerObj;
     bool playerPositionSet = false;
@@ -126,6 +125,10 @@ public class BouncerController : Entity
         playerPositionSet = true;
         directionToPlayer = (playerObj.transform.position - transform.position).normalized;
 
+        attackObj.transform.localPosition = new Vector2(directionToPlayer.x / 2, directionToPlayer.y / 2);
+
+        attackObj.transform.localEulerAngles = new Vector3(0, 0, MathHelper.FindDegreesForRotation(directionToPlayer));
+
         if (directionToPlayer.x > 0 && !isRight)
             FlipSprite();
         else if (directionToPlayer.x < 0 && isRight)
@@ -148,8 +151,6 @@ public class BouncerController : Entity
         base.TakeDamage(_damage);
         if (motionState == state.pursuing)
             risingTimer = risingTimeMax;
-        else
-            FlipSprite();
     }
 
     public override void OnCollisionEnter2D(Collision2D collision)

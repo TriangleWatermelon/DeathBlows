@@ -366,11 +366,7 @@ public class PlayerController : MonoBehaviour
         attackObj.SetActive(true);
 
         // Slash Sprite Rotation
-        float x = moveDir.x;
-        float y = moveDir.y;
-        float rads = Mathf.Atan2(y, x);
-        float degrees = rads * Mathf.Rad2Deg;
-        attackObj.transform.localEulerAngles = new Vector3(0, 0, degrees);
+        attackObj.transform.localEulerAngles = new Vector3(0, 0, MathHelper.FindDegreesForRotation(moveDir));
 
         // Player Slash Animation
         if (isFacingRight)

@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 714660565}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.099998474, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3846491007061620334}
-  m_RootOrder: 0
+  m_Father: {fileID: 3846491006615243035}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &714660567
 SpriteRenderer:
@@ -113,7 +113,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3846491006615243035}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3846491006615243047
 GameObject:
@@ -147,6 +147,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3846491007061620334}
+  - {fileID: 714660566}
   - {fileID: 3846491006264216313}
   - {fileID: 3377316524770146267}
   m_Father: {fileID: 0}
@@ -215,6 +216,7 @@ MonoBehaviour:
   attackDelay: 0.5
   attackSpeed: 40
   attackWaitTime: 2
+  attackObj: {fileID: 714660565}
   fallSpeed: 5
   risingTimeMax: 1.5
 --- !u!58 &3846491006615243044
@@ -262,8 +264,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 714660566}
+  m_Children: []
   m_Father: {fileID: 3846491006615243035}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -348,7 +349,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1999554584075514278, guid: 40d62d122d43a440f8382cdd92df01d5, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1999554584075514278, guid: 40d62d122d43a440f8382cdd92df01d5, type: 3}
       propertyPath: m_LocalPosition.x

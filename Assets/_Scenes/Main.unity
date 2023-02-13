@@ -4391,6 +4391,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &714660565 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 714660565, guid: 8dd762e0119bb4152bb74a89651d065b, type: 3}
+  m_PrefabInstance: {fileID: 3846491005216629370}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &775561486
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5488,6 +5493,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3846491006615243045, guid: 8dd762e0119bb4152bb74a89651d065b, type: 3}
+      propertyPath: attackObj
+      value: 
+      objectReference: {fileID: 714660565}
     - target: {fileID: 3846491006615243047, guid: 8dd762e0119bb4152bb74a89651d065b, type: 3}
       propertyPath: m_Name
       value: Bouncer
