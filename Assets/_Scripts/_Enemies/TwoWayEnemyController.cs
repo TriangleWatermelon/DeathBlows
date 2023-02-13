@@ -67,10 +67,7 @@ public class TwoWayEnemyController : Entity
                         isHit = false;
                 }
 
-                if (rb2d.velocity.x > 0 && !isRight)
-                    FlipSprite();
-                if (rb2d.velocity.x < 0 && isRight)
-                    FlipSprite();
+                CheckSpriteDirection();
                 break;
             case state.attacking:
                 attackDelay += Time.deltaTime;

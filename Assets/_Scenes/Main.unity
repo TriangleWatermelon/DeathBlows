@@ -5761,10 +5761,6 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 181796720}
-    - target: {fileID: 8780758143471092681, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
-      propertyPath: attackRadius
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8780758143471092687, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
       propertyPath: m_Name
       value: Player

@@ -1086,7 +1086,7 @@ MonoBehaviour:
   dashCooldown: 5
   dashForce: 3
   slashDistance: 2.1
-  attackRadius: 1
+  attackRadius: 2
   attackCooldown: 0.4
   knockbackForce: 12
   isBubbling: 0

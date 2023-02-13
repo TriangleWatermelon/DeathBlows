@@ -7,18 +7,18 @@ public class BouncerController : Entity
     [TitleGroup("Bouncer")]
     [BoxGroup("Bouncer/Attacking")]
     [SerializeField] float attackDelay;
-    float attackTimer;
+    float attackTimer = 0;
     [BoxGroup("Bouncer/Attacking")]
     [SerializeField] float attackSpeed;
     [BoxGroup("Bouncer/Attacking")]
     [SerializeField] float attackWaitTime;
-    float waitTimer;
+    float waitTimer = 0;
 
     [BoxGroup("Bouncer/Behavior")]
     [SerializeField] float fallSpeed;
     [BoxGroup("Bouncer/Behavior")]
     [SerializeField] float risingTimeMax;
-    float risingTimer;
+    float risingTimer = 0;
 
     Vector3 directionToPlayer;
 
@@ -27,6 +27,11 @@ public class BouncerController : Entity
 
     GameObject playerObj;
     bool playerPositionSet = false;
+
+    private void Start()
+    {
+        playerObj = FindObjectOfType<PlayerController>().gameObject;
+    }
 
     private void Update()
     {
@@ -47,17 +52,13 @@ public class BouncerController : Entity
                     {
                         AdjustGravity(0);
                         motionState = state.pursuing;
-                        playerObj = pHit.collider.gameObject;
                     }
                 }
                 break;
             case state.pursuing:
                 if (!isHit)
                 {
-                    if (isRight)
-                        transform.position += (Vector3)risingDirectionRight * (moveSpeed / 1000);
-                    else
-                        transform.position += (Vector3)risingDirectionLeft * (moveSpeed / 1000);
+                    rb2d.velocity = Vector3.up * moveSpeed;
 
                     risingTimer += Time.deltaTime;
                     if (risingTimer >= risingTimeMax)
@@ -68,16 +69,10 @@ public class BouncerController : Entity
                 }
                 else
                 {
-                    transform.position -= Vector3.down * (fallSpeed / 1000);
                     hitTimer += Time.deltaTime;
                     if (hitTimer >= stunTime)
                         isHit = false;
                 }
-
-                if (rb2d.velocity.x > 0 && !isRight)
-                    FlipSprite();
-                if (rb2d.velocity.x < 0 && isRight)
-                    FlipSprite();
                 break;
             case state.attacking:
                 attackTimer += Time.deltaTime;
@@ -85,14 +80,16 @@ public class BouncerController : Entity
                 {
                     SetAttackPosition();
                     transform.position += directionToPlayer * (attackSpeed / 1000);
-                    RaycastHit2D dHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.down, 1, ~groundLayer);
-                    RaycastHit2D lHit = Physics2D.Raycast(groundCheck.transform.position, -Vector2.right, 1, ~groundLayer);
-                    RaycastHit2D rHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.right, 1, ~groundLayer);
+                    RaycastHit2D dHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.down, 10, ~groundLayer);
+                    RaycastHit2D lHit = Physics2D.Raycast(groundCheck.transform.position, -Vector2.right, 10, ~groundLayer);
+                    RaycastHit2D rHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.right, 10, ~groundLayer);
                     if (dHit || lHit || rHit)
                         rb2d.velocity = Vector2.zero;
                 }
                 else
+                {
                     rb2d.velocity = Vector2.zero;
+                }
                 break;
             case state.waiting:
                 waitTimer += Time.deltaTime;
@@ -128,6 +125,11 @@ public class BouncerController : Entity
 
         playerPositionSet = true;
         directionToPlayer = (playerObj.transform.position - transform.position).normalized;
+
+        if (directionToPlayer.x > 0 && !isRight)
+            FlipSprite();
+        else if (directionToPlayer.x < 0 && isRight)
+            FlipSprite();
     }
 
     private void AdjustGravity(float _val) => rb2d.gravityScale = _val;
@@ -139,6 +141,15 @@ public class BouncerController : Entity
         attackTimer = 0;
         waitTimer = 0;
         risingTimer = 0;
+    }
+
+    public override void TakeDamage(float _damage)
+    {
+        base.TakeDamage(_damage);
+        if (motionState == state.pursuing)
+            risingTimer = risingTimeMax;
+        else
+            FlipSprite();
     }
 
     public override void OnCollisionEnter2D(Collision2D collision)

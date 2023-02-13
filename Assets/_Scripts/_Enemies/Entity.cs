@@ -86,6 +86,7 @@ public class Entity : MonoBehaviour
     public Animator iceAnimator;
 
     public UnityEvent OnDeath;
+    [HideInInspector]
     public bool isDead = false;
 
     PoolController poolController;
@@ -116,14 +117,15 @@ public class Entity : MonoBehaviour
     /// Invokes death if health is less than 0 after applying damage.
     /// </summary>
     /// <param name="_damage"></param>
-    public void TakeDamage(float _damage)
+    public virtual void TakeDamage(float _damage)
     {
         health -= _damage;
         hitTimer = 0;
         isHit = true;
         bodyAnimator.SetTrigger("TookDamage");
-        if(health <= 0)
+        if (health <= 0)
         {
+            motionState = state.dying;
             OnDeath.Invoke();
             bodyAnimator.SetBool("isDead", true);
             EjectSoul();
@@ -134,6 +136,14 @@ public class Entity : MonoBehaviour
     {
         GameObject soul = poolController.PullFromPool(transform.position);
         soul.GetComponent<SuckToPlayer>().Activate();
+    }
+
+    protected void CheckSpriteDirection()
+    {
+        if (rb2d.velocity.x > 0 && !isRight)
+            FlipSprite();
+        if (rb2d.velocity.x < 0 && isRight)
+            FlipSprite();
     }
 
     /// <summary>
