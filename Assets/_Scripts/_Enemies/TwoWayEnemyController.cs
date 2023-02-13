@@ -108,12 +108,9 @@ public class TwoWayEnemyController : Entity
         }
     }
 
-    public void Die()
+    protected override void Die()
     {
-        if (isDead)
-            return;
-
-        isDead = true;
+        base.Die();
 
         // Stop physics and movement
         this.GetComponent<Collider2D>().enabled = false;

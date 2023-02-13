@@ -245,11 +245,14 @@ public class PlayerController : MonoBehaviour
                 hasAttacked = false;
             }
         }
-
-        if(Input.GetKeyDown(KeyCode.Equals))
+        #region Debug Controls
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Equals))
         {
             Heal(1);
         }
+#endif
+        #endregion
     }
 
     void FixedUpdate()

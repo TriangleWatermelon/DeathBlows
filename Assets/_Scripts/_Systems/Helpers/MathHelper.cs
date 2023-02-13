@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MathHelper : MonoBehaviour
+public class MathHelper
 {
     /// <summary>
     /// Finds the degrees of rotation for a sprite based on a Vector2.

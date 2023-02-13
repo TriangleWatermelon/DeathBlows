@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7089632017942743521}
   m_Layer: 10
   m_Name: Stabby
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,9 +124,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3846491006264216313}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: GroundCheck
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -385,7 +385,7 @@ GameObject:
   - component: {fileID: 5204247204554001156}
   - component: {fileID: 2997300415031043995}
   - component: {fileID: 6497846105357583921}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Negative
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 5226155847157528272}
   - component: {fileID: 7541442108157486032}
   - component: {fileID: 7987642327597315165}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Positive
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -132,6 +132,7 @@ public class Entity : MonoBehaviour
             OnDeath.Invoke();
             bodyAnimator.SetBool("isDead", true);
             EjectSoul();
+            Die();
         }
     }
 
@@ -222,5 +223,13 @@ public class Entity : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D collision)
     {
         FlipSprite();
+    }
+
+    protected virtual void Die()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
     }
 }
