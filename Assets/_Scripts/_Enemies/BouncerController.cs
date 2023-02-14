@@ -73,8 +73,6 @@ public class BouncerController : Entity
                     motionState = state.attacking;
                     AdjustGravity(1);
                 }
-                if (isHit)
-                    motionState = state.waiting;
 
                 attackObj.transform.position = Vector3.Lerp(lastAttackObjPosition,
                     new Vector3(transform.position.x, transform.position.y - 0.8f), risingTimer / risingTimeMax);
@@ -86,14 +84,6 @@ public class BouncerController : Entity
                 if (attackTimer > attackDelay)
                 {
                     SetAttackPosition();
-                    RaycastHit2D dHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.down, 10, ~groundLayer);
-                    RaycastHit2D lHit = Physics2D.Raycast(groundCheck.transform.position, -Vector2.right, 10, ~groundLayer);
-                    RaycastHit2D rHit = Physics2D.Raycast(groundCheck.transform.position, Vector2.right, 10, ~groundLayer);
-                    if (dHit || lHit || rHit)
-                    {
-                        rb2d.velocity = Vector2.zero;
-                        motionState = state.waiting;
-                    }
                     transform.position += directionToPlayer * (attackSpeed / 1000);
                 }
                 else
@@ -121,6 +111,7 @@ public class BouncerController : Entity
                     TakeDamage(brookEffectDamage);
                     brookEffectActive = false;
 
+                    risingTimer = 0;
                     motionState = state.pursuing;
                 }
                 break;

@@ -248,9 +248,9 @@ public class PlayerController : MonoBehaviour
         #region Debug Controls
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Equals))
-        {
             Heal(1);
-        }
+        if (Input.GetKeyDown(KeyCode.R))
+            SceneController.ReloadCurrentScene();
 #endif
         #endregion
     }
@@ -433,7 +433,7 @@ public class PlayerController : MonoBehaviour
         // Are there enemies in my way?
         RaycastHit2D[] hits = Physics2D.CircleCastAll(
             transform.position + circleStartOffset,
-            attackRadius,
+            2,
             dashDir,
             5,
             ~attackLayerMask
@@ -459,7 +459,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!isGrounded && coyoteTime > 0.1f)
             return;
-
 
         isGrounded = false;
         isJumping = true;
@@ -562,7 +561,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void KnockbackPlayer()
     {
-        rb2d.velocity = (rb2d.velocity / 2) + (-moveDir * knockbackForce);
+        rb2d.velocity = Vector2.zero;
+        rb2d.velocity = -moveDir * knockbackForce;
     }
 
     /// <summary>

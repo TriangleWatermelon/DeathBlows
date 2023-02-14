@@ -5488,6 +5488,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3846491006615243045, guid: 8dd762e0119bb4152bb74a89651d065b, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 1032
+      objectReference: {fileID: 0}
     - target: {fileID: 3846491006615243047, guid: 8dd762e0119bb4152bb74a89651d065b, type: 3}
       propertyPath: m_Name
       value: Bouncer
