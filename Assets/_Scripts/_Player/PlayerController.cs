@@ -307,6 +307,8 @@ public class PlayerController : MonoBehaviour
                 moveDir = Vector2.right;
             else
                 moveDir = -Vector2.right;
+
+            rb2d.AddForce(moveDir * (knockbackForce * 10));
         }
         slashPos = moveDir * slashDistance;
 
@@ -341,11 +343,6 @@ public class PlayerController : MonoBehaviour
 
                 // Knockback the player on successful contact.
                 KnockbackPlayer();
-            }
-            else
-            {
-                // Gives the player a little push forward if they don't hit anything.
-                rb2d.AddForce(moveDir * (knockbackForce * 10));
             }
         }
         attackTimer = 0;

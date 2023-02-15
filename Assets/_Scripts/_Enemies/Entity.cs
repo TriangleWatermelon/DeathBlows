@@ -88,6 +88,9 @@ public class Entity : MonoBehaviour
     [BoxGroup("Entity Base/Attack")]
     public LayerMask attackLayerMask;
 
+    [BoxGroup("Entity Base/Souls")]
+    public int soulsToDrop;
+
     public UnityEvent OnDeath;
     [HideInInspector]
     public bool isDead = false;
@@ -122,6 +125,9 @@ public class Entity : MonoBehaviour
     /// <param name="_damage"></param>
     public virtual void TakeDamage(float _damage)
     {
+        if (isDead)
+            return;
+
         health -= _damage;
         hitTimer = 0;
         isHit = true;
@@ -131,15 +137,17 @@ public class Entity : MonoBehaviour
             motionState = state.dying;
             OnDeath.Invoke();
             bodyAnimator.SetBool("isDead", true);
-            EjectSoul();
             Die();
         }
     }
 
-    void EjectSoul()
+    protected void EjectSoul(int _numberOfSouls)
     {
-        GameObject soul = poolController.PullFromPool(transform.position);
-        soul.GetComponent<SuckToPlayer>().Activate();
+        for (int i = 0; i < _numberOfSouls; i++)
+        {
+            GameObject soul = poolController.PullFromPool(transform.position);
+            soul.GetComponent<SuckToPlayer>().Activate();
+        }
     }
 
     protected void CheckSpriteDirection()
@@ -231,5 +239,6 @@ public class Entity : MonoBehaviour
             return;
 
         isDead = true;
+        EjectSoul(soulsToDrop);
     }
 }

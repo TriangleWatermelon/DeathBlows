@@ -2,8 +2,15 @@ using UnityEngine;
 
 public class MouseController : MonoBehaviour
 {
+    MouseController instance;
+
     private void Start()
     {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(this);
+
         ToggleMouseState(false);
     }
 

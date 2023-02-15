@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
@@ -25,8 +24,6 @@ public class BouncerController : Entity
 
     Vector3 directionToPlayer;
     Vector3 lastAttackObjPosition;
-    Vector3 lastAttackObjRotation;
-    Vector3 risingAttackObjRotation = new Vector3(0, 0, -90);
     float risingAttackRotation;
 
     GameObject playerObj;
@@ -42,10 +39,7 @@ public class BouncerController : Entity
     private void Update()
     {
         if (isDead)
-        {
-            rb2d.velocity = Vector2.zero;
             return;
-        }
 
         // This switch controls the various update loops that occur for each state.
         switch (motionState)
@@ -58,7 +52,6 @@ public class BouncerController : Entity
                     {
                         AdjustGravity(0);
                         lastAttackObjPosition = attackObj.transform.position;
-                        lastAttackObjRotation = attackObj.transform.localEulerAngles;
                         attackCollider.enabled = false;
                         motionState = state.pursuing;
                     }
@@ -98,7 +91,6 @@ public class BouncerController : Entity
                 {
                     AdjustGravity(0);
                     lastAttackObjPosition = attackObj.transform.position;
-                    lastAttackObjRotation = attackObj.transform.localEulerAngles;
                     attackCollider.enabled = false;
                     motionState = state.pursuing;
                 }
@@ -113,6 +105,7 @@ public class BouncerController : Entity
                     brookEffectActive = false;
 
                     risingTimer = 0;
+                    lastAttackObjPosition = attackObj.transform.position;
                     motionState = state.pursuing;
                 }
                 break;
@@ -148,13 +141,6 @@ public class BouncerController : Entity
         risingTimer = 0;
     }
 
-    public override void TakeDamage(float _damage)
-    {
-        base.TakeDamage(_damage);
-        if (motionState == state.pursuing)
-            risingTimer = risingTimeMax;
-    }
-
     public override void ActivateBrookEffect(float _damage)
     {
         base.ActivateBrookEffect(_damage);
@@ -172,17 +158,32 @@ public class BouncerController : Entity
                 AdjustGravity(1);
                 break;
             case state.attacking:
+                if (collision.gameObject.CompareTag("Bubble"))
+                {
+                    if (isRight)
+                        KnockbackEntity(Vector2.right * 10);
+                    else
+                        KnockbackEntity(-Vector2.right * 10);
+                }
                 ResetAttackStates();
                 motionState = state.waiting;
                 break;
             case state.dying:
                 if (collision.gameObject.CompareTag("Ground"))
                 {
+                    attackCollider.enabled = false;
                     this.GetComponent<Collider2D>().enabled = false;
                     rb2d.velocity = Vector2.zero;
                     rb2d.isKinematic = true;
                 }
                 break;
         }
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+        rb2d.AddForce(Vector2.up);
+        AdjustGravity(1);
     }
 }

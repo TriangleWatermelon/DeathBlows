@@ -238,12 +238,13 @@ MonoBehaviour:
   latestGroundObj: {fileID: 0}
   knockbackForce: 1
   lookDirection: {x: 0, y: 0}
-  spriteParentObj: {fileID: 3846491007061620329}
+  spriteParentObj: {fileID: 4074145684112283154}
   bodyAnimator: {fileID: 2649131479208660073}
   iceAnimator: {fileID: 7224596724798724327}
   attackLayerMask:
     serializedVersion: 2
     m_Bits: 1152
+  soulsToDrop: 3
   OnDeath:
     m_PersistentCalls:
       m_Calls: []

@@ -5226,6 +5226,7 @@ MonoBehaviour:
   attackLayerMask:
     serializedVersion: 2
     m_Bits: 1152
+  soulsToDrop: 1
   OnDeath:
     m_PersistentCalls:
       m_Calls:
