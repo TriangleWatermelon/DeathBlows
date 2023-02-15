@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using UnityEngine.VFX;
 using Sirenix.OdinInspector;
 
@@ -181,6 +178,8 @@ public class PlayerController : MonoBehaviour
 
         // Base Values
         health = maxHealth;
+        if (isFacingRight) circleStartOffset = -Vector2.right;
+        else circleStartOffset = Vector2.right;
 
         // Input Stuff
         playerActions = new PlayerActions();
@@ -257,7 +256,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        bool wasGrounded = isGrounded;
         isGrounded = false;
 
         // The player is grounded if a circlecast to the groundCheck position hits anything designated on the ground layer

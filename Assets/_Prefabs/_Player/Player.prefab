@@ -1088,7 +1088,7 @@ MonoBehaviour:
   attackLayerMask:
     serializedVersion: 2
     m_Bits: 2046
-  slashDistance: 1.5
+  slashDistance: 2.5
   attackRadius: 1
   attackCooldown: 0.4
   knockbackForce: 12

@@ -36,6 +36,7 @@ public class BouncerController : Entity
     {
         playerObj = FindObjectOfType<PlayerController>().gameObject;
         attackCollider = attackObj.GetComponent<Collider2D>();
+        attackCollider.enabled = false;
     }
 
     private void Update()
