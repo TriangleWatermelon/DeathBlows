@@ -201,10 +201,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Input & Movement
-        moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
-        Move(moveDir, moveSpeed);
-
         if (isHit)
         {
             hitTimer += Time.deltaTime;
@@ -256,6 +252,10 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Input & Movement
+        moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
+        Move(moveDir, moveSpeed);
+
         isGrounded = false;
 
         // The player is grounded if a circlecast to the groundCheck position hits anything designated on the ground layer

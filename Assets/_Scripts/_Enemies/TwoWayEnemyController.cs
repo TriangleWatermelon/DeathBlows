@@ -13,7 +13,7 @@ public class TwoWayEnemyController : Entity
     [BoxGroup("Mistake/Components")]
     [SerializeField] ParticleSystem smokeParticles;
 
-    private void Update()
+    void FixedUpdate()
     {
         if (isDead)
         {
@@ -71,7 +71,7 @@ public class TwoWayEnemyController : Entity
             case state.attacking:
                 attackDelay += Time.deltaTime;
                 if (leapDelay < attackDelay && attackDelay < 0.5f)
-                    rb2d.AddForce(lookDirection * leapDistance);
+                    rb2d.AddForce((lookDirection * leapDistance) * 30);
                 else if (attackDelay > 1.5f)
                     motionState = state.pursuing;
                 break;
@@ -88,10 +88,7 @@ public class TwoWayEnemyController : Entity
                 }
                 break;
         }
-    }
 
-    void FixedUpdate()
-    {
         bool wasGrounded = isGrounded;
         isGrounded = false;
 

@@ -36,7 +36,7 @@ public class BouncerController : Entity
         attackCollider.enabled = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (isDead)
             return;
@@ -78,7 +78,7 @@ public class BouncerController : Entity
                 if (attackTimer > attackDelay)
                 {
                     SetAttackPosition();
-                    transform.position += directionToPlayer * (attackSpeed / 1000);
+                    transform.position += directionToPlayer * (attackSpeed / 10);
                 }
                 else
                 {
