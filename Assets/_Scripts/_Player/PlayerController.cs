@@ -264,6 +264,7 @@ public class PlayerController : MonoBehaviour
         {
             if (colliders[i].gameObject != gameObject)
             {
+                lastPlaceBeforeJump = transform.position;
                 isGrounded = true;
                 coyoteTime = 0;
             }
@@ -457,8 +458,6 @@ public class PlayerController : MonoBehaviour
 
         isGrounded = false;
         isJumping = true;
-
-        lastPlaceBeforeJump = transform.position;
 
         rb2d.AddForce(new Vector2(0f, jumpHeight * 100));
     }

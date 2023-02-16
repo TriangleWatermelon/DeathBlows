@@ -10,8 +10,6 @@ public class FPSController : MonoBehaviour
             instance = this;
         else
             Destroy(this);
-
-        Application.targetFrameRate = 60;
     }
 
     public static void AdjustTargetFrameRate(int _desiredFPS) => Application.targetFrameRate = _desiredFPS;
