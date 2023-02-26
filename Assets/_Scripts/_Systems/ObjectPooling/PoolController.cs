@@ -22,6 +22,18 @@ public class PoolController : MonoBehaviour
         }
     }
 
+    public void AdjustPooledAmount(int _newAmount)
+    {
+        poolThisMany = _newAmount;
+
+        for (int i = 0; i < poolThisMany; i++)
+        {
+            GameObject newObject = Instantiate(pooledObjectPrefab);
+            objectPool.Add(newObject);
+            newObject.gameObject.SetActive(false);
+        }
+    }
+
     public GameObject PullFromPool(Vector3 position)
     {
         for (int i = 0; i < objectPool.Count; i++) {

@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [TitleGroup("Game Control")]
     [BoxGroup("Game Control/Components")]
     [SerializeField] Camera mainCamera;
+    [BoxGroup("Game Control/Components")]
+    [SerializeField] GameObject mapCamera;
     #endregion
 
     #region Visuals
@@ -144,6 +146,22 @@ public class PlayerController : MonoBehaviour
     BubbleController bubbleController;
     #endregion
 
+    #region Flag Control
+    [BoxGroup("Control/Respawn Flags")]
+    [SerializeField] int maxFlags;
+    [BoxGroup("Control/Respawn Flags")]
+    [SerializeField] float flagPlacementTime;
+    float flagPlacementTimer;
+    bool isPlacingFlag;
+    [BoxGroup("Control/Respawn Flags")]
+    [SerializeField] RespawnFlagController respawnFlagController;
+    RespawnFlag lastTouchedFlag;
+    #endregion
+
+    #region UI Control
+    bool isMap;
+    #endregion
+
     [Space]
     public UnityEvent OnDeath;
 
@@ -180,6 +198,7 @@ public class PlayerController : MonoBehaviour
         health = maxHealth;
         if (isFacingRight) circleStartOffset = -Vector2.right;
         else circleStartOffset = Vector2.right;
+        respawnFlagController.SetMaxFlags(maxFlags);
 
         // Input Stuff
         playerActions = new PlayerActions();
@@ -188,6 +207,9 @@ public class PlayerController : MonoBehaviour
         playerActions.Gameplay.Slash.performed += ctx => OnSlash();
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
         playerActions.Gameplay.Dash.performed += ctx => OnDash();
+        playerActions.Gameplay.PlaceFlag.performed += ctx => OnFlagPress();
+        playerActions.Gameplay.PlaceFlag.canceled += ctx => OnFlagRelease();
+        playerActions.Gameplay.ToggleMap.performed += ctx => OnMap();
     }
 
     // Everything in Start needs to be here to avoid racing
@@ -240,6 +262,17 @@ public class PlayerController : MonoBehaviour
                 hasAttacked = false;
             }
         }
+
+        if (isPlacingFlag)
+        {
+            flagPlacementTimer += Time.deltaTime;
+            if (flagPlacementTimer >= flagPlacementTime)
+            {
+                PlaceFlag();
+                isPlacingFlag = false;
+            }
+        }
+
         #region Debug Controls
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Equals))
@@ -481,6 +514,12 @@ public class PlayerController : MonoBehaviour
     /// <param name="moveSpeed"></param>
     void Move(Vector2 moveDir, float moveSpeed)
     {
+        if (isMap)
+            return;
+
+        if (isPlacingFlag)
+            return;
+
         if (moveDir.x < 0 && isFacingRight)
             FlipSprite();
         if (moveDir.x > 0 && !isFacingRight)
@@ -492,15 +531,15 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(moveDir.x) < 0.2f)
         {
             // Move the character by finding the target velocity
-            Vector3 targetVelocity = Vector2.zero + new Vector2(0, rb2d.velocity.y);
             // And then smoothing it out and applying it to the character
+            Vector3 targetVelocity = Vector2.zero + new Vector2(0, rb2d.velocity.y);
             rb2d.velocity = Vector3.SmoothDamp(rb2d.velocity, targetVelocity, ref velocity, 0.1f);
         }
         else
         {
             // Move the character by finding the target velocity
-            Vector3 targetVelocity = new Vector2((moveDir.x * moveSpeed), rb2d.velocity.y);
             // And then smoothing it out and applying it to the character
+            Vector3 targetVelocity = new Vector2((moveDir.x * moveSpeed), rb2d.velocity.y);
             rb2d.velocity = Vector3.SmoothDamp(rb2d.velocity, targetVelocity, ref velocity, movementSmoothing);
         }
     }
@@ -584,16 +623,77 @@ public class PlayerController : MonoBehaviour
         transform.position = newPos;
     }
 
+    //In-Progress
+    private void OnFlagPress()
+    {
+        if (!isGrounded)
+            return;
+
+        if (lastTouchedFlag != null)
+        {
+            lastTouchedFlag.RemoveFlag();
+            return;
+        }
+
+        flagPlacementTimer = 0;
+        isPlacingFlag = true;
+        animator.SetBool("isPlacingFlag", true);
+    }
+
+    //In-Progress
+    private void OnFlagRelease()
+    {
+        animator.SetBool("isPlacingFlag", false);
+        isPlacingFlag = false;
+    }
+
+    /// <summary>
+    /// Places a Respawn Flag at the player's current position;
+    /// </summary>
+    private void PlaceFlag()
+    {
+        respawnFlagController.PlaceFlag(transform.position);
+    }
+
+    //In-Progress
+    private void PickRespawnFlag()
+    {
+        //Do some UI stuff
+    }
+
     void Die()
     {
         SceneController.ReloadCurrentScene();
     }
-    
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Flag"))
+        {
+            lastTouchedFlag = collision.GetComponent<RespawnFlag>();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Flag"))
+        {
+            lastTouchedFlag = null;
+        }
+    }
+
+    private void OnMap()
+    {
+        isMap = !isMap;
+
+        mapCamera.SetActive(isMap);
+        mainCamera.gameObject.SetActive(!isMap);
+    }
+
     private void OnEnable()
     {
         playerActions.Enable();
     }
-
     private void OnDisable()
     {
         playerActions.Disable();

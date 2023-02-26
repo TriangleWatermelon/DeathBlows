@@ -1242,6 +1242,9 @@ MonoBehaviour:
   attackCooldown: 0.4
   knockbackForce: 12
   isBubbling: 0
+  maxFlags: 3
+  flagPlacementTime: 5
+  respawnFlagController: {fileID: 0}
   OnDeath:
     m_PersistentCalls:
       m_Calls: []

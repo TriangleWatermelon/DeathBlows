@@ -11,6 +11,7 @@ TagManager:
   - EotW
   - Slash
   - Self
+  - Flag
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Soul
   - EotW
   - Self
-  - 
+  - Flag
   - 
   - 
   - 

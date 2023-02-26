@@ -177,13 +177,13 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 92.26, y: 14.34, z: 0}
+      - m_Value: {x: 92.26, y: 16.66, z: 0}
         m_Name: Attractive Point Position
         m_Overridden: 1
-      - m_Value: {x: 92.875, y: 13.39, z: 0}
+      - m_Value: {x: 92.875, y: 15.71, z: 0}
         m_Name: Origin 1
         m_Overridden: 1
-      - m_Value: {x: 92.875, y: 15.29, z: 0}
+      - m_Value: {x: 92.875, y: 17.61, z: 0}
         m_Name: Origin 2
         m_Overridden: 1
     m_Vector4f:

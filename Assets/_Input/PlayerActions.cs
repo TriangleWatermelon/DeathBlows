@@ -71,6 +71,42 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlaceFlag"",
+                    ""type"": ""Button"",
+                    ""id"": ""11714d04-bddb-496f-99bb-7b61e2ba16a3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""d30fc3d7-313e-4347-b352-702f1b2d57be"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomInMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""c31575ad-e56b-4ed3-b87b-459e49975f30"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomOutMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""1fd67f7b-81b4-41ec-84f0-5d4cc039ff70"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -238,6 +274,94 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5613bd3f-9283-4db9-98d1-75f1406634e1"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceFlag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""89d8d210-a4e8-4129-a969-647b011a1624"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceFlag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1cbad8d7-80c3-4764-8f0f-065e4147d6b1"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14c2e430-b8ac-4051-8fbe-a98e49d53b44"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""68793406-6548-4f02-9594-85e3c6d2c887"",
+                    ""path"": ""<Keyboard>/period"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomInMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""73f000d0-d975-40a5-acd1-b9e235237355"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomInMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44cfde5e-5631-449c-9c06-8e994d9e0461"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomOutMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b6b96a47-ef14-4041-bd3a-61ecc95b22eb"",
+                    ""path"": ""<Keyboard>/comma"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomOutMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -257,6 +381,10 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         m_Gameplay_Slash = m_Gameplay.FindAction("Slash", throwIfNotFound: true);
         m_Gameplay_Bubble = m_Gameplay.FindAction("Bubble", throwIfNotFound: true);
         m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
+        m_Gameplay_PlaceFlag = m_Gameplay.FindAction("PlaceFlag", throwIfNotFound: true);
+        m_Gameplay_ToggleMap = m_Gameplay.FindAction("ToggleMap", throwIfNotFound: true);
+        m_Gameplay_ZoomInMap = m_Gameplay.FindAction("ZoomInMap", throwIfNotFound: true);
+        m_Gameplay_ZoomOutMap = m_Gameplay.FindAction("ZoomOutMap", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -321,6 +449,10 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Slash;
     private readonly InputAction m_Gameplay_Bubble;
     private readonly InputAction m_Gameplay_Dash;
+    private readonly InputAction m_Gameplay_PlaceFlag;
+    private readonly InputAction m_Gameplay_ToggleMap;
+    private readonly InputAction m_Gameplay_ZoomInMap;
+    private readonly InputAction m_Gameplay_ZoomOutMap;
     public struct GameplayActions
     {
         private @PlayerActions m_Wrapper;
@@ -330,6 +462,10 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         public InputAction @Slash => m_Wrapper.m_Gameplay_Slash;
         public InputAction @Bubble => m_Wrapper.m_Gameplay_Bubble;
         public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
+        public InputAction @PlaceFlag => m_Wrapper.m_Gameplay_PlaceFlag;
+        public InputAction @ToggleMap => m_Wrapper.m_Gameplay_ToggleMap;
+        public InputAction @ZoomInMap => m_Wrapper.m_Gameplay_ZoomInMap;
+        public InputAction @ZoomOutMap => m_Wrapper.m_Gameplay_ZoomOutMap;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -354,6 +490,18 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @Dash.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
                 @Dash.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
                 @Dash.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
+                @PlaceFlag.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceFlag;
+                @PlaceFlag.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceFlag;
+                @PlaceFlag.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceFlag;
+                @ToggleMap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnToggleMap;
+                @ToggleMap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnToggleMap;
+                @ToggleMap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnToggleMap;
+                @ZoomInMap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomInMap;
+                @ZoomInMap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomInMap;
+                @ZoomInMap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomInMap;
+                @ZoomOutMap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomOutMap;
+                @ZoomOutMap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomOutMap;
+                @ZoomOutMap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomOutMap;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -373,6 +521,18 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @Dash.started += instance.OnDash;
                 @Dash.performed += instance.OnDash;
                 @Dash.canceled += instance.OnDash;
+                @PlaceFlag.started += instance.OnPlaceFlag;
+                @PlaceFlag.performed += instance.OnPlaceFlag;
+                @PlaceFlag.canceled += instance.OnPlaceFlag;
+                @ToggleMap.started += instance.OnToggleMap;
+                @ToggleMap.performed += instance.OnToggleMap;
+                @ToggleMap.canceled += instance.OnToggleMap;
+                @ZoomInMap.started += instance.OnZoomInMap;
+                @ZoomInMap.performed += instance.OnZoomInMap;
+                @ZoomInMap.canceled += instance.OnZoomInMap;
+                @ZoomOutMap.started += instance.OnZoomOutMap;
+                @ZoomOutMap.performed += instance.OnZoomOutMap;
+                @ZoomOutMap.canceled += instance.OnZoomOutMap;
             }
         }
     }
@@ -393,5 +553,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         void OnSlash(InputAction.CallbackContext context);
         void OnBubble(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnPlaceFlag(InputAction.CallbackContext context);
+        void OnToggleMap(InputAction.CallbackContext context);
+        void OnZoomInMap(InputAction.CallbackContext context);
+        void OnZoomOutMap(InputAction.CallbackContext context);
     }
 }

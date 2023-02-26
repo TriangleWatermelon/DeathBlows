@@ -12,6 +12,11 @@ public class SuckToPlayer : MonoBehaviour
 
     bool isActive = false;
 
+    private void Start()
+    {
+        player = FindObjectOfType<PlayerController>().gameObject;
+    }
+
     private void Update()
     {
         // When active, we move towards the plaer over time then deactivate.
@@ -25,7 +30,6 @@ public class SuckToPlayer : MonoBehaviour
 
     public void Activate()
     {
-        player = FindObjectOfType<PlayerController>().gameObject;
         isActive = true;
     }
 
