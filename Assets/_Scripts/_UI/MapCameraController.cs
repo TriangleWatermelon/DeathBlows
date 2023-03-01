@@ -6,6 +6,9 @@ public class MapCameraController : MonoBehaviour
     Camera self;
     PlayerActions actions;
 
+    [BoxGroup("Components")]
+    [SerializeField] GameObject mainCam;
+
     [BoxGroup("Settings")]
     [SerializeField] float zoomSpeed = 1;
 
@@ -53,6 +56,7 @@ public class MapCameraController : MonoBehaviour
     private void OnEnable()
     {
         actions.Enable();
+        transform.position = mainCam.transform.position;
     }
     private void OnDisable()
     {

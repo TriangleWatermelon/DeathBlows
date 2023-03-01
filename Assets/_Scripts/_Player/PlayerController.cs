@@ -333,6 +333,12 @@ public class PlayerController : MonoBehaviour
 
         if (hasAttacked)
             return;
+
+        if (isMap)
+            return;
+
+        if (isPlacingFlag)
+            return;
         #endregion
 
         if (Mathf.Abs(moveDir.x) <= 0.2f && Mathf.Abs(moveDir.y) <= 0.2f)
@@ -424,8 +430,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnDash()
     {
+        #region Guards
         if (isDashing)
             return;
+
+        if (isMap)
+            return;
+        #endregion
 
         // Set the directional force. If the player is in the air we want to give them a slight push upward.
         if (isGrounded)
@@ -486,6 +497,9 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnJump()
     {
+        if (isMap)
+            return;
+
         if (!isGrounded && coyoteTime > 0.1f)
             return;
 
