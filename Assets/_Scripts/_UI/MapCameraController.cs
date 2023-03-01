@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Sirenix.OdinInspector;
 
 public class MapCameraController : MonoBehaviour
 {
     Camera self;
-
     PlayerActions actions;
+
+    [BoxGroup("Settings")]
+    [SerializeField] float zoomSpeed = 1;
 
     private void Awake()
     {
@@ -45,9 +45,9 @@ public class MapCameraController : MonoBehaviour
     private void Zoom()
     {
         if (actions.Gameplay.ZoomInMap.ReadValue<float>() > 0.5f)
-            AdjustOrthographicSize(-0.1f);
+            AdjustOrthographicSize(-0.1f * zoomSpeed);
         if (actions.Gameplay.ZoomOutMap.ReadValue<float>() > 0.5f)
-            AdjustOrthographicSize(0.1f);
+            AdjustOrthographicSize(0.1f * zoomSpeed);
     }
 
     private void OnEnable()
