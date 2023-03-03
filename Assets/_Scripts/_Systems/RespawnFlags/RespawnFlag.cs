@@ -31,7 +31,11 @@ public class RespawnFlag : MonoBehaviour
     /// <summary>
     /// Repositions the player to this flag.
     /// </summary>
-    public void RespawnPlayerHere() => player.RepositionPlayer(position);
+    public void RespawnPlayerHere()
+    {
+        player.RepositionPlayer(position);
+        RespawnManager.SetPlayerRespawnPosition(position);
+    }
 
     private void OnEnable()
     {
