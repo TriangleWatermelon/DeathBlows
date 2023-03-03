@@ -43,7 +43,7 @@ public class MapCameraController : MonoBehaviour
     private void Move()
     {
         Vector2 dir = actions.Gameplay.Move.ReadValue<Vector2>();
-        transform.position += (Vector3)dir;
+        transform.position += (Vector3)dir * (self.orthographicSize/50);
     }
 
     /// <summary>
@@ -51,9 +51,9 @@ public class MapCameraController : MonoBehaviour
     /// </summary>
     private void Zoom()
     {
-        if (actions.Gameplay.ZoomInMap.ReadValue<float>() > 0.5f)
+        if (actions.Gameplay.ZoomInMap.ReadValue<float>() > 0.5f && self.orthographicSize > 5)
             AdjustOrthographicSize(-0.1f * zoomSpeed);
-        if (actions.Gameplay.ZoomOutMap.ReadValue<float>() > 0.5f)
+        if (actions.Gameplay.ZoomOutMap.ReadValue<float>() > 0.5f && self.orthographicSize < 50)
             AdjustOrthographicSize(0.1f * zoomSpeed);
     }
 

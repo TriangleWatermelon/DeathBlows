@@ -2,10 +2,8 @@ using UnityEngine;
 
 public class RespawnFlag : MonoBehaviour
 {
-    [HideInInspector]
     public bool isActive { get; private set; }
     PlayerController player;
-    [HideInInspector]
     public Vector3 position { get; private set; }
 
     private void Start()
