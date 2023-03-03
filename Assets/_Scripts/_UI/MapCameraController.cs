@@ -8,6 +8,8 @@ public class MapCameraController : MonoBehaviour
 
     [BoxGroup("Components")]
     [SerializeField] GameObject mainCam;
+    [BoxGroup("Components")]
+    [SerializeField] ReticleSelector reticle;
 
     [BoxGroup("Settings")]
     [SerializeField] float zoomSpeed = 1;
@@ -17,6 +19,8 @@ public class MapCameraController : MonoBehaviour
         self = GetComponent<Camera>();
 
         actions = new PlayerActions();
+        actions.Gameplay.Slash.performed += ctx => OnSelect();
+        actions.Gameplay.Jump.performed += ctx => OnSelect();
     }
 
     private void FixedUpdate()
@@ -51,6 +55,15 @@ public class MapCameraController : MonoBehaviour
             AdjustOrthographicSize(-0.1f * zoomSpeed);
         if (actions.Gameplay.ZoomOutMap.ReadValue<float>() > 0.5f)
             AdjustOrthographicSize(0.1f * zoomSpeed);
+    }
+
+    /// <summary>
+    /// THe event fired off by Jump and Attack buttons.
+    /// </summary>
+    private void OnSelect()
+    {
+        if (reticle.lastFlagTouched != null)
+            reticle.lastFlagTouched.RespawnPlayerHere();
     }
 
     private void OnEnable()

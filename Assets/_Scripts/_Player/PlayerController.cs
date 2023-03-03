@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
@@ -71,15 +72,12 @@ public class PlayerController : MonoBehaviour
 
     #region STATS
     [BoxGroup("Main/Stats")]
-    [Tooltip("I'll never die!")]
     [SerializeField] float maxHealth;
     [HideInInspector]
     public float health { get; private set; }
     [BoxGroup("Main/Stats")]
-    [Tooltip("ZOOOOOOOOOM!!!")]
     [SerializeField] float moveSpeed;
     [BoxGroup("Main/Stats")]
-    [Tooltip("...How high?")]
     [SerializeField] float jumpHeight;
     [BoxGroup("Main/Stats")]
     public float damage;
@@ -199,6 +197,8 @@ public class PlayerController : MonoBehaviour
         if (isFacingRight) circleStartOffset = -Vector2.right;
         else circleStartOffset = Vector2.right;
         respawnFlagController.SetMaxFlags(maxFlags);
+        RespawnManager.SetRoomRespawnPosition(transform.position);
+        RespawnManager.SetPlayerRespawnPosition(transform.position);
 
         // Input Stuff
         playerActions = new PlayerActions();
@@ -278,7 +278,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Equals))
             Heal(1);
         if (Input.GetKeyDown(KeyCode.R))
-            SceneController.ReloadCurrentScene();
+        {
+            Entity[] entities = FindObjectsOfType<Entity>();
+            foreach (var e in entities)
+                e.ResetEntity();
+        }
 #endif
         #endregion
     }
@@ -637,7 +641,9 @@ public class PlayerController : MonoBehaviour
         transform.position = newPos;
     }
 
-    //In-Progress
+    /// <summary>
+    /// When the user presses down on the flag button a timer will begin and an animation will start.
+    /// </summary>
     private void OnFlagPress()
     {
         if (!isGrounded)
@@ -654,7 +660,9 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isPlacingFlag", true);
     }
 
-    //In-Progress
+    /// <summary>
+    /// When the user releases the flag button the animation and timer will stop.
+    /// </summary>
     private void OnFlagRelease()
     {
         animator.SetBool("isPlacingFlag", false);
@@ -677,8 +685,26 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
-        SceneController.ReloadCurrentScene();
+        RepositionPlayer(RespawnManager.GetPlayerRespawnPoint());
+
+        Entity[] entities = FindObjectsOfType<Entity>();
+        foreach (var e in entities)
+            e.ResetEntity();
+
+        FullHealPlayer();
     }
+
+    public void FullHealPlayer()
+    {
+        StartCoroutine(WaitToHeal());
+    }
+
+    IEnumerator WaitToHeal()
+    {
+        yield return new WaitForSeconds(0.1f);
+        health = maxHealth;
+        playerUI.AdjustHealth(health);
+    } 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

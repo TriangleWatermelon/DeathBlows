@@ -24,6 +24,7 @@ public class BouncerController : Entity
 
     Vector3 directionToPlayer;
     Vector3 lastAttackObjPosition;
+    Vector3 attackObjStartPosition;
     float risingAttackRotation;
 
     GameObject playerObj;
@@ -34,6 +35,7 @@ public class BouncerController : Entity
         playerObj = FindObjectOfType<PlayerController>().gameObject;
         attackCollider = attackObj.GetComponent<Collider2D>();
         attackCollider.enabled = false;
+        attackObjStartPosition = attackObj.transform.position;
     }
 
     private void FixedUpdate()
@@ -124,10 +126,7 @@ public class BouncerController : Entity
 
         attackObj.transform.localEulerAngles = new Vector3(0, 0, MathHelper.FindDegreesForRotation(directionToPlayer));
 
-        if (directionToPlayer.x > 0 && !isRight)
-            FlipSprite();
-        else if (directionToPlayer.x < 0 && isRight)
-            FlipSprite();
+        CheckSpriteDirection();
     }
 
     private void AdjustGravity(float _val) => rb2d.gravityScale = _val;
@@ -172,7 +171,7 @@ public class BouncerController : Entity
                 if (collision.gameObject.CompareTag("Ground"))
                 {
                     attackCollider.enabled = false;
-                    this.GetComponent<Collider2D>().enabled = false;
+                    entityCollider.enabled = false;
                     rb2d.velocity = Vector2.zero;
                     rb2d.isKinematic = true;
                 }
@@ -185,5 +184,13 @@ public class BouncerController : Entity
         base.Die();
         rb2d.AddForce(Vector2.up);
         AdjustGravity(1);
+    }
+
+    public override void ResetEntity()
+    {
+        ResetAttackStates();
+        base.ResetEntity();
+        attackObj.transform.position = attackObjStartPosition;
+        attackObj.transform.eulerAngles = Vector3.zero;
     }
 }

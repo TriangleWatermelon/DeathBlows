@@ -14,7 +14,7 @@ public class EndOfTheWorld : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             player.TakeDamage(1);
-            if(player.health > 0)
+            if(player.health != 0)
                 player.RepositionPlayer(player.lastPlaceBeforeJump);
         }
     }

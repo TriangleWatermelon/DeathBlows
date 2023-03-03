@@ -29,21 +29,12 @@ public class RespawnFlagController : MonoBehaviour
             if (!flag.isActive)
             {
                 flag.transform.position = _position;
+                RespawnManager.SetPlayerRespawnPosition(_position);
                 flag.gameObject.SetActive(true);
                 flag.ToggleActiveState(true);
                 return flag;
             }
         }
-
-        RemoveFlags();
         return null;
-    }
-
-    //In-Progress
-    private void RemoveFlags()
-    {
-        //This will activate a UI that shows the location of all the respawn flags.
-        //Once the user picks which flag to replace, they can try to place a flag again.
-        Debug.Log("No more flags to place. Someday this will actually do something!");
     }
 }

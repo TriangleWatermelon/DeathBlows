@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class RespawnFlag : MonoBehaviour
 {
+    [HideInInspector]
     public bool isActive { get; private set; }
     PlayerController player;
+    [HideInInspector]
+    public Vector3 position { get; private set; }
 
     private void Start()
     {
@@ -30,5 +33,10 @@ public class RespawnFlag : MonoBehaviour
     /// <summary>
     /// Repositions the player to this flag.
     /// </summary>
-    public void RespawnPlayerHere() => player.RepositionPlayer(transform.position);
+    public void RespawnPlayerHere() => player.RepositionPlayer(position);
+
+    private void OnEnable()
+    {
+        position = transform.position;
+    }
 }

@@ -20,6 +20,7 @@ public class Entity : MonoBehaviour
     [TitleGroup("Entity Base")]
     [BoxGroup("Entity Base/Stats")]
     public float health;
+    private float healthReset;
 
     [BoxGroup("Entity Base/Stats")]
     public float damage;
@@ -37,6 +38,7 @@ public class Entity : MonoBehaviour
 
     [BoxGroup("Entity Base/Movement")]
     public bool isRight = true;
+    private bool isRightReset;
 
     [BoxGroup("Entity Base/Movement")]
     public float stunTime;
@@ -95,6 +97,8 @@ public class Entity : MonoBehaviour
     [HideInInspector]
     public bool isDead = false;
 
+    private Vector3 startPosition;
+
     PoolController poolController;
 
     private void Awake()
@@ -110,6 +114,9 @@ public class Entity : MonoBehaviour
         }
 
         motionState = state.idle;
+        isRightReset = isRight;
+        healthReset = health;
+        startPosition = transform.position;
 
         if (isRight)
             lookDirection = Vector2.right;
@@ -240,5 +247,17 @@ public class Entity : MonoBehaviour
 
         isDead = true;
         EjectSoul(soulsToDrop);
+    }
+
+    public virtual void ResetEntity()
+    {
+        transform.position = startPosition;
+        isRight = isRightReset;
+        health = healthReset;
+        isDead = false;
+        motionState = state.idle;
+        bodyAnimator.SetBool("isDead", false);
+        entityCollider.enabled = true;
+        rb2d.isKinematic = false;
     }
 }

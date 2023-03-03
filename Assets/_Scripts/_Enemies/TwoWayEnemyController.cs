@@ -34,6 +34,8 @@ public class TwoWayEnemyController : Entity
                     {
                         motionState = state.pursuing;
                         bodyAnimator.SetBool("isMoving", true);
+
+                        CheckSpriteDirection();
                     }
                 }
                 break;
@@ -109,9 +111,10 @@ public class TwoWayEnemyController : Entity
         base.Die();
 
         // Stop physics and movement
-        this.GetComponent<Collider2D>().enabled = false;
+        entityCollider.enabled = false;
         rb2d.isKinematic = true;
         rb2d.velocity = Vector2.zero;
+        bodyAnimator.SetBool("isMoving", false);
 
         // Match ground rotation
         transform.rotation = latestGroundObj.transform.rotation;
