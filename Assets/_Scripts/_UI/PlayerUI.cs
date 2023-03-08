@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
-using System.Collections;
+using TMPro;
 
 public class PlayerUI : MonoBehaviour
 {
@@ -88,6 +88,12 @@ public class PlayerUI : MonoBehaviour
     {
         dashSlider.value = dashTime;
     }
+
+    #region Debugging
+    [TitleGroup("Debug")]
+    [SerializeField] TextMeshProUGUI respawnText;
+    public void SetRespawnTimer(float _timer) => respawnText.text = Mathf.FloorToInt(_timer).ToString();
+    #endregion
 }
 
 class HeartContainer

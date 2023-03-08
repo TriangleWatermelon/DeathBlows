@@ -179,6 +179,15 @@ public class BouncerController : Entity
         }
     }
 
+    public override void TakeDamage(float _damage)
+    {
+        base.TakeDamage(_damage);
+        AdjustGravity(0);
+        lastAttackObjPosition = attackObj.transform.position;
+        attackCollider.enabled = false;
+        motionState = state.pursuing;
+    }
+
     protected override void Die()
     {
         base.Die();

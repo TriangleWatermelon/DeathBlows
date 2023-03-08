@@ -237,7 +237,8 @@ public class Entity : MonoBehaviour
     // This handles the edge interactions
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        FlipSprite();
+        if (motionState != state.attacking)
+            FlipSprite();
     }
 
     protected virtual void Die()

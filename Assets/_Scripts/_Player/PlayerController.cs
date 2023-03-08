@@ -266,6 +266,7 @@ public class PlayerController : MonoBehaviour
         if (isPlacingFlag)
         {
             flagPlacementTimer += Time.deltaTime;
+            playerUI.SetRespawnTimer(flagPlacementTimer); //Debug
             if (flagPlacementTimer >= flagPlacementTime)
             {
                 PlaceFlag();
@@ -291,7 +292,7 @@ public class PlayerController : MonoBehaviour
     {
         // Input & Movement
         moveDir = playerActions.Gameplay.Move.ReadValue<Vector2>();
-        Move(moveDir, moveSpeed);
+        Move(moveDir);
 
         isGrounded = false;
 
@@ -529,8 +530,7 @@ public class PlayerController : MonoBehaviour
     /// Moves the player based on moveSpeed and the direction the controller is aiming (between -1 and 1 on XY axis).
     /// </summary>
     /// <param name="moveDir"></param>
-    /// <param name="moveSpeed"></param>
-    void Move(Vector2 moveDir, float moveSpeed)
+    void Move(Vector2 moveDir)
     {
         if (isMap)
             return;
@@ -588,6 +588,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isHit)
             return;
+
+        OnFlagRelease();
 
         hitTimer = 0;
         isHit = true;
@@ -675,6 +677,7 @@ public class PlayerController : MonoBehaviour
     private void PlaceFlag()
     {
         respawnFlagController.PlaceFlag(transform.position);
+        playerUI.SetRespawnTimer(0); //Debug
     }
 
     //In-Progress
