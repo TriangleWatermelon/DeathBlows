@@ -35,6 +35,7 @@ public class RespawnFlag : MonoBehaviour
     {
         player.RepositionPlayer(position);
         RespawnManager.SetPlayerRespawnPosition(position);
+        player.ChoseRespawnPoint();
     }
 
     private void OnEnable()

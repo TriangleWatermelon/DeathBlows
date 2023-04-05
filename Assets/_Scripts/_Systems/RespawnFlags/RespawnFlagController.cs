@@ -21,6 +21,11 @@ public class RespawnFlagController : MonoBehaviour
     }
 
     //In-Progress
+    /// <summary>
+    /// Takes a respawn flag from the pool and enables it at the current position.
+    /// </summary>
+    /// <param name="_position"></param>
+    /// <returns></returns>
     public RespawnFlag PlaceFlag(Vector3 _position)
     {
         for (int i = 0; i < flags.Count; i++)
@@ -36,5 +41,17 @@ public class RespawnFlagController : MonoBehaviour
             }
         }
         return null;
+    }
+
+    //In-Progress
+    public bool AnyActiveFlags()
+    {
+        for (int i = 0; i < flags.Count; i++)
+        {
+            RespawnFlag flag = flags[i].GetComponent<RespawnFlag>();
+            if (flag.isActive)
+                return true;
+        }
+        return false;
     }
 }

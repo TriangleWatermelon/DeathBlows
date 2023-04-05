@@ -688,13 +688,25 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
-        RepositionPlayer(RespawnManager.GetPlayerRespawnPoint());
+        if(respawnFlagController.AnyActiveFlags())
+            OnMap();
+        else
+        {
+            RepositionPlayer(RespawnManager.GetPlayerRespawnPoint());
 
+            ChoseRespawnPoint();
+        }
+    }
+
+    public void ChoseRespawnPoint()
+    {
         Entity[] entities = FindObjectsOfType<Entity>();
         foreach (var e in entities)
             e.ResetEntity();
 
         FullHealPlayer();
+
+        OnMap();
     }
 
     public void FullHealPlayer()
