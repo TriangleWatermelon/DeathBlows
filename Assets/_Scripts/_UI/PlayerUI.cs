@@ -25,9 +25,8 @@ public class PlayerUI : MonoBehaviour
         canvas = GetComponent<Canvas>();
 
         float sizeX = heartObj.GetComponent<RectTransform>().sizeDelta.x;
-        sizeX *= canvas.GetComponent<RectTransform>().sizeDelta.x/1282.5f;
+        sizeX *= canvas.GetComponent<RectTransform>().sizeDelta.x/1300; //This is to scale the offset based on screen size.
         heartContainerOffset = new Vector3(sizeX + (sizeX / 2), 0, 0);
-        Debug.Log($"Heart Container Offset: {heartContainerOffset}");
         heartObj.SetActive(false);
 
         DisplayHitEffect(false);

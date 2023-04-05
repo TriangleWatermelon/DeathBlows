@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
     float idleParticleSpeed = 1;
     [BoxGroup("Main/Visuals")]
     [SerializeField] VisualEffect healVFX;
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] ParticleSystem summonParticles;
 
     [Space]
     [BoxGroup("Main/Visuals")]
@@ -661,6 +663,7 @@ public class PlayerController : MonoBehaviour
         flagPlacementTimer = 0;
         isPlacingFlag = true;
         animator.SetBool("isPlacingFlag", true);
+        summonParticles.Play();
     }
 
     /// <summary>
@@ -670,6 +673,8 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetBool("isPlacingFlag", false);
         isPlacingFlag = false;
+        summonParticles.Stop();
+        playerUI.SetRespawnTimer(0);
     }
 
     /// <summary>
