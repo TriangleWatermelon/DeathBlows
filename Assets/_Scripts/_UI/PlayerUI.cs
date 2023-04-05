@@ -6,6 +6,8 @@ using TMPro;
 
 public class PlayerUI : MonoBehaviour
 {
+    Canvas canvas;
+
     [BoxGroup("Health")]
     [SerializeField] GameObject heartObj;
 
@@ -20,8 +22,12 @@ public class PlayerUI : MonoBehaviour
 
     private void Awake()
     {
-        float sizeX = heartObj.GetComponent<RectTransform>().rect.width;
+        canvas = GetComponent<Canvas>();
+
+        float sizeX = heartObj.GetComponent<RectTransform>().sizeDelta.x;
+        sizeX *= canvas.GetComponent<RectTransform>().sizeDelta.x/1282.5f;
         heartContainerOffset = new Vector3(sizeX + (sizeX / 2), 0, 0);
+        Debug.Log($"Heart Container Offset: {heartContainerOffset}");
         heartObj.SetActive(false);
 
         DisplayHitEffect(false);
@@ -40,7 +46,7 @@ public class PlayerUI : MonoBehaviour
             HeartContainer heartContainer = new HeartContainer(heartClone, heartClone.GetComponent<Image>(), i, heartClone.GetComponent<Animator>());
             heartContainers.Add(heartContainer);
             if (i == 0)
-                heartContainers[i].heartObject.transform.position = new Vector3(heartContainerOffset.x, gameObject.GetComponent<Canvas>().pixelRect.height - heartContainerOffset.x, 0);
+                heartContainers[i].heartObject.transform.position = heartObj.transform.position;
             else
                 heartContainers[i].heartObject.transform.position = heartContainers[i - 1].heartObject.transform.position + heartContainerOffset;
         }

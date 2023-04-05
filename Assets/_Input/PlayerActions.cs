@@ -311,7 +311,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""14c2e430-b8ac-4051-8fbe-a98e49d53b44"",
-                    ""path"": ""<Gamepad>/select"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

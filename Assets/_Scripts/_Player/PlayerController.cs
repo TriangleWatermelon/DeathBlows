@@ -210,6 +210,7 @@ public class PlayerController : MonoBehaviour
         playerActions.Gameplay.PlaceFlag.performed += ctx => OnFlagPress();
         playerActions.Gameplay.PlaceFlag.canceled += ctx => OnFlagRelease();
         playerActions.Gameplay.ToggleMap.performed += ctx => OnMap();
+        playerActions.Gameplay.ToggleMap.canceled += ctx => OnMap();
     }
 
     // Everything in Start needs to be here to avoid racing
@@ -698,6 +699,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// When the player has chosen their respawn point, all the enemies and the
+    /// player's health will reset.
+    /// </summary>
     public void ChoseRespawnPoint()
     {
         Entity[] entities = FindObjectsOfType<Entity>();
