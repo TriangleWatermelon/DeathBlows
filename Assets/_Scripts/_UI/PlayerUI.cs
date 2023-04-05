@@ -20,6 +20,9 @@ public class PlayerUI : MonoBehaviour
     [BoxGroup("Damage Effects")]
     [SerializeField] GameObject impactObj;
 
+    [BoxGroup("After Death")]
+    [SerializeField] TextMeshProUGUI respawnText;
+
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
@@ -30,6 +33,7 @@ public class PlayerUI : MonoBehaviour
         heartObj.SetActive(false);
 
         DisplayHitEffect(false);
+        DisplayDeathElements(false);
     }
 
     /// <summary>
@@ -78,11 +82,11 @@ public class PlayerUI : MonoBehaviour
     /// </summary>
     /// <param name="isShown"></param>
     /// <param name="screenPos"></param>
-    public void DisplayHitEffect(bool isShown, Vector3? screenPos = null)
+    public void DisplayHitEffect(bool _isShown, Vector3? _screenPos = null)
     {
-        if(screenPos != null)
-            impactObj.transform.position = (Vector3)screenPos;
-        impactObj.SetActive(isShown);
+        if(_screenPos != null)
+            impactObj.transform.position = (Vector3)_screenPos;
+        impactObj.SetActive(_isShown);
     }
 
     /// <summary>
@@ -94,10 +98,27 @@ public class PlayerUI : MonoBehaviour
         dashSlider.value = dashTime;
     }
 
+    /// <summary>
+    /// Toggles all the elements needed when the player dies.
+    /// </summary>
+    /// <param name="_isShown"></param>
+    public void DisplayDeathElements(bool _isShown)
+    {
+        respawnText.gameObject.SetActive(_isShown);
+    }
+
     #region Debugging
     [TitleGroup("Debug")]
-    [SerializeField] TextMeshProUGUI respawnText;
-    public void SetRespawnTimer(float _timer) => respawnText.text = Mathf.FloorToInt(_timer).ToString();
+    [SerializeField] TextMeshProUGUI respawnTimerText;
+    [SerializeField] TextMeshProUGUI fpsText;
+
+    public void SetRespawnTimer(float _timer) => respawnTimerText.text = Mathf.FloorToInt(_timer).ToString();
+
+    public void SetDebugMode(bool _isDebug)
+    {
+        respawnTimerText.gameObject.SetActive(_isDebug);
+        fpsText.gameObject.SetActive(_isDebug);
+    }
     #endregion
 }
 

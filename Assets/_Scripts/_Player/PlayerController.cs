@@ -172,6 +172,8 @@ public class PlayerController : MonoBehaviour
     public Vector3 lastPlaceBeforeJump { get; private set; }
     #endregion
 
+    bool isDebug = false;
+
     void Awake()
     {
         // Sprites 'n Things
@@ -269,7 +271,10 @@ public class PlayerController : MonoBehaviour
         if (isPlacingFlag)
         {
             flagPlacementTimer += Time.deltaTime;
-            playerUI.SetRespawnTimer(flagPlacementTimer); //Debug
+
+            if(isDebug)
+                playerUI.SetRespawnTimer(flagPlacementTimer);
+
             if (flagPlacementTimer >= flagPlacementTime)
             {
                 PlaceFlag();
@@ -674,7 +679,9 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isPlacingFlag", false);
         isPlacingFlag = false;
         summonParticles.Stop();
-        playerUI.SetRespawnTimer(0);
+
+        if(isDebug)
+            playerUI.SetRespawnTimer(0);
     }
 
     /// <summary>
@@ -683,19 +690,15 @@ public class PlayerController : MonoBehaviour
     private void PlaceFlag()
     {
         respawnFlagController.PlaceFlag(transform.position);
-        playerUI.SetRespawnTimer(0); //Debug
-    }
 
-    //In-Progress
-    private void PickRespawnFlag()
-    {
-        //Do some UI stuff
+        if(isDebug)
+            playerUI.SetRespawnTimer(0);
     }
 
     void Die()
     {
-        if(respawnFlagController.AnyActiveFlags())
-            OnMap();
+        if (respawnFlagController.AnyActiveFlags())
+            playerUI.DisplayDeathElements(true);
         else
         {
             RepositionPlayer(RespawnManager.GetPlayerRespawnPoint());
@@ -716,7 +719,7 @@ public class PlayerController : MonoBehaviour
 
         FullHealPlayer();
 
-        OnMap();
+        playerUI.DisplayDeathElements(false);
     }
 
     public void FullHealPlayer()
@@ -753,6 +756,12 @@ public class PlayerController : MonoBehaviour
 
         mapCamera.SetActive(isMap);
         mainCamera.gameObject.SetActive(!isMap);
+    }
+
+    public void SetDebug(bool _isDebug)
+    {
+        isDebug = _isDebug;
+        playerUI.SetDebugMode(_isDebug);
     }
 
     private void OnEnable()
