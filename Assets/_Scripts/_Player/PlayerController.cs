@@ -258,7 +258,7 @@ public class PlayerController : MonoBehaviour
             {
                 impactObj.SetActive(false);
             }
-            if(attackTimer >= 0.39f)
+            if(attackTimer >= 0.2f)
             {
                 attackObj.SetActive(false);
             }
