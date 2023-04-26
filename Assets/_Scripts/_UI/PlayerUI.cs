@@ -51,10 +51,6 @@ public class PlayerUI : MonoBehaviour
             heartClone.SetActive(true);
             HeartContainer heartContainer = new HeartContainer(heartClone, heartClone.GetComponent<Image>(), i, heartClone.GetComponent<Animator>());
             heartContainers.Add(heartContainer);
-            //if (i == 0)
-            //    heartContainers[i].heartObject.transform.position = heartObj.transform.position;
-            //else
-            //    heartContainers[i].heartObject.transform.position = heartContainers[i - 1].heartObject.transform.position + heartContainerOffset;
         }
     }
 
