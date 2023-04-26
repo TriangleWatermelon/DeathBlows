@@ -239,7 +239,7 @@ public class Entity : MonoBehaviour
     {
         string tag = collision.tag;
 
-        if (motionState != state.attacking && tag != "Hazard")
+        if (motionState != state.attacking && tag != "Hazard" && tag != "Trigger")
             FlipSprite();
 
         if (tag == "Hazard")

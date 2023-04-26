@@ -13,6 +13,7 @@ TagManager:
   - Self
   - Flag
   - Hazard
+  - Trigger
   layers:
   - Default
   - TransparentFX

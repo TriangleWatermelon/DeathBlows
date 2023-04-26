@@ -757,6 +757,9 @@ public class PlayerController : MonoBehaviour
                 if(health > 0)
                     RepositionPlayer(lastPlaceBeforeJump);
                 break;
+            case "Trigger":
+                collision.GetComponent<TriggerAction>().enterEvent.Invoke();
+                break;
         }
     }
 
@@ -767,6 +770,9 @@ public class PlayerController : MonoBehaviour
         {
             case "Flag":
                 lastTouchedFlag = null;
+                break;
+            case "Trigger":
+                collision.GetComponent<TriggerAction>().exitEvent.Invoke();
                 break;
         }
     }

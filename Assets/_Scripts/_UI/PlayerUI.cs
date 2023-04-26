@@ -26,14 +26,26 @@ public class PlayerUI : MonoBehaviour
     [BoxGroup("After Death")]
     [SerializeField] TextMeshProUGUI respawnText;
 
+    [BoxGroup("Face Buttons")]
+    [SerializeField] GameObject faceNorth;
+    [BoxGroup("Face Buttons")]
+    [SerializeField] GameObject faceEast;
+    [BoxGroup("Face Buttons")]
+    [SerializeField] GameObject faceSouth;
+    [BoxGroup("Face Buttons")]
+    [SerializeField] GameObject faceWest;
+    List<GameObject> faceButtons = new List<GameObject>();
+
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
-
-        float sizeX = heartObj.GetComponent<RectTransform>().sizeDelta.x;
-        sizeX *= canvas.GetComponent<RectTransform>().sizeDelta.x/1300; //This is to scale the offset based on screen size.
-        heartContainerOffset = new Vector3(sizeX + (sizeX / 2), 0, 0);
         heartObj.SetActive(false);
+
+        faceButtons.Add(faceNorth);
+        faceButtons.Add(faceEast);
+        faceButtons.Add(faceSouth);
+        faceButtons.Add(faceWest);
+        DisableFaceButtons();
 
         DisplayHitEffect(false);
         DisplayDeathElements(false);
@@ -104,6 +116,40 @@ public class PlayerUI : MonoBehaviour
     public void DisplayDeathElements(bool _isShown)
     {
         respawnText.gameObject.SetActive(_isShown);
+    }
+
+    /// <summary>
+    /// Disables any active button prompts before enabling the requested prompt.
+    /// </summary>
+    /// <param name="_direction"></param>
+    public void ShowFaceButton(string _direction)
+    {
+        DisableFaceButtons();
+
+        switch (_direction)
+        {
+            case "North":
+                faceNorth.SetActive(true);
+                break;
+            case "East":
+                faceEast.SetActive(true);
+                break;
+            case "South":
+                faceSouth.SetActive(true);
+                break;
+            case "West":
+                faceWest.SetActive(true);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Disables all face button prompts.
+    /// </summary>
+    public void DisableFaceButtons()
+    {
+        foreach (var b in faceButtons)
+            b.SetActive(false);
     }
 
     #region Debugging
