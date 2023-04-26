@@ -10,8 +10,11 @@ public class PlayerUI : MonoBehaviour
 
     [BoxGroup("Health")]
     [SerializeField] GameObject heartObj;
+    [BoxGroup("Health")]
+    [SerializeField] GameObject heartParent;
 
-    List<HeartContainer> heartContainers = new List<HeartContainer>();
+    [BoxGroup("Health")]
+    [SerializeField] List<HeartContainer> heartContainers = new List<HeartContainer>();
     Vector3 heartContainerOffset;
 
     [BoxGroup("Abilities")]
@@ -42,16 +45,16 @@ public class PlayerUI : MonoBehaviour
     /// <param name="_maxHealth"></param>
     public void SetPlayerHealthUI(float _maxHealth)
     {
-        for(int i = 0; i < _maxHealth; i++)
+        for (int i = 0; i < _maxHealth; i++)
         {
-            GameObject heartClone = Instantiate(heartObj, gameObject.transform);
+            GameObject heartClone = Instantiate(heartObj, heartParent.transform);
             heartClone.SetActive(true);
             HeartContainer heartContainer = new HeartContainer(heartClone, heartClone.GetComponent<Image>(), i, heartClone.GetComponent<Animator>());
             heartContainers.Add(heartContainer);
-            if (i == 0)
-                heartContainers[i].heartObject.transform.position = heartObj.transform.position;
-            else
-                heartContainers[i].heartObject.transform.position = heartContainers[i - 1].heartObject.transform.position + heartContainerOffset;
+            //if (i == 0)
+            //    heartContainers[i].heartObject.transform.position = heartObj.transform.position;
+            //else
+            //    heartContainers[i].heartObject.transform.position = heartContainers[i - 1].heartObject.transform.position + heartContainerOffset;
         }
     }
 

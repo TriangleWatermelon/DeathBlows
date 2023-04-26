@@ -705,7 +705,6 @@ public class PlayerController : MonoBehaviour
             playerUI.DisplayDeathElements(true);
         else
         {
-            Debug.Log($"No flags: {roomStartPosition}");
             RepositionPlayer(roomStartPosition);
 
             ChoseRespawnPoint();
