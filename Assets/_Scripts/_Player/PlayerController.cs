@@ -724,6 +724,10 @@ public class PlayerController : MonoBehaviour
         foreach (var e in entities)
             e.ResetEntity();
 
+        Soul[] souls = FindObjectsOfType<Soul>();
+        foreach (var s in souls)
+            s.gameObject.SetActive(false);
+
         FullHealPlayer();
 
         playerUI.DisplayDeathElements(false);
@@ -751,7 +755,8 @@ public class PlayerController : MonoBehaviour
                 break;
             case "Hazard":
                 TakeDamage(1);
-                RepositionPlayer(lastPlaceBeforeJump);
+                if(health > 0)
+                    RepositionPlayer(lastPlaceBeforeJump);
                 break;
         }
     }

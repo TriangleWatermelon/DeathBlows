@@ -259,6 +259,11 @@ public class Entity : MonoBehaviour
     {
         transform.position = startPosition;
         isRight = isRightReset;
+        if (!isRight)
+        {
+            FlipSprite();
+            isRight = !isRight;
+        }
         health = healthReset;
         isDead = false;
         motionState = state.idle;
