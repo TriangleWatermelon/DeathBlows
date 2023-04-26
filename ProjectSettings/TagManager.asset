@@ -12,6 +12,7 @@ TagManager:
   - Slash
   - Self
   - Flag
+  - Hazard
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Flag
   - Reticle
   - Wall
-  - 
+  - Hazard
   - 
   - 
   - 

@@ -147,6 +147,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Flag Control
+    Vector3 roomStartPosition;
     [BoxGroup("Control/Respawn Flags")]
     [SerializeField] int maxFlags;
     [BoxGroup("Control/Respawn Flags")]
@@ -203,6 +204,7 @@ public class PlayerController : MonoBehaviour
         respawnFlagController.SetMaxFlags(maxFlags);
         RespawnManager.SetRoomRespawnPosition(transform.position);
         RespawnManager.SetPlayerRespawnPosition(transform.position);
+        roomStartPosition = transform.position;
 
         // Input Stuff
         playerActions = new PlayerActions();
@@ -697,11 +699,14 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        Time.timeScale = 0.1f;
+
         if (respawnFlagController.AnyActiveFlags())
             playerUI.DisplayDeathElements(true);
         else
         {
-            RepositionPlayer(RespawnManager.GetPlayerRespawnPoint());
+            Debug.Log($"No flags: {roomStartPosition}");
+            RepositionPlayer(roomStartPosition);
 
             ChoseRespawnPoint();
         }
@@ -713,6 +718,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void ChoseRespawnPoint()
     {
+        Time.timeScale = 1;
+
         Entity[] entities = FindObjectsOfType<Entity>();
         foreach (var e in entities)
             e.ResetEntity();
@@ -736,17 +743,27 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Flag"))
+        string tag = collision.tag;
+        switch (tag)
         {
-            lastTouchedFlag = collision.GetComponent<RespawnFlag>();
+            case "Flag":
+                lastTouchedFlag = collision.GetComponent<RespawnFlag>();
+                break;
+            case "Hazard":
+                TakeDamage(1);
+                RepositionPlayer(lastPlaceBeforeJump);
+                break;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Flag"))
+        string tag = collision.tag;
+        switch (tag)
         {
-            lastTouchedFlag = null;
+            case "Flag":
+                lastTouchedFlag = null;
+                break;
         }
     }
 
