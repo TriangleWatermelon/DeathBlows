@@ -425,7 +425,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Open the map to return to the world of machines...
+  m_text: Open the map to return to the world of the living...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -697,7 +697,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 04a8797965e1042cdbfabb243f0cb023, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6b1bcce67163a42dba418e00177643c1, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1066,7 +1066,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2abfdabf935c14e60bef0c56af3e4581, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f8000e9dbff84d65a99ec5ffca1e25b, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -7138,7 +7138,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9ce0068d824224e2894b965ff083fbdb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b7ac2da1b48324cbebb3b59ae4f6edcb, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -7591,7 +7591,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e83ead69d167b49dcbdf4b765ea6e220, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 19b8cf9bb06dd4d57a76bce75f5d3e12, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -7683,7 +7683,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2046
   slashDistance: 2.5
-  attackRadius: 1
+  attackRadius: 0.8
   attackCooldown: 0.4
   knockbackForce: 12
   isBubbling: 0

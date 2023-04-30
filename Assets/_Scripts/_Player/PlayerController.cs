@@ -129,6 +129,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float attackRadius;
     bool isHit = false;
     bool hasAttacked = false;
+    bool isSlashing = false;
+    Coroutine slashCheck;
     [BoxGroup("Control/Combat")]
     [SerializeField] float attackCooldown;
     float attackTimer;
@@ -171,6 +173,8 @@ public class PlayerController : MonoBehaviour
     #region Public Variables
     [HideInInspector]
     public Vector3 lastPlaceBeforeJump { get; private set; }
+    [HideInInspector]
+    public int tomatoCount { get; private set; }
     #endregion
 
     bool isDebug = false;
@@ -262,6 +266,8 @@ public class PlayerController : MonoBehaviour
             }
             if(attackTimer >= 0.2f)
             {
+                isSlashing = false;
+                StopCoroutine(slashCheck);
                 attackObj.SetActive(false);
             }
             if (attackTimer >= attackCooldown)
@@ -370,36 +376,8 @@ public class PlayerController : MonoBehaviour
         // Slash Sprite Position
         attackObj.transform.localPosition = slashPos;
 
-        // Does it hit? Doing this twice just in case the first one misses something.
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(
-            transform.position + circleStartOffset,
-            attackRadius,
-            moveDir,
-            slashDistance,
-            ~attackLayerMask
-            );
-
-        foreach (var hit in hits)
-        {
-            if (hit.collider != null)
-            {
-                // Impact Sprite Position
-                impactObj.transform.position = hit.collider.ClosestPoint(transform.position);
-                impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
-                impactObj.SetActive(true);
-
-                if (hit.collider.GetComponent<Entity>() != null)
-                {
-                    Entity enemy = hit.collider.GetComponent<Entity>();
-                    enemy.TakeDamage(damage);
-                    enemy.KnockbackEntity(moveDir);
-                    impactObj.transform.position = hit.collider.transform.position;
-                }
-
-                // Knockback the player on successful contact.
-                KnockbackPlayer();
-            }
-        }
+        isSlashing = true;
+        slashCheck = StartCoroutine(Slashing());
         attackTimer = 0;
         hasAttacked = true;
         attackObj.SetActive(true);
@@ -412,6 +390,51 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("AttackRight");
         else
             animator.SetTrigger("AttackLeft");
+    }
+
+    /// <summary>
+    /// Loops the CircleCast that checks for a hit the entire time the slash animation is visible
+    /// or a hit is registered.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator Slashing()
+    {
+        while (isSlashing)
+        {
+            yield return new WaitForEndOfFrame();
+
+            // Does it hit? Doing this twice just in case the first one misses something.
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(
+                transform.position + circleStartOffset,
+                attackRadius,
+                moveDir,
+                slashDistance,
+                ~attackLayerMask
+                );
+
+            foreach (var hit in hits)
+            {
+                if (hit.collider != null)
+                {
+                    // Impact Sprite Position
+                    impactObj.transform.position = hit.collider.ClosestPoint(transform.position);
+                    impactObj.transform.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
+                    impactObj.SetActive(true);
+
+                    if (hit.collider.GetComponent<Entity>() != null)
+                    {
+                        Entity enemy = hit.collider.GetComponent<Entity>();
+                        enemy.TakeDamage(damage);
+                        enemy.KnockbackEntity(moveDir);
+                        impactObj.transform.position = hit.collider.transform.position;
+                    }
+
+                    // Knockback the player on successful contact.
+                    KnockbackPlayer();
+                    StopCoroutine(slashCheck);
+                }
+            }
+        }
     }
 
 
@@ -759,6 +782,11 @@ public class PlayerController : MonoBehaviour
                 break;
             case "Trigger":
                 collision.GetComponent<TriggerAction>().enterEvent.Invoke();
+                break;
+            case "Tomato":
+                collision.GetComponent<Tomato>().isCollected = true;
+                collision.gameObject.SetActive(false);
+                tomatoCount += 1;
                 break;
         }
     }
