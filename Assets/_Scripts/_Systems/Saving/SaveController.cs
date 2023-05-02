@@ -7,6 +7,7 @@ public class SaveController : MonoBehaviour
 {
     #region Values to Save
     Vector3 playerPosition;
+    Vector3[] flagPositions;
     int tomatoesHeldByPlayer;
     #endregion
 
@@ -36,7 +37,7 @@ public class SaveController : MonoBehaviour
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath +
             "/.." + "SaveData.dat");
-        SaveData data = new SaveData(playerPosition, tomatoesHeldByPlayer);
+        SaveData data = new SaveData(playerPosition, flagPositions, tomatoesHeldByPlayer);
         bf.Serialize(file, data);
         file.Close();
 
@@ -101,15 +102,28 @@ public class SaveController : MonoBehaviour
 public class SaveData
 {
     public SerializableVector3 playerPosition { get; private set; }
+    public SerializableVector3[] flagPositions { get; private set; }
     public int tomatoesHeldByPlayer { get; private set; }
 
-    public SaveData(Vector3 _playerPosition, int _tomatoesHeldByPlayer)
+    public SaveData(Vector3 _playerPosition, Vector3[] _flagPositions, int _tomatoesHeldByPlayer)
     {
+        //Player Position
         playerPosition = new SerializableVector3(
             _playerPosition.x,
             _playerPosition.y,
             _playerPosition.z);
 
+        //Respawn Flag Positions
+        for (int i = 0; i < _flagPositions.Length; i++)
+        {
+            flagPositions = new SerializableVector3[_flagPositions.Length];
+            flagPositions[i] = new SerializableVector3(
+                _flagPositions[i].x,
+                _flagPositions[i].y,
+                _flagPositions[i].z);
+        }
+
+        //Tomato Count
         tomatoesHeldByPlayer = _tomatoesHeldByPlayer;
     }
 }

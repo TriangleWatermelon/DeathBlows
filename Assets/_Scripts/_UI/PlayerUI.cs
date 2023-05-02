@@ -8,6 +8,7 @@ public class PlayerUI : MonoBehaviour
 {
     Canvas canvas;
 
+    #region Health
     [BoxGroup("Health")]
     [SerializeField] GameObject heartObj;
     [BoxGroup("Health")]
@@ -16,6 +17,7 @@ public class PlayerUI : MonoBehaviour
     [BoxGroup("Health")]
     [SerializeField] List<HeartContainer> heartContainers = new List<HeartContainer>();
     Vector3 heartContainerOffset;
+    #endregion
 
     [BoxGroup("Abilities")]
     [SerializeField] Slider dashSlider;
@@ -26,6 +28,7 @@ public class PlayerUI : MonoBehaviour
     [BoxGroup("After Death")]
     [SerializeField] TextMeshProUGUI respawnText;
 
+    #region Controller Buttons
     [BoxGroup("Controller Buttons")]
     [SerializeField] GameObject faceNorth;
     [BoxGroup("Controller Buttons")]
@@ -37,6 +40,7 @@ public class PlayerUI : MonoBehaviour
     [BoxGroup("Controller Buttons")]
     [SerializeField] GameObject triggerRight;
     List<GameObject> controllerButtons = new List<GameObject>();
+    #endregion
 
     private void Awake()
     {

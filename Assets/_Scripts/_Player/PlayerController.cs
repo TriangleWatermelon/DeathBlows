@@ -781,8 +781,7 @@ public class PlayerController : MonoBehaviour
                 collision.GetComponent<TriggerAction>().enterEvent.Invoke();
                 break;
             case "Tomato":
-                collision.GetComponent<Tomato>().isCollected = true;
-                collision.gameObject.SetActive(false);
+                collision.GetComponent<Tomato>().CollectTomato();
                 tomatoCount += 1;
                 break;
         }
