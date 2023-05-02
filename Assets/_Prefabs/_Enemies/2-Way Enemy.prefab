@@ -5225,7 +5225,7 @@ MonoBehaviour:
   iceAnimator: {fileID: 7529610246519285943}
   attackLayerMask:
     serializedVersion: 2
-    m_Bits: 7296
+    m_Bits: 6272
   soulsToDrop: 1
   OnDeath:
     m_PersistentCalls:

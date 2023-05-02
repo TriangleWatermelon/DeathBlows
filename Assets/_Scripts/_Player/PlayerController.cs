@@ -724,11 +724,13 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         if (respawnFlagController.AnyActiveFlags())
-            playerUI.DisplayDeathElements(true);
+        {
+            RepositionPlayer(RespawnManager.GetPlayerRespawnPoint());
+            ChoseRespawnPoint();
+        }
         else
         {
             RepositionPlayer(roomStartPosition);
-
             ChoseRespawnPoint();
         }
     }
@@ -748,8 +750,6 @@ public class PlayerController : MonoBehaviour
             s.gameObject.SetActive(false);
 
         FullHealPlayer();
-
-        playerUI.DisplayDeathElements(false);
     }
 
     public void FullHealPlayer()
