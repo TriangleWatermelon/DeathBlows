@@ -26,26 +26,29 @@ public class PlayerUI : MonoBehaviour
     [BoxGroup("After Death")]
     [SerializeField] TextMeshProUGUI respawnText;
 
-    [BoxGroup("Face Buttons")]
+    [BoxGroup("Controller Buttons")]
     [SerializeField] GameObject faceNorth;
-    [BoxGroup("Face Buttons")]
+    [BoxGroup("Controller Buttons")]
     [SerializeField] GameObject faceEast;
-    [BoxGroup("Face Buttons")]
+    [BoxGroup("Controller Buttons")]
     [SerializeField] GameObject faceSouth;
-    [BoxGroup("Face Buttons")]
+    [BoxGroup("Controller Buttons")]
     [SerializeField] GameObject faceWest;
-    List<GameObject> faceButtons = new List<GameObject>();
+    [BoxGroup("Controller Buttons")]
+    [SerializeField] GameObject triggerRight;
+    List<GameObject> controllerButtons = new List<GameObject>();
 
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
         heartObj.SetActive(false);
 
-        faceButtons.Add(faceNorth);
-        faceButtons.Add(faceEast);
-        faceButtons.Add(faceSouth);
-        faceButtons.Add(faceWest);
-        DisableFaceButtons();
+        controllerButtons.Add(faceNorth);
+        controllerButtons.Add(faceEast);
+        controllerButtons.Add(faceSouth);
+        controllerButtons.Add(faceWest);
+        controllerButtons.Add(triggerRight);
+        DisableControllerButtons();
 
         DisplayHitEffect(false);
         DisplayDeathElements(false);
@@ -122,9 +125,9 @@ public class PlayerUI : MonoBehaviour
     /// Disables any active button prompts before enabling the requested prompt.
     /// </summary>
     /// <param name="_direction"></param>
-    public void ShowFaceButton(string _direction)
+    public void ShowControllerButtons(string _direction)
     {
-        DisableFaceButtons();
+        DisableControllerButtons();
 
         switch (_direction)
         {
@@ -140,15 +143,18 @@ public class PlayerUI : MonoBehaviour
             case "West":
                 faceWest.SetActive(true);
                 break;
+            case "RightTrigger":
+                triggerRight.SetActive(true);
+                break;
         }
     }
 
     /// <summary>
     /// Disables all face button prompts.
     /// </summary>
-    public void DisableFaceButtons()
+    public void DisableControllerButtons()
     {
-        foreach (var b in faceButtons)
+        foreach (var b in controllerButtons)
             b.SetActive(false);
     }
 

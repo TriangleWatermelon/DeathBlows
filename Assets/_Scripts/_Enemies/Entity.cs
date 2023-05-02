@@ -118,10 +118,7 @@ public class Entity : MonoBehaviour
         healthReset = health;
         startPosition = transform.position;
 
-        if (isRight)
-            lookDirection = Vector2.right;
-        else
-            lookDirection = -Vector2.right;
+        CheckLookDirection();
     }
 
     /// <summary>
@@ -157,6 +154,9 @@ public class Entity : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Flips the sprite based on the horizontal velocity.
+    /// </summary>
     protected void CheckSpriteDirection()
     {
         if (rb2d.velocity.x > 0 && !isRight)
@@ -166,7 +166,7 @@ public class Entity : MonoBehaviour
     }
 
     /// <summary>
-    /// Flips the entity sprite
+    /// Flips the entity sprite.
     /// </summary>
     protected void FlipSprite()
     {
@@ -176,6 +176,14 @@ public class Entity : MonoBehaviour
         flipScale.x *= -1;
         spriteParentObj.transform.localScale = flipScale;
 
+        CheckLookDirection();
+    }
+
+    /// <summary>
+    /// Checks where the entity should be looking.
+    /// </summary>
+    protected void CheckLookDirection()
+    {
         if (isRight)
             lookDirection = Vector2.right;
         else
@@ -224,11 +232,14 @@ public class Entity : MonoBehaviour
 
     public virtual void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !isDead)
+        if (isDead)
+            return;
+
+        if (collision.gameObject.CompareTag("Player"))
         {
             collision.gameObject.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
         }
-        else if (!collision.gameObject.CompareTag("Ground") && !isDead)
+        else if (!collision.gameObject.CompareTag("Ground"))
         {
             FlipSprite();
         }
@@ -258,7 +269,8 @@ public class Entity : MonoBehaviour
     public virtual void ResetEntity()
     {
         transform.position = startPosition;
-        isRight = isRightReset;
+        if (isRight != isRightReset)
+            FlipSprite();
         health = healthReset;
         isDead = false;
         motionState = state.idle;

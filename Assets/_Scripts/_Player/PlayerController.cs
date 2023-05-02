@@ -318,7 +318,8 @@ public class PlayerController : MonoBehaviour
         {
             if (colliders[i].gameObject != gameObject)
             {
-                lastPlaceBeforeJump = transform.position;
+                if (colliders[i].gameObject.tag != "Bubble")
+                    lastPlaceBeforeJump = transform.position;
                 isGrounded = true;
                 coyoteTime = 0;
             }
@@ -554,7 +555,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isGrounded && isJumping && rb2d.velocity.y > 0)
         {
-            rb2d.velocity = new Vector2(rb2d.velocity.x, rb2d.velocity.y/2);
+            rb2d.velocity = new Vector2(rb2d.velocity.x, rb2d.velocity.y/3);
             isJumping = false;
         }
     }
@@ -722,8 +723,6 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
-        Time.timeScale = 0.1f;
-
         if (respawnFlagController.AnyActiveFlags())
             playerUI.DisplayDeathElements(true);
         else
@@ -740,8 +739,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void ChoseRespawnPoint()
     {
-        Time.timeScale = 1;
-
         Entity[] entities = FindObjectsOfType<Entity>();
         foreach (var e in entities)
             e.ResetEntity();
