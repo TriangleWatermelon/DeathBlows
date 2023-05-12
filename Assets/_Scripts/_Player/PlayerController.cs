@@ -146,6 +146,8 @@ public class PlayerController : MonoBehaviour
     Vector2 bubblePos;
     Vector2 bubbleOffset = new Vector2(2, 0);
     BubbleController bubbleController;
+    BubbleController.BubbleType bubbleType = BubbleController.BubbleType.Basic;
+    Vector2 bubbleDir;
     #endregion
 
     #region Flag Control
@@ -216,6 +218,7 @@ public class PlayerController : MonoBehaviour
         playerActions.Gameplay.Jump.canceled += ctx => StopJump();
         playerActions.Gameplay.Slash.performed += ctx => OnSlash();
         playerActions.Gameplay.Bubble.performed += ctx => OnBubble();
+        playerActions.Gameplay.ChangeBubble.performed += ctx => OnChangeBubble();
         playerActions.Gameplay.Dash.performed += ctx => OnDash();
         playerActions.Gameplay.PlaceFlag.performed += ctx => OnFlagPress();
         playerActions.Gameplay.PlaceFlag.canceled += ctx => OnFlagRelease();
@@ -436,6 +439,42 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Takes the D-Pad (or arrow key) input to determine the bubble type.
+    /// </summary>
+    private void OnChangeBubble()
+    {
+        bubbleDir = playerActions.Gameplay.ChangeBubble.ReadValue<Vector2>();
+
+        switch (bubbleDir)
+        {
+            case Vector2 v when v.Equals(Vector2.up):
+                ChangeBubbleType(BubbleController.BubbleType.Basic);
+                break;
+            case Vector2 v when v.Equals(Vector2.right):
+                ChangeBubbleType(BubbleController.BubbleType.Frozen);
+                break;
+            case Vector2 v when v.Equals(Vector2.down):
+
+                break;
+            case Vector2 v when v.Equals(Vector2.left):
+
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Tells the BubbleController to change the bubble type.
+    /// </summary>
+    /// <param name="_type"></param>
+    void ChangeBubbleType(BubbleController.BubbleType _type)
+    {
+        if (isBubbling)
+            return;
+
+        bubbleController.SetBubbleType(_type);
     }
 
 

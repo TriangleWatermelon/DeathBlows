@@ -107,6 +107,15 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeBubble"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""b41a1ba0-ac9b-4539-8610-15b2db611cfd"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -362,6 +371,72 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""action"": ""ZoomOutMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""17324638-0ad7-444c-8099-697577a0e9f7"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeBubble"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Arrows"",
+                    ""id"": ""a541b4cd-4416-4808-8b64-2d2f32b6b6de"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeBubble"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""cfe8681c-fa9c-4406-ac04-8f9fe1d887e8"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeBubble"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""64af16a6-3078-4eb5-a945-637f0f3ccab0"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeBubble"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""e5516b7c-ea46-40cc-a368-8695fcd4efbf"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeBubble"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""b955702c-9cd5-4a1e-b669-8f687773845b"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeBubble"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -385,6 +460,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         m_Gameplay_ToggleMap = m_Gameplay.FindAction("ToggleMap", throwIfNotFound: true);
         m_Gameplay_ZoomInMap = m_Gameplay.FindAction("ZoomInMap", throwIfNotFound: true);
         m_Gameplay_ZoomOutMap = m_Gameplay.FindAction("ZoomOutMap", throwIfNotFound: true);
+        m_Gameplay_ChangeBubble = m_Gameplay.FindAction("ChangeBubble", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -453,6 +529,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ToggleMap;
     private readonly InputAction m_Gameplay_ZoomInMap;
     private readonly InputAction m_Gameplay_ZoomOutMap;
+    private readonly InputAction m_Gameplay_ChangeBubble;
     public struct GameplayActions
     {
         private @PlayerActions m_Wrapper;
@@ -466,6 +543,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         public InputAction @ToggleMap => m_Wrapper.m_Gameplay_ToggleMap;
         public InputAction @ZoomInMap => m_Wrapper.m_Gameplay_ZoomInMap;
         public InputAction @ZoomOutMap => m_Wrapper.m_Gameplay_ZoomOutMap;
+        public InputAction @ChangeBubble => m_Wrapper.m_Gameplay_ChangeBubble;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -502,6 +580,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @ZoomOutMap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomOutMap;
                 @ZoomOutMap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomOutMap;
                 @ZoomOutMap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoomOutMap;
+                @ChangeBubble.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnChangeBubble;
+                @ChangeBubble.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnChangeBubble;
+                @ChangeBubble.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnChangeBubble;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -533,6 +614,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @ZoomOutMap.started += instance.OnZoomOutMap;
                 @ZoomOutMap.performed += instance.OnZoomOutMap;
                 @ZoomOutMap.canceled += instance.OnZoomOutMap;
+                @ChangeBubble.started += instance.OnChangeBubble;
+                @ChangeBubble.performed += instance.OnChangeBubble;
+                @ChangeBubble.canceled += instance.OnChangeBubble;
             }
         }
     }
@@ -557,5 +641,6 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         void OnToggleMap(InputAction.CallbackContext context);
         void OnZoomInMap(InputAction.CallbackContext context);
         void OnZoomOutMap(InputAction.CallbackContext context);
+        void OnChangeBubble(InputAction.CallbackContext context);
     }
 }

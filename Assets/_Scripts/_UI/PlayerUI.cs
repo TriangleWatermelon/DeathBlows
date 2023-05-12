@@ -39,6 +39,8 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] GameObject faceWest;
     [BoxGroup("Controller Buttons")]
     [SerializeField] GameObject triggerRight;
+    [BoxGroup("Controller Buttons")]
+    [SerializeField] GameObject triggerLeft;
     List<GameObject> controllerButtons = new List<GameObject>();
     #endregion
 
@@ -52,6 +54,7 @@ public class PlayerUI : MonoBehaviour
         controllerButtons.Add(faceSouth);
         controllerButtons.Add(faceWest);
         controllerButtons.Add(triggerRight);
+        controllerButtons.Add(triggerLeft);
         DisableControllerButtons();
 
         DisplayHitEffect(false);
@@ -149,6 +152,9 @@ public class PlayerUI : MonoBehaviour
                 break;
             case "RightTrigger":
                 triggerRight.SetActive(true);
+                break;
+            case "LeftTrigger":
+                triggerLeft.SetActive(true);
                 break;
         }
     }

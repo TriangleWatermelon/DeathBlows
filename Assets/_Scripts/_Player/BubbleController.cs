@@ -14,6 +14,13 @@ public class BubbleController : MonoBehaviour
     float bubbleTimer;
     [BoxGroup("Control")]
     [SerializeField] float rotationSpeed;
+    BubbleType type = BubbleType.Basic;
+
+    public enum BubbleType
+    {
+        Basic = 0,
+        Frozen = 1
+    }
 
     private void Start()
     {
@@ -22,8 +29,7 @@ public class BubbleController : MonoBehaviour
 
     private void Update()
     {
-        gameObject.transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
-        spriteObj.transform.Rotate(0, 0, rotationSpeed/50);
+        MoveBubble();
 
         if (playerController.isBubbling)
         {
@@ -35,6 +41,30 @@ public class BubbleController : MonoBehaviour
         }
     }
 
+    private void MoveBubble()
+    {
+        switch (type)
+        {
+            case BubbleType.Basic:
+                gameObject.transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
+                spriteObj.transform.Rotate(0, 0, rotationSpeed / 50);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Changes the BubbleType.
+    /// </summary>
+    /// <param name="_type"></param>
+    public void SetBubbleType(BubbleType _type)
+    {
+        type = _type;
+        Debug.Log($"Bubble Type: {type}");
+    }
+
+    /// <summary>
+    /// Disables the bubble object.
+    /// </summary>
     public void Pop()
     {
         playerController.isBubbling = false;
