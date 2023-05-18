@@ -474,6 +474,9 @@ public class PlayerController : MonoBehaviour
         if (isBubbling)
             return;
 
+        if (isMap)
+            return;
+
         bubbleController.SetBubbleType(_type);
     }
 
