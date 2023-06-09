@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 
 public class PlayerUI : MonoBehaviour
@@ -21,6 +22,10 @@ public class PlayerUI : MonoBehaviour
 
     [BoxGroup("Abilities")]
     [SerializeField] Slider dashSlider;
+    [BoxGroup("Abilities")]
+    [SerializeField] GameObject bubbleTypeObj;
+    Animator bubbleTypeAnim;
+    Coroutine stopBubble;
 
     [BoxGroup("Damage Effects")]
     [SerializeField] GameObject impactObj;
@@ -48,6 +53,8 @@ public class PlayerUI : MonoBehaviour
     {
         canvas = GetComponent<Canvas>();
         heartObj.SetActive(false);
+        bubbleTypeAnim = bubbleTypeObj.GetComponent<Animator>();
+        bubbleTypeObj.SetActive(false);
 
         controllerButtons.Add(faceNorth);
         controllerButtons.Add(faceEast);
@@ -166,6 +173,47 @@ public class PlayerUI : MonoBehaviour
     {
         foreach (var b in controllerButtons)
             b.SetActive(false);
+    }
+
+    /// <summary>
+    /// Triggers the Bubble Type UI animations when the type is changed.
+    /// </summary>
+    /// <param name="_type"></param>
+    public void SetBubbleTypeUI(BubbleController.BubbleType _type)
+    {
+        bubbleTypeObj.SetActive(true);
+        switch (_type)
+        {
+            case BubbleController.BubbleType.Basic:
+                bubbleTypeAnim.SetTrigger("SetBasic");
+                break;
+            case BubbleController.BubbleType.Frozen:
+                bubbleTypeAnim.SetTrigger("SetFreeze");
+                break;
+            case BubbleController.BubbleType.Sticky:
+                bubbleTypeAnim.SetTrigger("SetSticky");
+                break;
+            case BubbleController.BubbleType.Anti:
+                bubbleTypeAnim.SetTrigger("SetAnti");
+                break;
+        }
+        if(stopBubble == null)
+            stopBubble = StartCoroutine(DisableBubbleTypeUI());
+        else
+        {
+            StopCoroutine(stopBubble);
+            stopBubble = StartCoroutine(DisableBubbleTypeUI());
+        }
+    }
+
+    /// <summary>
+    /// Disables the bubble type UI when the selection is done being made.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator DisableBubbleTypeUI()
+    {
+        yield return new WaitForSeconds(0.75f);
+        bubbleTypeObj.SetActive(false);
     }
 
     #region Debugging

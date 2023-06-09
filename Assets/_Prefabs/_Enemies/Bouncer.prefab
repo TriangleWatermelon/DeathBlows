@@ -98,6 +98,25 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -116,6 +135,7 @@ PolygonCollider2D:
     - - {x: 8.7, y: 1.16}
       - {x: 10, y: -0.02}
       - {x: 8.7, y: -1.2}
+  m_UseDelaunayMesh: 0
 --- !u!1 &109111662704152722
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,6 +186,7 @@ VisualEffect:
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
+  m_AllowInstancing: 1
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
@@ -177,7 +198,7 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 72.98569, y: -74.11449, z: 0}
+      - m_Value: {x: 92.26, y: 14.34, z: 0}
         m_Name: Attractive Point Position
         m_Overridden: 1
       - m_Value: {x: 73.600685, y: -75.06448, z: 0}
@@ -186,10 +207,10 @@ VisualEffect:
       - m_Value: {x: 73.600685, y: -73.16449, z: 0}
         m_Name: Origin 2
         m_Overridden: 1
-      - m_Value: {x: 73.600685, y: -75.06448, z: 0}
+      - m_Value: {x: 92.875, y: 13.39, z: 0}
         m_Name: Negative
         m_Overridden: 1
-      - m_Value: {x: 73.600685, y: -73.16449, z: 0}
+      - m_Value: {x: 92.875, y: 15.29, z: 0}
         m_Name: Positive
         m_Overridden: 1
     m_Vector4f:
@@ -398,6 +419,12 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -414,7 +441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b993fa06cab740ff824d9e1dbda1df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 7
   damage: 2
   pursuingDistance: 15
   attackDistance: 0
@@ -461,6 +488,25 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -469,7 +515,7 @@ CircleCollider2D:
   m_Radius: 1
 --- !u!95 &2649131479208660073
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -486,7 +532,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3846491007061620329
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,6 +802,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 3846491006615243035}
     m_Modifications:
     - target: {fileID: 1999554584075514278, guid: 40d62d122d43a440f8382cdd92df01d5, type: 3}
@@ -814,6 +862,9 @@ PrefabInstance:
       value: Ice Spikes
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40d62d122d43a440f8382cdd92df01d5, type: 3}
 --- !u!4 &3377316524770146267 stripped
 Transform:

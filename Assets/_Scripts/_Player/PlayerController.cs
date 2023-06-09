@@ -457,10 +457,10 @@ public class PlayerController : MonoBehaviour
                 ChangeBubbleType(BubbleController.BubbleType.Frozen);
                 break;
             case Vector2 v when v.Equals(Vector2.down):
-
+                ChangeBubbleType(BubbleController.BubbleType.Anti);
                 break;
             case Vector2 v when v.Equals(Vector2.left):
-
+                ChangeBubbleType(BubbleController.BubbleType.Sticky);
                 break;
         }
     }
@@ -478,6 +478,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         bubbleController.SetBubbleType(_type);
+        playerUI.SetBubbleTypeUI(_type);
     }
 
 

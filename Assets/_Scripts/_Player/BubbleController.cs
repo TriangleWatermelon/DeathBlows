@@ -19,7 +19,9 @@ public class BubbleController : MonoBehaviour
     public enum BubbleType
     {
         Basic = 0,
-        Frozen = 1
+        Frozen = 1,
+        Sticky = 2,
+        Anti = 3
     }
 
     private void Start()
@@ -48,6 +50,14 @@ public class BubbleController : MonoBehaviour
             case BubbleType.Basic:
                 gameObject.transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
                 spriteObj.transform.Rotate(0, 0, rotationSpeed / 50);
+                break;
+            case BubbleType.Sticky:
+                gameObject.transform.Translate(Vector2.up * (moveSpeed * 0.5f) * Time.deltaTime);
+                spriteObj.transform.Rotate(0, 0, rotationSpeed / 75);
+                break;
+            case BubbleType.Anti:
+                gameObject.transform.Translate(Vector2.up * -moveSpeed * Time.deltaTime);
+                spriteObj.transform.Rotate(0, 0, -rotationSpeed / 50);
                 break;
         }
     }
