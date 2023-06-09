@@ -5163,7 +5163,7 @@ GameObject:
   - component: {fileID: 3511408779388729198}
   - component: {fileID: 872135647298913497}
   m_Layer: 0
-  m_Name: 2-Way Enemy
+  m_Name: Mistake
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -469,7 +469,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4780964182482888702
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6625,7 +6625,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1604455130899689910
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8313,7 +8313,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 72
   stunTime: 0.6
-  dashCooldown: 5
+  dashCooldown: 2
   dashForce: 3
   attackLayerMask:
     serializedVersion: 2
@@ -8324,7 +8324,7 @@ MonoBehaviour:
   knockbackForce: 12
   isBubbling: 0
   maxFlags: 3
-  flagPlacementTime: 4
+  flagPlacementTime: 2.5
   respawnFlagController: {fileID: 0}
   OnDeath:
     m_PersistentCalls:
