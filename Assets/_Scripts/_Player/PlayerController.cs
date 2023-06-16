@@ -118,6 +118,7 @@ public class PlayerController : MonoBehaviour
     Vector2 dashDir;
     bool isDashing = false;
     float dashTimer;
+    public bool canMove { get; set; }
     #endregion
 
     #region Combat Control
@@ -211,6 +212,7 @@ public class PlayerController : MonoBehaviour
         RespawnManager.SetRoomRespawnPosition(transform.position);
         RespawnManager.SetPlayerRespawnPosition(transform.position);
         roomStartPosition = transform.position;
+        canMove = true;
 
         // Input Stuff
         playerActions = new PlayerActions();
@@ -609,6 +611,9 @@ public class PlayerController : MonoBehaviour
     /// <param name="moveDir"></param>
     void Move(Vector2 moveDir)
     {
+        if (!canMove)
+            return;
+
         if (isMap)
             return;
 
@@ -637,6 +642,16 @@ public class PlayerController : MonoBehaviour
             Vector3 targetVelocity = new Vector2((moveDir.x * moveSpeed), rb2d.velocity.y);
             rb2d.velocity = Vector3.SmoothDamp(rb2d.velocity, targetVelocity, ref velocity, movementSmoothing);
         }
+    }
+
+    /// <summary>
+    /// Toggles the simulation state of the rigidbody and canMove boolean.
+    /// </summary>
+    /// <param name="_state"></param>
+    public void ToggleRigidBody(bool _state)
+    {
+        rb2d.simulated = _state;
+        canMove = _state;
     }
 
     /// <summary>
