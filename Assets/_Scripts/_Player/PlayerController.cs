@@ -630,8 +630,7 @@ public class PlayerController : MonoBehaviour
 
         if (Mathf.Abs(moveDir.x) < 0.2f)
         {
-            // Move the character by finding the target velocity
-            // And then smoothing it out and applying it to the character
+            //Sets the target velocity to zero to stop the player's movement.
             Vector3 targetVelocity = Vector2.zero + new Vector2(0, rb2d.velocity.y);
             rb2d.velocity = Vector3.SmoothDamp(rb2d.velocity, targetVelocity, ref velocity, 0.1f);
         }
