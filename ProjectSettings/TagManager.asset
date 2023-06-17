@@ -15,6 +15,8 @@ TagManager:
   - Hazard
   - Trigger
   - Tomato
+  - GrappleCheck
+  - GrapplePoint
   layers:
   - Default
   - TransparentFX

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
 using Sirenix.OdinInspector;
+using Cinemachine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [TitleGroup("Game Control")]
     [BoxGroup("Game Control/Components")]
     [SerializeField] Camera mainCamera;
+    CinemachineBrain camBrain;
     [BoxGroup("Game Control/Components")]
     [SerializeField] GameObject mapCamera;
     #endregion
@@ -70,6 +72,10 @@ public class PlayerController : MonoBehaviour
     [Space]
     [BoxGroup("Main/Visuals")]
     [SerializeField] Animator animator;
+
+    [Space]
+    [BoxGroup("Main/Visuals")]
+    [SerializeField] LineRenderer lineRenderer;
     #endregion
 
     #region STATS
@@ -119,6 +125,17 @@ public class PlayerController : MonoBehaviour
     bool isDashing = false;
     float dashTimer;
     public bool canMove { get; set; }
+    [BoxGroup("Control/Movement")]
+    [SerializeField] float maxGrappleDistance;
+    [BoxGroup("Control/Movement")]
+    [SerializeField] float grappleSpeed;
+    Coroutine moveGrappleCoroutine;
+    Coroutine removeGrappleCoroutine;
+    bool isGrappling = false;
+    Vector3 grappleDir;
+    [BoxGroup("Control/Movement")]
+    [SerializeField] GameObject grappleCheckObj;
+    GrapplePoint grapplePoint = null;
     #endregion
 
     #region Combat Control
@@ -204,6 +221,9 @@ public class PlayerController : MonoBehaviour
         // Physics
         rb2d = GetComponent<Rigidbody2D>();
 
+        //Camera
+        camBrain = mainCamera.GetComponent<CinemachineBrain>();
+
         // Base Values
         health = maxHealth;
         if (isFacingRight) circleStartOffset = -Vector2.right;
@@ -213,6 +233,7 @@ public class PlayerController : MonoBehaviour
         RespawnManager.SetPlayerRespawnPosition(transform.position);
         roomStartPosition = transform.position;
         canMove = true;
+        grappleCheckObj.SetActive(false);
 
         // Input Stuff
         playerActions = new PlayerActions();
@@ -585,7 +606,10 @@ public class PlayerController : MonoBehaviour
             return;
 
         if (!isGrounded && coyoteTime > 0.1f)
+        {
+            TryGrapple();
             return;
+        }
 
         isGrounded = false;
         isJumping = true;
@@ -603,6 +627,72 @@ public class PlayerController : MonoBehaviour
             rb2d.velocity = new Vector2(rb2d.velocity.x, rb2d.velocity.y/3);
             isJumping = false;
         }
+    }
+
+    //In-Progress
+    void TryGrapple()
+    {
+        if (isGrappling)
+            return;
+
+        lineRenderer.enabled = true;
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, transform.position);
+        grappleDir = moveDir;
+        grappleCheckObj.SetActive(true);
+        grappleCheckObj.transform.position = transform.position;
+
+        if (moveGrappleCoroutine != null)
+            StopCoroutine(moveGrappleCoroutine);
+        moveGrappleCoroutine = StartCoroutine(MoveGrappleHook());
+        Debug.Log($"Grapple check started");
+    }
+
+    IEnumerator MoveGrappleHook()
+    {
+        while(Vector3.Distance(lineRenderer.GetPosition(0), lineRenderer.GetPosition(1)) < maxGrappleDistance)
+        {
+            lineRenderer.SetPosition(0, transform.position);
+            lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + grappleDir);
+            grappleCheckObj.transform.position = lineRenderer.GetPosition(1);
+            Debug.Log($"Looping position");
+            yield return new WaitForSeconds(0.02f);
+        }
+        grappleCheckObj.SetActive(false);
+        if (!isGrappling)
+            lineRenderer.enabled = false;
+        StopCoroutine(moveGrappleCoroutine);
+    }
+
+    //In-Progress
+    void Grapple()
+    {
+        Vector3 launchDir = (grapplePoint.transform.position - transform.position).normalized;
+        rb2d.AddForce(launchDir * grappleSpeed);
+    }
+
+    //In-Progress
+    public void SetGrapplePoint(GrapplePoint _point)
+    {
+        isGrappling = true;
+
+        grapplePoint = _point;
+        lineRenderer.SetPosition(1, grapplePoint.transform.position);
+
+        Grapple();
+        removeGrappleCoroutine = StartCoroutine(RemoveGrappleHook());
+    }
+
+    IEnumerator RemoveGrappleHook()
+    {
+        while (Vector3.Distance(transform.position, grapplePoint.transform.position) >= 0)
+        {
+            lineRenderer.SetPosition(0, transform.position);
+            yield return new WaitForSeconds(0.02f);
+        }
+        isGrappling = false;
+        lineRenderer.enabled = false;
+        StopCoroutine(removeGrappleCoroutine);
     }
 
     /// <summary>
@@ -645,12 +735,17 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>
     /// Toggles the simulation state of the rigidbody and canMove boolean.
+    /// This also changed the update method for the camera to prevent jittering.
     /// </summary>
     /// <param name="_state"></param>
     public void ToggleRigidBody(bool _state)
     {
         rb2d.simulated = _state;
         canMove = _state;
+        if (!_state)
+            camBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.FixedUpdate;
+        else
+            camBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.SmartUpdate;
     }
 
     /// <summary>

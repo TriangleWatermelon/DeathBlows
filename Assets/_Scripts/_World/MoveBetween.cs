@@ -90,6 +90,6 @@ public class MoveBetween : MonoBehaviour
         else
             newPos = Vector3.Lerp(point2.transform.position, point1.transform.position, timeToMove);
 
-        player.transform.position = newPos;
+        playerController.RepositionPlayer(newPos);
     }
 }
