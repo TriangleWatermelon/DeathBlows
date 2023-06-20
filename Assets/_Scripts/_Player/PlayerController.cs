@@ -76,6 +76,8 @@ public class PlayerController : MonoBehaviour
     [Space]
     [BoxGroup("Main/Visuals")]
     [SerializeField] LineRenderer lineRenderer;
+
+    Material playerSpriteMat;
     #endregion
 
     #region STATS
@@ -217,6 +219,7 @@ public class PlayerController : MonoBehaviour
         impactObj.SetActive(false);
         impactSpriteRenderer = impactObj.GetComponent<SpriteRenderer>();
         impactSpriteRenderer.sprite = impactSprite;
+        playerSpriteMat = playerSpriteRenderer.material;
 
         // Physics
         rb2d = GetComponent<Rigidbody2D>();
@@ -360,11 +363,15 @@ public class PlayerController : MonoBehaviour
         {
             bodyVFX.SetVector3("PlayerDirection", idleParticleDirection);
             bodyVFX.SetFloat("PlayerSpeed", idleParticleSpeed);
+
+            playerSpriteMat.SetVector("_Direction", idleParticleDirection);
         }
         else
         {
             bodyVFX.SetVector3("PlayerDirection", -rb2d.velocity);
             bodyVFX.SetFloat("PlayerSpeed", rb2d.velocity.x / 4);
+
+            playerSpriteMat.SetVector("_Direction", rb2d.velocity);
         }
     }
 
