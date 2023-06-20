@@ -614,7 +614,8 @@ public class PlayerController : MonoBehaviour
 
         if (!isGrounded && coyoteTime > 0.1f)
         {
-            TryGrapple();
+            if(moveDir != Vector2.zero)
+                TryGrapple();
             return;
         }
 
