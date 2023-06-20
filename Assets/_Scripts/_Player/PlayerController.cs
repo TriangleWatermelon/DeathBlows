@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour
     [BoxGroup("Control/Movement")]
     [SerializeField] float grappleSpeed;
     Coroutine moveGrappleCoroutine;
+    Coroutine moveToGrappleCoroutine;
     Coroutine removeGrappleCoroutine;
     bool isGrappling = false;
     Vector3 grappleDir;
@@ -166,7 +167,6 @@ public class PlayerController : MonoBehaviour
     Vector2 bubblePos;
     Vector2 bubbleOffset = new Vector2(2, 0);
     BubbleController bubbleController;
-    BubbleController.BubbleType bubbleType = BubbleController.BubbleType.Basic;
     Vector2 bubbleDir;
     #endregion
 
@@ -653,18 +653,16 @@ public class PlayerController : MonoBehaviour
         if (moveGrappleCoroutine != null)
             StopCoroutine(moveGrappleCoroutine);
         moveGrappleCoroutine = StartCoroutine(MoveGrappleHook());
-        Debug.Log($"Grapple check started");
     }
 
     IEnumerator MoveGrappleHook()
     {
         while(Vector3.Distance(lineRenderer.GetPosition(0), lineRenderer.GetPosition(1)) < maxGrappleDistance)
         {
-            lineRenderer.SetPosition(0, transform.position);
-            lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + grappleDir);
-            grappleCheckObj.transform.position = lineRenderer.GetPosition(1);
-            Debug.Log($"Looping position");
-            yield return new WaitForSeconds(0.02f);
+            lineRenderer.SetPosition(1, transform.position);
+            lineRenderer.SetPosition(0, lineRenderer.GetPosition(0) + grappleDir);
+            grappleCheckObj.transform.position = lineRenderer.GetPosition(0);
+            yield return new WaitForFixedUpdate();
         }
         grappleCheckObj.SetActive(false);
         if (!isGrappling)
@@ -675,17 +673,29 @@ public class PlayerController : MonoBehaviour
     //In-Progress
     void Grapple()
     {
-        Vector3 launchDir = (grapplePoint.transform.position - transform.position).normalized;
-        rb2d.AddForce(launchDir * grappleSpeed);
+        moveToGrappleCoroutine = StartCoroutine(MoveToGrapplePoint());
+    }
+
+    IEnumerator MoveToGrapplePoint()
+    {
+        while (isGrappling)
+        {
+            Vector3 launchDir = (grapplePoint.transform.position - transform.position).normalized;
+            rb2d.AddForce(launchDir * (grappleSpeed * 100));
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     //In-Progress
     public void SetGrapplePoint(GrapplePoint _point)
     {
+        if (moveGrappleCoroutine != null)
+            StopCoroutine(moveGrappleCoroutine);
+
         isGrappling = true;
 
         grapplePoint = _point;
-        lineRenderer.SetPosition(1, grapplePoint.transform.position);
+        lineRenderer.SetPosition(0, grapplePoint.transform.position);
 
         Grapple();
         removeGrappleCoroutine = StartCoroutine(RemoveGrappleHook());
@@ -693,13 +703,15 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator RemoveGrappleHook()
     {
-        while (Vector3.Distance(transform.position, grapplePoint.transform.position) >= 0)
+        while (Vector3.Distance(transform.position, grapplePoint.transform.position) >= 1.5f)
         {
-            lineRenderer.SetPosition(0, transform.position);
-            yield return new WaitForSeconds(0.02f);
+            lineRenderer.SetPosition(1, transform.position);
+            grappleCheckObj.transform.position = grapplePoint.transform.position;
+            yield return new WaitForFixedUpdate();
         }
         isGrappling = false;
         lineRenderer.enabled = false;
+        grappleCheckObj.SetActive(false);
         StopCoroutine(removeGrappleCoroutine);
     }
 
