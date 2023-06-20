@@ -39,6 +39,7 @@ public class GrapplePoint : MonoBehaviour
         if (collision.CompareTag("GrappleCheck"))
         {
             player.SetGrapplePoint(this);
+            attachedObj.SetActive(true);
             Deactivate();
         }
     }
