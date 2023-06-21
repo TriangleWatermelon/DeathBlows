@@ -477,9 +477,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 631389835953774259}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 1.6, y: 1.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8780758143471092680}
@@ -525,8 +525,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ec9577e253b274f8994f0cd3475ca562, type: 3}
+  m_SortingOrder: 11
+  m_Sprite: {fileID: 21300000, guid: b025770e509274ffb9016d70158a0c09, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -569,9 +569,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.03}
   serializedVersion: 2
-  m_Radius: 10
+  m_Radius: 0.5
 --- !u!1 &744399254635557830
 GameObject:
   m_ObjectHideFlags: 0
@@ -8942,7 +8942,7 @@ Transform:
   - {fileID: 664401607480629545}
   - {fileID: 7444343340115604378}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8780758143471092681
 MonoBehaviour:
@@ -8985,7 +8985,7 @@ MonoBehaviour:
   dashCooldown: 2
   dashForce: 3
   maxGrappleDistance: 8
-  grappleSpeed: 1.8
+  grappleSpeed: 60
   grappleCheckObj: {fileID: 631389835953774259}
   attackLayerMask:
     serializedVersion: 2

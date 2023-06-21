@@ -635,58 +635,92 @@ public class PlayerController : MonoBehaviour
             rb2d.velocity = new Vector2(rb2d.velocity.x, rb2d.velocity.y/3);
             isJumping = false;
         }
+
+        if (isGrappling)
+        {
+            StopCoroutine(moveToGrappleCoroutine);
+            StopCoroutine(removeGrappleCoroutine);
+            ToggleGrappleComponents(false);
+
+            isGrappling = false;
+        }
+        else if(moveGrappleCoroutine != null)
+        {
+            StopCoroutine(moveGrappleCoroutine);
+            ToggleGrappleComponents(false);
+        }
     }
 
-    //In-Progress
+    /// <summary>
+    /// Sets all values for the grapple hook and starts the coroutine to move the hook.
+    /// </summary>
     void TryGrapple()
     {
         if (isGrappling)
             return;
 
-        lineRenderer.enabled = true;
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, transform.position);
+
         grappleDir = moveDir;
-        grappleCheckObj.SetActive(true);
+
         grappleCheckObj.transform.position = transform.position;
+        grappleCheckObj.transform.localEulerAngles = new Vector3(0, 0, MathHelper.FindDegreesForRotation(grappleDir));
+
+        ToggleGrappleComponents(true);
 
         if (moveGrappleCoroutine != null)
             StopCoroutine(moveGrappleCoroutine);
         moveGrappleCoroutine = StartCoroutine(MoveGrappleHook());
     }
 
+    /// <summary>
+    /// Moves the grapple hook from the player's body in the direction supplied when TryGrapple() was called.
+    /// Stops itself when the maxGrappleDistance is reached.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveGrappleHook()
     {
         while(Vector3.Distance(lineRenderer.GetPosition(0), lineRenderer.GetPosition(1)) < maxGrappleDistance)
         {
             lineRenderer.SetPosition(1, transform.position);
-            lineRenderer.SetPosition(0, lineRenderer.GetPosition(0) + grappleDir);
+            lineRenderer.SetPosition(0, lineRenderer.GetPosition(0) + (grappleDir * 0.75f));
             grappleCheckObj.transform.position = lineRenderer.GetPosition(0);
             yield return new WaitForFixedUpdate();
         }
-        grappleCheckObj.SetActive(false);
         if (!isGrappling)
-            lineRenderer.enabled = false;
+            ToggleGrappleComponents(false);
         StopCoroutine(moveGrappleCoroutine);
     }
 
-    //In-Progress
+    /// <summary>
+    /// Starts the coroutine to move the player towards the grapple point.
+    /// </summary>
     void Grapple()
     {
         moveToGrappleCoroutine = StartCoroutine(MoveToGrapplePoint());
     }
 
+    /// <summary>
+    /// Adds to the player's velocity towards the grapple point.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveToGrapplePoint()
     {
         while (isGrappling)
         {
-            Vector3 launchDir = (grapplePoint.transform.position - transform.position).normalized;
-            rb2d.AddForce(launchDir * (grappleSpeed * 100));
+            Vector3 launchDir = (grapplePoint.position - transform.position).normalized;
+            Vector3 targetVelocity = launchDir * grappleSpeed;
+            rb2d.velocity = Vector3.SmoothDamp(rb2d.velocity, targetVelocity, ref velocity, movementSmoothing);
             yield return new WaitForFixedUpdate();
         }
+        StopCoroutine(moveToGrappleCoroutine);
     }
 
-    //In-Progress
+    /// <summary>
+    /// Gives the player controller a grapple point to move to.
+    /// </summary>
+    /// <param name="_point"></param>
     public void SetGrapplePoint(GrapplePoint _point)
     {
         if (moveGrappleCoroutine != null)
@@ -695,24 +729,38 @@ public class PlayerController : MonoBehaviour
         isGrappling = true;
 
         grapplePoint = _point;
-        lineRenderer.SetPosition(0, grapplePoint.transform.position);
+        lineRenderer.SetPosition(0, grapplePoint.position);
+        grappleCheckObj.transform.position = grapplePoint.position;
 
         Grapple();
         removeGrappleCoroutine = StartCoroutine(RemoveGrappleHook());
     }
 
+    /// <summary>
+    /// Sets the position of the lineRenderer to follow the player while they grapple.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator RemoveGrappleHook()
     {
-        while (Vector3.Distance(transform.position, grapplePoint.transform.position) >= 1.5f)
+        while (Vector3.Distance(transform.position, grapplePoint.position) >= 1.5f)
         {
             lineRenderer.SetPosition(1, transform.position);
-            grappleCheckObj.transform.position = grapplePoint.transform.position;
+            grappleCheckObj.transform.position = grapplePoint.position;
             yield return new WaitForFixedUpdate();
         }
         isGrappling = false;
-        lineRenderer.enabled = false;
-        grappleCheckObj.SetActive(false);
+        ToggleGrappleComponents(false);
         StopCoroutine(removeGrappleCoroutine);
+    }
+
+    /// <summary>
+    /// Toggles the grapple visual components.
+    /// </summary>
+    /// <param name="_state"></param>
+    void ToggleGrappleComponents(bool _state)
+    {
+        lineRenderer.enabled = _state;
+        grappleCheckObj.SetActive(_state);
     }
 
     /// <summary>

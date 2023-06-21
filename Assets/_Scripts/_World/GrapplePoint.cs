@@ -12,8 +12,12 @@ public class GrapplePoint : MonoBehaviour
 
     BoxCollider2D col;
 
+    [HideInInspector]
+    public Vector3 position { get; private set; }
+
     private void Start()
     {
+        position = transform.position;
         player = FindObjectOfType<PlayerController>();
         col = GetComponent<BoxCollider2D>();
         attachedObj.SetActive(false);
@@ -25,6 +29,7 @@ public class GrapplePoint : MonoBehaviour
     {
         canAttachObj.SetActive(true);
         col.enabled = true;
+        attachedObj.SetActive(false);
     }
 
     //In-Progress
