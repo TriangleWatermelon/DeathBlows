@@ -54,4 +54,10 @@ public class RespawnFlagController : MonoBehaviour
         }
         return false;
     }
+
+    //In-Progress
+    public List<GameObject> GetFlags()
+    {
+        return flags;
+    }
 }

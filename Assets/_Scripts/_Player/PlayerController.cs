@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
@@ -373,6 +374,8 @@ public class PlayerController : MonoBehaviour
 
             playerSpriteMat.SetVector("_Direction", rb2d.velocity);
         }
+
+        SaveController.instance.SetPlayerPosition(transform.position);
     }
 
     /// <summary>
@@ -937,6 +940,14 @@ public class PlayerController : MonoBehaviour
     {
         respawnFlagController.PlaceFlag(transform.position);
 
+        List<GameObject> flags = respawnFlagController.GetFlags();
+        Vector3[] placedFlagPositions = new Vector3[flags.Count];
+        for(int i = 0; i < placedFlagPositions.Length; i++)
+        {
+            placedFlagPositions[i] = flags[i].transform.position;
+        }
+        SaveController.instance.SetFlagPositions(placedFlagPositions);
+
         if(isDebug)
             playerUI.SetRespawnTimer(0);
     }
@@ -1003,6 +1014,7 @@ public class PlayerController : MonoBehaviour
             case "Tomato":
                 collision.GetComponent<Tomato>().CollectTomato();
                 tomatoCount += 1;
+                SaveController.instance.SetTomatoesHeldByPlayer(tomatoCount);
                 break;
         }
     }

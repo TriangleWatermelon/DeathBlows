@@ -6,15 +6,46 @@ using UnityEngine;
 public class SaveController : MonoBehaviour
 {
     #region Values to Save
-    Vector3 playerPosition;
-    Vector3[] flagPositions;
-    int tomatoesHeldByPlayer;
+    [HideInInspector]
+    public static Vector3 playerPosition { get; private set; }
+    [HideInInspector]
+    public static Vector3[] flagPositions { get; private set; }
+    [HideInInspector]
+    public static int tomatoesHeldByPlayer { get; private set; }
     #endregion
 
-    #region Save Control
+    #region Save Control Variables
     bool isSaving = false;
     bool isLoading = false;
     #endregion
+
+    public static SaveController instance;
+
+    private void Start()
+    {
+        if (instance != null)
+            Destroy(this);
+
+        instance = this;
+    }
+
+    /// <summary>
+    /// Sets playerPosition variable.
+    /// </summary>
+    /// <param name="_pos"></param>
+    public void SetPlayerPosition(Vector3 _pos) => playerPosition = _pos;
+
+    /// <summary>
+    /// Sets the flagPositions variable.
+    /// </summary>
+    /// <param name="_flagPositions"></param>
+    public void SetFlagPositions(Vector3[] _flagPositions) => flagPositions = _flagPositions;
+
+    /// <summary>
+    /// Sets the tomatoesHeldByPlayer variable.
+    /// </summary>
+    /// <param name="_count"></param>
+    public void SetTomatoesHeldByPlayer(int _count) => tomatoesHeldByPlayer = _count;
 
     /// <summary>
     /// This function will handle the process of ensuring the save function is
@@ -35,14 +66,13 @@ public class SaveController : MonoBehaviour
         isSaving = true;
 
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath +
-            "/.." + "SaveData.dat");
+        FileStream file = File.Create(Application.persistentDataPath + "/SaveData.dat");
         SaveData data = new SaveData(playerPosition, flagPositions, tomatoesHeldByPlayer);
         bf.Serialize(file, data);
         file.Close();
 
         isSaving = false;
-        Debug.Log("Save complete.");
+        Debug.Log($"Save complete: {Application.persistentDataPath}");
     }
 
     //In-Progress
@@ -60,15 +90,26 @@ public class SaveController : MonoBehaviour
         Debug.Log("Starting to load game");
         isLoading = true;
 
-        if (File.Exists(Application.persistentDataPath +
-            "/.." + "/SaveData.dat"))
+        if (File.Exists(Application.persistentDataPath + "/SaveData.dat"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath +
-                "/.." + "/SaveData.dat", FileMode.Open);
+            FileStream file = File.Open(Application.persistentDataPath + "/SaveData.dat", FileMode.Open);
             SaveData data = (SaveData)bf.Deserialize(file);
             file.Close();
+
+            #region Variable Assignments
             playerPosition = data.playerPosition.ConvertToV3();
+            if (data.flagPositions != null)
+            {
+                flagPositions = new Vector3[data.flagPositions.Length];
+                for (int i = 0; i < data.flagPositions.Length; i++)
+                {
+                    flagPositions[i] = data.flagPositions[i].ConvertToV3();
+                }
+            }
+            tomatoesHeldByPlayer = data.tomatoesHeldByPlayer;
+            #endregion
+
             isLoading = false;
             Debug.Log("Game data loaded!");
         }
@@ -85,11 +126,9 @@ public class SaveController : MonoBehaviour
         if (isSaving || isLoading)
             return;
 
-        if (File.Exists(Application.persistentDataPath
-                      + "/MySaveData.dat"))
+        if (File.Exists(Application.persistentDataPath + "/SaveData.dat"))
         {
-            File.Delete(Application.persistentDataPath +
-                "/.." + "/SaveData.dat");
+            File.Delete(Application.persistentDataPath + "/SaveData.dat");
             Debug.Log("Data reset complete!");
         }
         else
@@ -105,7 +144,7 @@ public class SaveData
     public SerializableVector3[] flagPositions { get; private set; }
     public int tomatoesHeldByPlayer { get; private set; }
 
-    public SaveData(Vector3 _playerPosition, Vector3[] _flagPositions, int _tomatoesHeldByPlayer)
+    public SaveData(Vector3 _playerPosition, Vector3[] _flagPositions = null, int _tomatoesHeldByPlayer = 0)
     {
         //Player Position
         playerPosition = new SerializableVector3(
@@ -114,20 +153,28 @@ public class SaveData
             _playerPosition.z);
 
         //Respawn Flag Positions
-        for (int i = 0; i < _flagPositions.Length; i++)
+        if (_flagPositions != null)
         {
-            flagPositions = new SerializableVector3[_flagPositions.Length];
-            flagPositions[i] = new SerializableVector3(
-                _flagPositions[i].x,
-                _flagPositions[i].y,
-                _flagPositions[i].z);
+            for (int i = 0; i < _flagPositions.Length; i++)
+            {
+                flagPositions = new SerializableVector3[_flagPositions.Length];
+                flagPositions[i] = new SerializableVector3(
+                    _flagPositions[i].x,
+                    _flagPositions[i].y,
+                    _flagPositions[i].z);
+            }
         }
 
         //Tomato Count
         tomatoesHeldByPlayer = _tomatoesHeldByPlayer;
+
+        Debug.Log($"Save Data created.");
     }
 }
 
+/// <summary>
+/// A class used to convert Unity's Vector3 into values that can run through the BinaryFormatter and back.
+/// </summary>
 [Serializable]
 public class SerializableVector3
 {
