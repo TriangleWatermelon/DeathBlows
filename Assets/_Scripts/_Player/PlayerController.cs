@@ -1007,6 +1007,9 @@ public class PlayerController : MonoBehaviour
                 tomatoCount += 1;
                 SaveController.instance.SetTomatoesHeldByPlayer(tomatoCount);
                 break;
+            case "Enemy":
+                TakeDamage(1);
+                break;
         }
     }
 

@@ -108,7 +108,6 @@ public class BouncerController : Entity
 
                     risingTimer = 0;
                     lastAttackObjPosition = attackObj.transform.position;
-                    motionState = state.pursuing;
                 }
                 break;
         }
@@ -185,6 +184,8 @@ public class BouncerController : Entity
         AdjustGravity(0);
         lastAttackObjPosition = attackObj.transform.position;
         attackCollider.enabled = false;
+        risingTimer = 0;
+        attackTimer = 0;
         motionState = state.pursuing;
     }
 
