@@ -20,7 +20,6 @@ public class RespawnFlagController : MonoBehaviour
         }
     }
 
-    //In-Progress
     /// <summary>
     /// Takes a respawn flag from the pool and enables it at the current position.
     /// </summary>
@@ -37,6 +36,8 @@ public class RespawnFlagController : MonoBehaviour
                 RespawnManager.SetPlayerRespawnPosition(_position);
                 flag.gameObject.SetActive(true);
                 flag.ToggleActiveState(true);
+
+                SaveController.instance.SetFlagPosition(_position);
                 return flag;
             }
         }
@@ -53,11 +54,5 @@ public class RespawnFlagController : MonoBehaviour
                 return true;
         }
         return false;
-    }
-
-    //In-Progress
-    public List<GameObject> GetFlags()
-    {
-        return flags;
     }
 }

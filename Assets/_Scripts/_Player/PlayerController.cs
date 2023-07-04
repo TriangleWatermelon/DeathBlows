@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.VFX;
 using Sirenix.OdinInspector;
 using Cinemachine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -197,7 +198,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public Vector3 lastPlaceBeforeJump { get; private set; }
     [HideInInspector]
-    public int tomatoCount { get; private set; }
+    public int tomatoCount { get; set; }
     #endregion
 
     bool isDebug = false;
@@ -374,8 +375,6 @@ public class PlayerController : MonoBehaviour
 
             playerSpriteMat.SetVector("_Direction", rb2d.velocity);
         }
-
-        SaveController.instance.SetPlayerPosition(transform.position);
     }
 
     /// <summary>
@@ -940,15 +939,7 @@ public class PlayerController : MonoBehaviour
     {
         respawnFlagController.PlaceFlag(transform.position);
 
-        List<GameObject> flags = respawnFlagController.GetFlags();
-        Vector3[] placedFlagPositions = new Vector3[flags.Count];
-        for(int i = 0; i < placedFlagPositions.Length; i++)
-        {
-            placedFlagPositions[i] = flags[i].transform.position;
-        }
-        SaveController.instance.SetFlagPositions(placedFlagPositions);
-
-        if(isDebug)
+        if (isDebug)
             playerUI.SetRespawnTimer(0);
     }
 

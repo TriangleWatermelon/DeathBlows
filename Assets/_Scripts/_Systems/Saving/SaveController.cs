@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class SaveController : MonoBehaviour
     [HideInInspector]
     public static Vector3 playerPosition { get; private set; }
     [HideInInspector]
-    public static Vector3[] flagPositions { get; private set; }
+    public static List<Vector3> flagPositions { get; private set; }
     [HideInInspector]
     public static int tomatoesHeldByPlayer { get; private set; }
     #endregion
@@ -21,12 +22,20 @@ public class SaveController : MonoBehaviour
 
     public static SaveController instance;
 
+    PlayerController player;
+    RespawnFlagController flagController;
+
     private void Start()
     {
-        if (instance != null)
+        if (instance == null)
+            instance = this;
+        else
             Destroy(this);
 
-        instance = this;
+        player = FindObjectOfType<PlayerController>();
+        flagController = FindObjectOfType<RespawnFlagController>();
+
+        flagPositions = new List<Vector3>();
     }
 
     /// <summary>
@@ -36,10 +45,10 @@ public class SaveController : MonoBehaviour
     public void SetPlayerPosition(Vector3 _pos) => playerPosition = _pos;
 
     /// <summary>
-    /// Sets the flagPositions variable.
+    /// Adds the flag position to the list of flagPositions.
     /// </summary>
-    /// <param name="_flagPositions"></param>
-    public void SetFlagPositions(Vector3[] _flagPositions) => flagPositions = _flagPositions;
+    /// <param name="_flagPos"></param>
+    public void SetFlagPosition(Vector3 _flagPos) => flagPositions.Add(_flagPos);
 
     /// <summary>
     /// Sets the tomatoesHeldByPlayer variable.
@@ -56,23 +65,29 @@ public class SaveController : MonoBehaviour
         if (isSaving || isLoading)
             return;
 
+        playerPosition = player.transform.position;
         SaveGame();
     }
 
     //In-Progress
     void SaveGame()
     {
-        Debug.Log("Starting save process");
+        Debug.Log("Starting save process...");
         isSaving = true;
 
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + "/SaveData.dat");
-        SaveData data = new SaveData(playerPosition, flagPositions, tomatoesHeldByPlayer);
+        Vector3[] flagPosArray = new Vector3[flagPositions.Count];
+        for(int i = 0; i < flagPositions.Count; i++)
+        {
+            flagPosArray[i] = flagPositions[i];
+        }
+        SaveData data = new SaveData(playerPosition, flagPosArray, tomatoesHeldByPlayer);
         bf.Serialize(file, data);
         file.Close();
 
         isSaving = false;
-        Debug.Log($"Save complete: {Application.persistentDataPath}");
+        Debug.Log($"Save complete! {Application.persistentDataPath}");
     }
 
     //In-Progress
@@ -87,7 +102,7 @@ public class SaveController : MonoBehaviour
     //In-Progress
     void LoadGame()
     {
-        Debug.Log("Starting to load game");
+        Debug.Log("Starting to load game...");
         isLoading = true;
 
         if (File.Exists(Application.persistentDataPath + "/SaveData.dat"))
@@ -101,10 +116,10 @@ public class SaveController : MonoBehaviour
             playerPosition = data.playerPosition.ConvertToV3();
             if (data.flagPositions != null)
             {
-                flagPositions = new Vector3[data.flagPositions.Length];
+                flagPositions = new List<Vector3>();
                 for (int i = 0; i < data.flagPositions.Length; i++)
                 {
-                    flagPositions[i] = data.flagPositions[i].ConvertToV3();
+                    flagPositions.Add(data.flagPositions[i].ConvertToV3());
                 }
             }
             tomatoesHeldByPlayer = data.tomatoesHeldByPlayer;
@@ -112,6 +127,8 @@ public class SaveController : MonoBehaviour
 
             isLoading = false;
             Debug.Log("Game data loaded!");
+            Debug.Log("Applying loaded values...");
+            ApplyLoadedValues();
         }
         else
         {
@@ -133,6 +150,26 @@ public class SaveController : MonoBehaviour
         }
         else
             Debug.LogError("No save data to delete.");
+    }
+
+    //In-Progress
+    void ApplyLoadedValues()
+    {
+        player.RepositionPlayer(playerPosition);
+        player.tomatoCount = tomatoesHeldByPlayer;
+        if(flagPositions != null)
+        {
+            RespawnFlag[] flags = FindObjectsOfType<RespawnFlag>();
+            foreach (RespawnFlag f in flags)
+                f.RemoveFlag();
+
+            for(int i = 0; i < flagPositions.Count; i++)
+            {
+                flagController.PlaceFlag(flagPositions[i]);
+            }
+        }
+
+        Debug.Log("Loaded values applied!");
     }
 }
 
