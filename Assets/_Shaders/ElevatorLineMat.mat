@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ElevatorLineMat
-  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: -6465566751694194690, guid: 8c645ecc93be0443e950b126dc9e934e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -59,9 +59,10 @@ Material:
     m_Ints: []
     m_Floats:
     - PixelSnap: 0
+    - _Density: 4
     - _EnableExternalAlpha: 0
-    - _Noise: 0
-    - _Speed: 0
+    - _Noise: 1
+    - _Speed: 0.35
     - _Strength: 10
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
