@@ -66,6 +66,10 @@ public class SaveController : MonoBehaviour
             return;
 
         playerPosition = player.transform.position;
+        flagPositions.Clear();
+        RespawnFlag[] allFlags = FindObjectsOfType<RespawnFlag>();
+        foreach (RespawnFlag f in allFlags)
+            flagPositions.Add(f.transform.position);
         SaveGame();
     }
 
@@ -81,6 +85,7 @@ public class SaveController : MonoBehaviour
         for(int i = 0; i < flagPositions.Count; i++)
         {
             flagPosArray[i] = flagPositions[i];
+            Debug.Log(flagPosArray[i]);
         }
         SaveData data = new SaveData(playerPosition, flagPosArray, tomatoesHeldByPlayer);
         bf.Serialize(file, data);
@@ -116,10 +121,11 @@ public class SaveController : MonoBehaviour
             playerPosition = data.playerPosition.ConvertToV3();
             if (data.flagPositions != null)
             {
-                flagPositions = new List<Vector3>();
+                flagPositions.Clear();
                 for (int i = 0; i < data.flagPositions.Length; i++)
                 {
-                    flagPositions.Add(data.flagPositions[i].ConvertToV3());
+                    if (data.flagPositions[i] != null)
+                        flagPositions.Add(data.flagPositions[i].ConvertToV3());
                 }
             }
             tomatoesHeldByPlayer = data.tomatoesHeldByPlayer;
@@ -152,7 +158,9 @@ public class SaveController : MonoBehaviour
             Debug.LogError("No save data to delete.");
     }
 
-    //In-Progress
+    /// <summary>
+    /// Takes the loaded data and applies it to the various game components and managers.
+    /// </summary>
     void ApplyLoadedValues()
     {
         player.RepositionPlayer(playerPosition);
@@ -192,9 +200,9 @@ public class SaveData
         //Respawn Flag Positions
         if (_flagPositions != null)
         {
+            flagPositions = new SerializableVector3[_flagPositions.Length];
             for (int i = 0; i < _flagPositions.Length; i++)
             {
-                flagPositions = new SerializableVector3[_flagPositions.Length];
                 flagPositions[i] = new SerializableVector3(
                     _flagPositions[i].x,
                     _flagPositions[i].y,
@@ -205,7 +213,7 @@ public class SaveData
         //Tomato Count
         tomatoesHeldByPlayer = _tomatoesHeldByPlayer;
 
-        Debug.Log($"Save Data created.");
+        Debug.Log($"Save Data created!");
     }
 }
 

@@ -37,7 +37,7 @@ public class RespawnFlagController : MonoBehaviour
                 flag.gameObject.SetActive(true);
                 flag.ToggleActiveState(true);
 
-                SaveController.instance.SetFlagPosition(_position);
+                //SaveController.instance.SetFlagPosition(_position);
                 return flag;
             }
         }
