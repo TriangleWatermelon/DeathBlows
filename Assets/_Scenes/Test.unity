@@ -5540,17 +5540,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1611340064}
   m_CullTransparentMesh: 1
---- !u!114 &1665851380 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5954031490473342459, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-  m_PrefabInstance: {fileID: 8497962828038756371}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00bd6af9255074e3f89a662c7191b3e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1767669225
 GameObject:
   m_ObjectHideFlags: 0
@@ -6715,62 +6704,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: exitEvent.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: exitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: exitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1665851380}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1665851380}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: exitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: exitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: EndDialogue
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartDialogue
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: exitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DialogueHost, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DialogueHost, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: exitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 733946308365913970, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
-      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 2513170763475256201, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
       propertyPath: m_RootOrder
       value: 28

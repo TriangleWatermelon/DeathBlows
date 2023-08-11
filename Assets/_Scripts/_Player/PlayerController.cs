@@ -187,6 +187,9 @@ public class PlayerController : MonoBehaviour
 
     #region UI Control
     bool isMap;
+    bool isTalking;
+    DialogueHost d_host;
+    bool canTalk;
     #endregion
 
     [Space]
@@ -239,6 +242,8 @@ public class PlayerController : MonoBehaviour
         roomStartPosition = transform.position;
         canMove = true;
         grappleCheckObj.SetActive(false);
+        isTalking = false;
+        canTalk = false;
 
         // Input Stuff
         playerActions = new PlayerActions();
@@ -378,6 +383,25 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Sets the Dialogue Host and sets the talking state to true.
+    /// </summary>
+    /// <param name="_host"></param>
+    public void SetDialogueHost(DialogueHost _host)
+    {
+        d_host = _host;
+        canTalk = true;
+    }
+
+    /// <summary>
+    /// Sets the talking state to false and nulls the Dialogue Host.
+    /// </summary>
+    public void ClearDialogueHost()
+    {
+        isTalking = false;
+        d_host = null;
+    }
+
+    /// <summary>
     /// Triggered when the player hits the attack button.
     /// Handles the player attack (sprites and effects) based on the direction of the controller (-1 to 1 on XY axis).
     /// </summary>
@@ -396,6 +420,12 @@ public class PlayerController : MonoBehaviour
 
         if (isPlacingFlag)
             return;
+
+        if (isTalking)
+        {
+            d_host.CycleNextDialogue();
+            return;
+        }
         #endregion
 
         if (Mathf.Abs(moveDir.x) <= 0.2f && Mathf.Abs(moveDir.y) <= 0.2f)
@@ -519,6 +549,12 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnBubble()
     {
+        if (isTalking)
+        {
+            d_host.CyclePreviousDialogue();
+            return;
+        }
+
         if (!isBubbling)
         {
             bubblePos = transform.position + new Vector3(moveDir.x, 0);
@@ -549,6 +585,9 @@ public class PlayerController : MonoBehaviour
             return;
 
         if (isMap)
+            return;
+
+        if (isTalking)
             return;
         #endregion
 
@@ -777,6 +816,9 @@ public class PlayerController : MonoBehaviour
         if (isMap)
             return;
 
+        if (isTalking)
+            return;
+
         if (isPlacingFlag)
             return;
 
@@ -906,6 +948,13 @@ public class PlayerController : MonoBehaviour
     {
         if (!isGrounded)
             return;
+
+        if (canTalk)
+        {
+            isTalking = true;
+            d_host.StartDialogue();
+            return;
+        }
 
         if (lastTouchedFlag != null)
         {
