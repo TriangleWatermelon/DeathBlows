@@ -398,7 +398,9 @@ public class PlayerController : MonoBehaviour
     public void ClearDialogueHost()
     {
         isTalking = false;
+        canTalk = false;
         d_host = null;
+        Debug.Log("Dialogue host cleared.");
     }
 
     /// <summary>

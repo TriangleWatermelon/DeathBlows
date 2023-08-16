@@ -49,6 +49,7 @@ public class DialogueHost : MonoBehaviour
         interactObj.SetActive(false);
         d_Presenter.ShowDialogueBox(false);
         player.ClearDialogueHost();
+        dialogueIndex = dialogueMax;
     }
 
     //In-Progress
