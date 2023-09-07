@@ -194,12 +194,17 @@ public class BouncerController : Entity
         base.Die();
         rb2d.AddForce(Vector2.up);
         AdjustGravity(1);
+        spriteSegments[1].transform.position = attackObj.transform.position;
+        spriteSegments[1].transform.rotation = attackObj.transform.rotation;
+        attackObj.transform.parent = spriteSegments[1].transform;
     }
 
     public override void ResetEntity()
     {
         ResetAttackStates();
         base.ResetEntity();
+
+        attackObj.transform.parent = this.transform;
         attackObj.transform.position = attackObjStartPosition;
         attackObj.transform.eulerAngles = Vector3.zero;
     }

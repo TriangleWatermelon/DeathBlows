@@ -81,6 +81,11 @@ public class Entity : MonoBehaviour
 
     [BoxGroup("Entity Base/Visual")]
     public GameObject spriteParentObj;
+    [BoxGroup("Entity Base/Visual")]
+    public GameObject[] spriteSegments;
+    Collider2D[] spriteSegmentColliders;
+    Rigidbody2D[] spriteSegmentRigidbodies;
+    Vector3[] spriteSegmentStartPositions;
 
     [BoxGroup("Entity Base/Visual")]
     public Animator bodyAnimator;
@@ -106,6 +111,16 @@ public class Entity : MonoBehaviour
         poolController = FindObjectOfType<PoolController>();
         rb2d = GetComponent<Rigidbody2D>();
         entityCollider = GetComponent<Collider2D>();
+
+        spriteSegmentColliders = new Collider2D[spriteSegments.Length];
+        spriteSegmentRigidbodies = new Rigidbody2D[spriteSegments.Length];
+        spriteSegmentStartPositions = new Vector3[spriteSegments.Length];
+        for (int i = 0; i < spriteSegments.Length; i++)
+        {
+            spriteSegmentColliders[i] = spriteSegments[i].GetComponent<Collider2D>();
+            spriteSegmentRigidbodies[i] = spriteSegments[i].GetComponent<Rigidbody2D>();
+            spriteSegmentStartPositions[i] = spriteSegments[i].transform.position;
+        }
 
         if (!isRight)
         {
@@ -257,6 +272,32 @@ public class Entity : MonoBehaviour
             TakeDamage(healthReset);
     }
 
+    /// <summary>
+    /// Toggle the main body collider and the individual segment colliders.
+    /// </summary>
+    /// <param name="_state"></param>
+    public void ToggleColliders(bool _state)
+    {
+        entityCollider.enabled = !_state;
+        foreach (var col in spriteSegmentColliders)
+            col.enabled = _state;
+
+        Debug.Log($"Colliders set to individual: {_state}");
+    }
+
+    /// <summary>
+    /// Toggle the main body rigidbody and the individual segment rigidbodies.
+    /// </summary>
+    /// <param name="_state"></param>
+    public void ToggleRigidbodies(bool _state)
+    {
+        rb2d.simulated = !_state;
+        foreach (var rb in spriteSegmentRigidbodies)
+            rb.simulated = _state;
+
+        Debug.Log($"Rigidbodies set to individual: {_state}");
+    }
+
     protected virtual void Die()
     {
         if (isDead)
@@ -264,6 +305,8 @@ public class Entity : MonoBehaviour
 
         isDead = true;
         EjectSoul(soulsToDrop);
+        ToggleColliders(true);
+        ToggleRigidbodies(true);
     }
 
     public virtual void ResetEntity()
@@ -275,7 +318,14 @@ public class Entity : MonoBehaviour
         isDead = false;
         motionState = state.idle;
         bodyAnimator.SetBool("isDead", false);
-        entityCollider.enabled = true;
+        //entityCollider.enabled = true;
+        ToggleColliders(false);
+        ToggleRigidbodies(false);
+        for (int i = 0; i < spriteSegments.Length; i++)
+        {
+            spriteSegments[i].transform.position = spriteSegmentStartPositions[i];
+            spriteSegments[i].transform.rotation = new Quaternion(0, 0, 0, 0);
+        }
         rb2d.isKinematic = false;
     }
 }
