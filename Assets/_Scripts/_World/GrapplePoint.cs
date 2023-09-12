@@ -29,7 +29,6 @@ public class GrapplePoint : MonoBehaviour
     {
         canAttachObj.SetActive(true);
         col.enabled = true;
-        attachedObj.SetActive(false);
     }
 
     //In-Progress
@@ -44,7 +43,6 @@ public class GrapplePoint : MonoBehaviour
         if (collision.CompareTag("GrappleCheck"))
         {
             player.SetGrapplePoint(this);
-            attachedObj.SetActive(true);
             Deactivate();
         }
     }
