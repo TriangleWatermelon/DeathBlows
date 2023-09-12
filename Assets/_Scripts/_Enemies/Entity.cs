@@ -269,7 +269,11 @@ public class Entity : MonoBehaviour
             FlipSprite();
 
         if (tag == "Hazard")
+        {
             TakeDamage(healthReset);
+            ToggleColliders(false);
+            ToggleRigidbodies(false);
+        }
     }
 
     /// <summary>
