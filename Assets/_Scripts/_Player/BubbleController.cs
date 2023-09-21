@@ -16,6 +16,9 @@ public class BubbleController : MonoBehaviour
     [SerializeField] float rotationSpeed;
     BubbleType type = BubbleType.Basic;
 
+    [BoxGroup("Visual Components")]
+    [SerializeField] GameObject frozenBubbleVFX;
+
     public enum BubbleType
     {
         Basic = 0,
@@ -27,6 +30,7 @@ public class BubbleController : MonoBehaviour
     private void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
+        SetBubbleType(BubbleType.Basic);
     }
 
     private void Update()
@@ -69,6 +73,16 @@ public class BubbleController : MonoBehaviour
     public void SetBubbleType(BubbleType _type)
     {
         type = _type;
+
+        switch (type)
+        {
+            case BubbleType.Basic:
+                frozenBubbleVFX.SetActive(false);
+                break;
+            case BubbleType.Frozen:
+                frozenBubbleVFX.SetActive(true);
+                break;
+        }
         Debug.Log($"Bubble Type: {type}");
     }
 
