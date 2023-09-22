@@ -6946,6 +6946,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 209653956379593186, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
+      propertyPath: m_Name
+      value: Particle Effects
+      objectReference: {fileID: 0}
     - target: {fileID: 3476473044575401222, guid: 307eae5f9fa194ce79397c752846b531, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
