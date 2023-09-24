@@ -61,7 +61,7 @@ public class Entity : MonoBehaviour
     [HideInInspector]
     public state motionState;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isGrounded;
     [BoxGroup("Entity Base/Movement")]
     [Tooltip("This is an empty GameObject placed at the bottom of the enemy's collider")]
@@ -322,7 +322,6 @@ public class Entity : MonoBehaviour
         isDead = false;
         motionState = state.idle;
         bodyAnimator.SetBool("isDead", false);
-        //entityCollider.enabled = true;
         ToggleColliders(false);
         ToggleRigidbodies(false);
         for (int i = 0; i < spriteSegments.Length; i++)
