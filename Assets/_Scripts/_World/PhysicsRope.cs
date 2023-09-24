@@ -61,13 +61,13 @@ public class PhysicsRope : MonoBehaviour
 
         //Change the number here to check constraints more or less each frame.
         for (int i = 0; i < 50; i++)
-            ApplyConstraint();
+            ApplyConstraints();
     }
 
     /// <summary>
     /// Keeps the points within an acceptable distance from one another.
     /// </summary>
-    private void ApplyConstraint()
+    private void ApplyConstraints()
     {
         //Constrant to first Point 
         RopeSegment firstSegment = ropeSegments[0];
