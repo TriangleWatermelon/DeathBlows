@@ -411,16 +411,10 @@ public class PlayerController : MonoBehaviour
     {
         // Add any guards here
         #region Guards
-        if (isHit)
-            return;
-
-        if (hasAttacked)
-            return;
-
-        if (isMap)
-            return;
-
-        if (isPlacingFlag)
+        if (isHit ||
+            hasAttacked ||
+            isMap ||
+            isPlacingFlag)
             return;
 
         if (isTalking)
@@ -497,6 +491,13 @@ public class PlayerController : MonoBehaviour
                         impactObj.transform.position = hit.collider.transform.position;
                     }
 
+                    if (hit.collider.GetComponent<Twins>() != null)
+                    {
+                        Twins enemy = hit.collider.GetComponent<Twins>();
+                        enemy.TakeDamage(damage);
+                        impactObj.transform.position = hit.collider.transform.position;
+                    }
+
                     // Knockback the player on successful contact.
                     KnockbackPlayer();
                     StopCoroutine(slashCheck);
@@ -535,10 +536,9 @@ public class PlayerController : MonoBehaviour
     /// <param name="_type"></param>
     void ChangeBubbleType(BubbleController.BubbleType _type)
     {
-        if (isBubbling)
-            return;
-
-        if (isMap)
+        if (isBubbling ||
+            isMap ||
+            isTalking)
             return;
 
         bubbleController.SetBubbleType(_type);
@@ -583,13 +583,9 @@ public class PlayerController : MonoBehaviour
     void OnDash()
     {
         #region Guards
-        if (isDashing)
-            return;
-
-        if (isMap)
-            return;
-
-        if (isTalking)
+        if (isDashing ||
+            isMap ||
+            isTalking)
             return;
         #endregion
 
@@ -812,16 +808,10 @@ public class PlayerController : MonoBehaviour
     /// <param name="moveDir"></param>
     void Move(Vector2 moveDir)
     {
-        if (!canMove)
-            return;
-
-        if (isMap)
-            return;
-
-        if (isTalking)
-            return;
-
-        if (isPlacingFlag)
+        if (!canMove ||
+            isMap ||
+            isTalking ||
+            isPlacingFlag)
             return;
 
         if (moveDir.x < 0 && isFacingRight)

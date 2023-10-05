@@ -1441,7 +1441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3828131422075280267, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
       propertyPath: dialogueOptions.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3828131422075280267, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
       propertyPath: dialogueOptions.Array.data[0]
@@ -1449,11 +1449,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3828131422075280267, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
       propertyPath: dialogueOptions.Array.data[1]
-      value: I thought you were dead!
+      value: Anyway, I'll finish this dialogue later
       objectReference: {fileID: 0}
     - target: {fileID: 3828131422075280267, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
       propertyPath: dialogueOptions.Array.data[2]
-      value: If you can move in that body...
+      value: Maybe you can get down from this ledge!
       objectReference: {fileID: 0}
     - target: {fileID: 3828131422075280267, guid: e09b936a92c7c4f5f84c0868d4223aec, type: 3}
       propertyPath: dialogueOptions.Array.data[3]

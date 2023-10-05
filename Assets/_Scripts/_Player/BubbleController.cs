@@ -82,6 +82,12 @@ public class BubbleController : MonoBehaviour
             case BubbleType.Frozen:
                 frozenBubbleVFX.SetActive(true);
                 break;
+            case BubbleType.Sticky:
+                frozenBubbleVFX.SetActive(false);
+                break;
+            case BubbleType.Anti:
+                frozenBubbleVFX.SetActive(false);
+                break;
         }
         Debug.Log($"Bubble Type: {type}");
     }

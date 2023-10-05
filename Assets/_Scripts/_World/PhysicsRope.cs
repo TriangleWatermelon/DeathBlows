@@ -11,9 +11,9 @@ public class PhysicsRope : MonoBehaviour
     private LineRenderer lineRenderer;
     private List<RopeSegment> ropeSegments = new List<RopeSegment>();
     [BoxGroup("Control")]
-    [SerializeField] float segmentLength = 0.25f;
+    public float segmentLength = 0.25f;
     [BoxGroup("Control")]
-    [SerializeField] int segmentCount = 20;
+    public int segmentCount = 20;
     [BoxGroup("Control")]
     [SerializeField] float lineWidth = 0.2f;
 

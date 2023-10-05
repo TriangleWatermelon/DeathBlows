@@ -11,7 +11,7 @@ public class Pacer : Entity
                 if (isRight)
                     Move(Vector2.right);
                 else
-                    Move(-Vector2.right);
+                    Move(Vector2.left);
                 break;
             case state.frozen:
                 transform.position = brookEffectPosition;
@@ -27,18 +27,7 @@ public class Pacer : Entity
                 break;
         }
 
-        bool wasGrounded = isGrounded;
-        isGrounded = false;
-
-        // The player is grounded if a circlecast to the groundCheck position hits anything designated on the ground layer
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, groundCheckRadius, groundLayer);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            if (colliders[i].gameObject != gameObject)
-            {
-                isGrounded = true;
-                latestGroundObj = colliders[i].gameObject;
-            }
-        }
+        //Are we standing on someting?
+        isGrounded = CheckGround.CheckForGround(groundCheck.position, groundCheckRadius, groundLayer, gameObject);
     }
 }

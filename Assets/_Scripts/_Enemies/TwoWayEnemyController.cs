@@ -16,10 +16,7 @@ public class TwoWayEnemyController : Entity
     void FixedUpdate()
     {
         if (isDead)
-        {
-            rb2d.velocity = Vector2.zero;
             return;
-        }
 
         // This switch controls the various update loops that occur for each state.
         switch (motionState)
@@ -45,7 +42,7 @@ public class TwoWayEnemyController : Entity
                     if (isRight)
                         Move(Vector2.right);
                     else
-                        Move(-Vector2.right);
+                        Move(Vector2.left);
 
                     RaycastHit2D aHit = Physics2D.Raycast(transform.position, lookDirection, attackDistance, ~attackLayerMask);
                     if (aHit.collider != null)
@@ -62,7 +59,6 @@ public class TwoWayEnemyController : Entity
                 }
                 else
                 {
-                    rb2d.velocity = new Vector2(rb2d.velocity.x / 4, rb2d.velocity.y / 4);
                     hitTimer += Time.deltaTime;
                     if (hitTimer >= stunTime)
                         isHit = false;
@@ -91,19 +87,8 @@ public class TwoWayEnemyController : Entity
                 break;
         }
 
-        bool wasGrounded = isGrounded;
-        isGrounded = false;
-
-        // The player is grounded if a circlecast to the groundCheck position hits anything designated on the ground layer
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, groundCheckRadius, groundLayer);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            if (colliders[i].gameObject != gameObject)
-            {
-                isGrounded = true;
-                latestGroundObj = colliders[i].gameObject;
-            }
-        }
+        //Are we standing on someting?
+        isGrounded = CheckGround.CheckForGround(groundCheck.position, groundCheckRadius, groundLayer, gameObject);
     }
 
     protected override void Die()
@@ -115,14 +100,5 @@ public class TwoWayEnemyController : Entity
         rb2d.isKinematic = true;
         rb2d.velocity = Vector2.zero;
         bodyAnimator.SetBool("isMoving", false);
-
-        // Match ground rotation
-        transform.rotation = latestGroundObj.transform.rotation;
-
-        // Flip for animation to look more convincing with rotation
-        if (latestGroundObj.transform.rotation.z > 0 && isRight)
-            FlipSprite();
-        else if (latestGroundObj.transform.rotation.x < 0 && !isRight)
-            FlipSprite();
     }
 }

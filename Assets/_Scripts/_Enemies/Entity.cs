@@ -20,7 +20,7 @@ public class Entity : MonoBehaviour
     [TitleGroup("Entity Base")]
     [BoxGroup("Entity Base/Stats")]
     public float health;
-    private float healthReset;
+    protected float healthReset;
 
     [BoxGroup("Entity Base/Stats")]
     public float damage;
@@ -38,7 +38,7 @@ public class Entity : MonoBehaviour
 
     [BoxGroup("Entity Base/Movement")]
     public bool isRight = true;
-    private bool isRightReset;
+    protected bool isRightReset;
 
     [BoxGroup("Entity Base/Movement")]
     public float stunTime;
@@ -61,7 +61,7 @@ public class Entity : MonoBehaviour
     [HideInInspector]
     public state motionState;
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool isGrounded;
     [BoxGroup("Entity Base/Movement")]
     [Tooltip("This is an empty GameObject placed at the bottom of the enemy's collider")]
@@ -72,7 +72,6 @@ public class Entity : MonoBehaviour
     [Tooltip("Whatever layer you use for the ground")]
     public LayerMask groundLayer;
     [HideInInspector]
-    public GameObject latestGroundObj;
 
     [BoxGroup("Entity Base/Movement")]
     public float knockbackForce;
@@ -85,7 +84,7 @@ public class Entity : MonoBehaviour
     public GameObject[] spriteSegments;
     Collider2D[] spriteSegmentColliders;
     Rigidbody2D[] spriteSegmentRigidbodies;
-    Vector3[] spriteSegmentStartPositions;
+    protected Vector3[] spriteSegmentStartPositions;
 
     [BoxGroup("Entity Base/Visual")]
     public Animator bodyAnimator;
@@ -102,7 +101,7 @@ public class Entity : MonoBehaviour
     [HideInInspector]
     public bool isDead = false;
 
-    private Vector3 startPosition;
+    protected Vector3 startPosition;
 
     PoolController poolController;
 
@@ -285,8 +284,6 @@ public class Entity : MonoBehaviour
         entityCollider.enabled = !_state;
         foreach (var col in spriteSegmentColliders)
             col.enabled = _state;
-
-        Debug.Log($"Colliders set to individual: {_state}");
     }
 
     /// <summary>
@@ -298,8 +295,20 @@ public class Entity : MonoBehaviour
         rb2d.simulated = !_state;
         foreach (var rb in spriteSegmentRigidbodies)
             rb.simulated = _state;
+    }
 
-        Debug.Log($"Rigidbodies set to individual: {_state}");
+    IEnumerator DisableSimulation()
+    {
+        yield return new WaitForSeconds(15);
+        ToggleSimulation(false);
+    }
+
+    void ToggleSimulation(bool _state)
+    {
+        foreach (var col in spriteSegmentColliders)
+            col.enabled = _state;
+        foreach (var rb in spriteSegmentRigidbodies)
+            rb.simulated = _state;
     }
 
     protected virtual void Die()
@@ -311,6 +320,7 @@ public class Entity : MonoBehaviour
         EjectSoul(soulsToDrop);
         ToggleColliders(true);
         ToggleRigidbodies(true);
+        StartCoroutine(DisableSimulation());
     }
 
     public virtual void ResetEntity()
@@ -322,6 +332,7 @@ public class Entity : MonoBehaviour
         isDead = false;
         motionState = state.idle;
         bodyAnimator.SetBool("isDead", false);
+        ToggleSimulation(false);
         ToggleColliders(false);
         ToggleRigidbodies(false);
         for (int i = 0; i < spriteSegments.Length; i++)
