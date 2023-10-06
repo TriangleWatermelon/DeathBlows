@@ -10,11 +10,14 @@ public class Twin : Entity
     Twins twinController;
     Twin twin;
 
+    PlayerController player;
+
     public bool canAttack = false;
 
     private void Start()
     {
         twinController = GetComponentInParent<Twins>();
+        player = FindObjectOfType<PlayerController>();
     }
 
     public void SetTwin(Twin _otherTwin) => twin = _otherTwin;
@@ -24,17 +27,17 @@ public class Twin : Entity
         switch (motionState)
         {
             case state.idle:
-                if (canAttack)
-                {
-                    StartCoroutine(AttackDelay());
-                    canAttack = false;
-                }
+                motionState = state.attacking;
                 break;
             case state.walking:
 
                 break;
             case state.attacking:
-
+                if (canAttack)
+                {
+                    StartCoroutine(AttackDelay());
+                    canAttack = false;
+                }
                 break;
         }
 
@@ -43,11 +46,11 @@ public class Twin : Entity
 
     IEnumerator AttackDelay()
     {
-        yield return new WaitForSeconds(4);
-        Pull((twin.transform.position - transform.position).normalized);
+        Pull((player.transform.position - transform.position).normalized * 3);
         if (!twin.isGrounded)
-            twin.Pull((transform.position - twin.transform.position).normalized);
-        twin.canAttack = true;
+            twin.Pull((transform.position - twin.transform.position).normalized * 2);
+        yield return new WaitForSeconds(4);
+        twinController.CheckToAttack();
     }
 
     /// <summary>

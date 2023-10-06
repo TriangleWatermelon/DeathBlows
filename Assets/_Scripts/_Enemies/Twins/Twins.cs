@@ -29,6 +29,8 @@ public class Twins : MonoBehaviour
     PhysicsRope rope;
     LineRenderer lineRenderer;
 
+    PlayerController player;
+
     public enum State
     {
         connected,
@@ -46,15 +48,10 @@ public class Twins : MonoBehaviour
         col = GetComponent<CircleCollider2D>();
         rope = GetComponent<PhysicsRope>();
         lineRenderer = GetComponent<LineRenderer>();
+        player = FindObjectOfType<PlayerController>();
 
         twinLeft.SetTwin(twinRight);
         twinRight.SetTwin(twinLeft);
-
-        int rand = Random.Range(0, 2);
-        if (rand > 1)
-            twinLeft.canAttack = true;
-        else
-            twinRight.canAttack = true;
 
         connectionState = State.connected;
 
@@ -91,27 +88,26 @@ public class Twins : MonoBehaviour
                     }
                     else if (!twinLeft.isGrounded && !twinRight.isGrounded)
                     {
-                        float velocityLeft = twinLeft.rb2d.velocity.sqrMagnitude;
-                        float velocityRight = twinLeft.rb2d.velocity.sqrMagnitude;
-                        Debug.Log($"Velocity Left: {velocityLeft} \nVelocity Right: {velocityRight}");
-
-                        if (velocityLeft > velocityRight)
-                        {
-                            twinRight.Pull((twinLeft.transform.position - twinRight.transform.position).normalized);
-                        }
-                        else if (velocityLeft < velocityRight)
-                        {
-                            twinLeft.Pull((twinRight.transform.position - twinLeft.transform.position).normalized);
-                        }
-                        else
-                        {
-                            twinLeft.Pull((twinRight.transform.position - twinLeft.transform.position).normalized);
-                            twinRight.Pull((twinLeft.transform.position - twinRight.transform.position).normalized);
-                        }
+                        twinLeft.Pull((twinRight.transform.position - twinLeft.transform.position).normalized);
+                        twinRight.Pull((twinLeft.transform.position - twinRight.transform.position).normalized);
                     }
                 }
                 break;
         }
+    }
+
+    /// <summary>
+    /// Determines which twin is closest to the player and tells it to attack.
+    /// </summary>
+    public void CheckToAttack()
+    {
+        float leftDistanceFromPlayer = (twinLeft.transform.position - player.transform.position).sqrMagnitude;
+        float rightDistanceFromPlayer = (twinRight.transform.position - player.transform.position).sqrMagnitude;
+
+        if (leftDistanceFromPlayer > rightDistanceFromPlayer)
+            twinLeft.canAttack = true;
+        else
+            twinRight.canAttack = true;
     }
 
     void Move(Vector2 moveDir)
@@ -184,6 +180,8 @@ public class Twins : MonoBehaviour
             StartCoroutine(Eject());
 
             canCombine = true;
+
+            CheckToAttack();
         }
 
         combinedSpriteObj.SetActive(_state);
