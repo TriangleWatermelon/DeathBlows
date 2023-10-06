@@ -9,7 +9,6 @@ public class Twins : MonoBehaviour
 {
     [BoxGroup("Siblings")]
     [SerializeField] Twin twinLeft, twinRight;
-    Vector3 twinLeftPos, twinRightPos;
     [BoxGroup("Siblings")]
     [SerializeField] GameObject combinedSpriteObj;
 
@@ -47,6 +46,15 @@ public class Twins : MonoBehaviour
         col = GetComponent<CircleCollider2D>();
         rope = GetComponent<PhysicsRope>();
         lineRenderer = GetComponent<LineRenderer>();
+
+        twinLeft.SetTwin(twinRight);
+        twinRight.SetTwin(twinLeft);
+
+        int rand = Random.Range(0, 2);
+        if (rand > 1)
+            twinLeft.canAttack = true;
+        else
+            twinRight.canAttack = true;
 
         connectionState = State.connected;
 
@@ -154,7 +162,7 @@ public class Twins : MonoBehaviour
     //In-Progress
     void ToggleCombine(bool _state)
     {
-        if (_state)
+        if (_state && canCombine)
         {
             ShareHealth();
             connectionState = State.connected;
@@ -165,40 +173,54 @@ public class Twins : MonoBehaviour
             twinRight.transform.rotation = transform.rotation;
 
             rope.segmentLength = 0.01f;
+
+            canCombine = false;
         }
         else
         {
             connectionState = State.disconnected;
 
             rope.segmentLength = 0.25f;
+            StartCoroutine(Eject());
 
-            Vector2 dir = (twinLeft.transform.position - twinRight.transform.position).normalized;
-            twinLeft.KnockbackEntity(-dir * 5);
-            twinRight.KnockbackEntity(dir * 5);
+            canCombine = true;
         }
 
         combinedSpriteObj.SetActive(_state);
         col.enabled = _state;
         rb2d.simulated = _state;
 
-        //twinLeft.ToggleIndividuality(!_state);
-        //twinRight.ToggleIndividuality(!_state);
         twinLeft.gameObject.SetActive(!_state);
         twinRight.gameObject.SetActive(!_state);
+    }
+
+    /// <summary>
+    /// Gives a moment before the twins eject for them to be enabled.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator Eject()
+    {
+        yield return new WaitForFixedUpdate();
+        twinLeft.Pull(Vector2.left * 2);
+        twinRight.Pull(Vector2.right * 2);
     }
 
     IEnumerator BringTogether()
     {
         float segLength = rope.segmentLength;
+        float timeToConnect = 0;
         Vector3 leftPos = twinLeft.transform.position;
         Vector3 rightPos = twinRight.transform.position;
         while (segLength > 0.01f)
         {
             yield return new WaitForFixedUpdate();
-            segLength -= Time.deltaTime / 12; //12 is used here for a ~3 second transition going from 0.25 to 0.01.
+            segLength -= Time.deltaTime / 4; //4 is used here for a ~1 second transition going from 0.25 to 0.01.
             rope.segmentLength = segLength;
-            twinLeft.transform.position = leftPos;
-            twinRight.transform.position = rightPos;
+
+            twinLeft.transform.position = Vector3.Lerp(leftPos, rightPos - (rightPos - leftPos).normalized, timeToConnect);
+            twinRight.transform.position = Vector3.Lerp(rightPos, leftPos - (leftPos - rightPos).normalized, timeToConnect);
+
+            timeToConnect += Time.deltaTime * 0.9f;
         }
         transform.position = twinLeft.transform.position;
         ToggleCombine(true);
@@ -239,16 +261,19 @@ public class Twins : MonoBehaviour
 
     void Die()
     {
-        bothDead = true;
-        if (connectionState == State.connected)
+        if (!bothDead)
         {
-            connectionState = State.disconnected;
-            ToggleCombine(false);
-        }
+            bothDead = true;
+            if (connectionState == State.connected)
+            {
+                connectionState = State.disconnected;
+                ToggleCombine(false);
+            }
 
-        twinLeft.TakeDamage(combinedHealth);
-        twinLeft.EjectSouls();
-        twinRight.TakeDamage(combinedHealth);
-        twinRight.EjectSouls();
+            twinLeft.TakeDamage(combinedHealth);
+            twinLeft.EjectSouls();
+            twinRight.TakeDamage(combinedHealth);
+            twinRight.EjectSouls();
+        }
     }
 }

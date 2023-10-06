@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using System.Collections;
 
 public class Twin : Entity
 {
@@ -7,18 +8,27 @@ public class Twin : Entity
     [SerializeField] GameObject spriteObj;
 
     Twins twinController;
+    Twin twin;
+
+    public bool canAttack = false;
 
     private void Start()
     {
         twinController = GetComponentInParent<Twins>();
     }
 
+    public void SetTwin(Twin _otherTwin) => twin = _otherTwin;
+
     private void FixedUpdate()
     {
         switch (motionState)
         {
             case state.idle:
-
+                if (canAttack)
+                {
+                    StartCoroutine(AttackDelay());
+                    canAttack = false;
+                }
                 break;
             case state.walking:
 
@@ -29,6 +39,15 @@ public class Twin : Entity
         }
 
         isGrounded = false;
+    }
+
+    IEnumerator AttackDelay()
+    {
+        yield return new WaitForSeconds(4);
+        Pull((twin.transform.position - transform.position).normalized);
+        if (!twin.isGrounded)
+            twin.Pull((transform.position - twin.transform.position).normalized);
+        twin.canAttack = true;
     }
 
     /// <summary>
