@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using System.Collections;
 
 [RequireComponent(typeof(PhysicsRope))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -69,7 +70,38 @@ public class Twins : MonoBehaviour
                 isGrounded = CheckGround.CheckForGround(groundCheck.position, groundCheckRadius, groundLayer, gameObject);
                 break;
             case State.disconnected:
+                float distanceBetween = (twinLeft.transform.position - twinRight.transform.position).magnitude;
+                if (distanceBetween > maxDistanceBetween)
+                {
+                    if (twinLeft.isGrounded && !twinRight.isGrounded)
+                    {
+                        twinRight.Pull((twinLeft.transform.position - twinRight.transform.position).normalized);
+                    }
+                    else if (!twinLeft.isGrounded && twinRight.isGrounded)
+                    {
+                        twinLeft.Pull((twinRight.transform.position - twinLeft.transform.position).normalized);
+                    }
+                    else if (!twinLeft.isGrounded && !twinRight.isGrounded)
+                    {
+                        float velocityLeft = twinLeft.rb2d.velocity.sqrMagnitude;
+                        float velocityRight = twinLeft.rb2d.velocity.sqrMagnitude;
+                        Debug.Log($"Velocity Left: {velocityLeft} \nVelocity Right: {velocityRight}");
 
+                        if (velocityLeft > velocityRight)
+                        {
+                            twinRight.Pull((twinLeft.transform.position - twinRight.transform.position).normalized);
+                        }
+                        else if (velocityLeft < velocityRight)
+                        {
+                            twinLeft.Pull((twinRight.transform.position - twinLeft.transform.position).normalized);
+                        }
+                        else
+                        {
+                            twinLeft.Pull((twinRight.transform.position - twinLeft.transform.position).normalized);
+                            twinRight.Pull((twinLeft.transform.position - twinRight.transform.position).normalized);
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -115,7 +147,7 @@ public class Twins : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.L))
         {
-            ToggleCombine(true);
+            StartCoroutine(BringTogether());
         }
     }
 
@@ -127,6 +159,11 @@ public class Twins : MonoBehaviour
             ShareHealth();
             connectionState = State.connected;
 
+            twinLeft.transform.position = transform.position;
+            twinRight.transform.position = transform.position;
+            twinLeft.transform.rotation = transform.rotation;
+            twinRight.transform.rotation = transform.rotation;
+
             rope.segmentLength = 0.01f;
         }
         else
@@ -136,8 +173,8 @@ public class Twins : MonoBehaviour
             rope.segmentLength = 0.25f;
 
             Vector2 dir = (twinLeft.transform.position - twinRight.transform.position).normalized;
-            twinLeft.KnockbackEntity(dir);
-            twinRight.KnockbackEntity(-dir);
+            twinLeft.KnockbackEntity(-dir * 5);
+            twinRight.KnockbackEntity(dir * 5);
         }
 
         combinedSpriteObj.SetActive(_state);
@@ -148,6 +185,23 @@ public class Twins : MonoBehaviour
         //twinRight.ToggleIndividuality(!_state);
         twinLeft.gameObject.SetActive(!_state);
         twinRight.gameObject.SetActive(!_state);
+    }
+
+    IEnumerator BringTogether()
+    {
+        float segLength = rope.segmentLength;
+        Vector3 leftPos = twinLeft.transform.position;
+        Vector3 rightPos = twinRight.transform.position;
+        while (segLength > 0.01f)
+        {
+            yield return new WaitForFixedUpdate();
+            segLength -= Time.deltaTime / 12; //12 is used here for a ~3 second transition going from 0.25 to 0.01.
+            rope.segmentLength = segLength;
+            twinLeft.transform.position = leftPos;
+            twinRight.transform.position = rightPos;
+        }
+        transform.position = twinLeft.transform.position;
+        ToggleCombine(true);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -28,8 +28,7 @@ public class Twin : Entity
                 break;
         }
 
-        //Are we standing on someting?
-        isGrounded = CheckGround.CheckForGround(groundCheck.position, groundCheckRadius, groundLayer, gameObject);
+        isGrounded = false;
     }
 
     /// <summary>
@@ -56,6 +55,12 @@ public class Twin : Entity
         ToggleSprite(_state);
         ToggleCollider(_state);
         ToggleRB(_state);
+    }
+
+    //In-Progress
+    public void Pull(Vector2 _dir)
+    {
+        rb2d.velocity = _dir * moveSpeed;
     }
 
     protected override void Die()
@@ -87,5 +92,18 @@ public class Twin : Entity
             spriteSegments[i].transform.rotation = new Quaternion(0, 0, 0, 0);
         }
         rb2d.isKinematic = false;
+    }
+
+    public override void OnCollisionEnter2D(Collision2D collision)
+    {
+        base.OnCollisionEnter2D(collision);
+        if (collision.gameObject.CompareTag("Ground"))
+            isGrounded = true;
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+            isGrounded = true;
     }
 }
