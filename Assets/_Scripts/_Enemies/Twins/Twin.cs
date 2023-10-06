@@ -71,6 +71,11 @@ public class Twin : Entity
         isDead = true;
     }
 
+    protected override void FlipSprite()
+    {
+        //We don't want any sprites to flip.
+    }
+
     /// <summary>
     /// This has been removed from the original Entity Die method to allow the
     /// Twin controller to eject souls when both twins die.

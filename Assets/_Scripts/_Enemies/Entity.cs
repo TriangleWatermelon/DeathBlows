@@ -182,7 +182,7 @@ public class Entity : MonoBehaviour
     /// <summary>
     /// Flips the entity sprite.
     /// </summary>
-    protected void FlipSprite()
+    protected virtual void FlipSprite()
     {
         isRight = !isRight;
 
