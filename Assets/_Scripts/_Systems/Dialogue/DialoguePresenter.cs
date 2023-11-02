@@ -15,14 +15,16 @@ public class DialoguePresenter : MonoBehaviour
     [BoxGroup("Text")]
     [SerializeField] TextMeshProUGUI nameText;
 
-    public void ShowDialogueBox(bool _state, string? _name = null)
+    public void ShowDialogueBox(bool _state, string _name = "???")
     {
-        if(_name != null)
-            nameText.text = _name;
+        nameText.text = _name;
         dialogueBoxObj.SetActive(_state);
     }
 
-    //In-Progress
+    /// <summary>
+    /// Takes the provided string and populates the UI text object.
+    /// </summary>
+    /// <param name="_input"></param>
     public void SetDialogueText(string _input)
     {
         dialogueText.text = _input;

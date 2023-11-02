@@ -4,7 +4,6 @@ using Sirenix.OdinInspector;
 
 public class DialogueReader : MonoBehaviour
 {
-    [TitleGroup("NPC Dialogue Options")]
     public List<string> dialogueOptions;
 
     //In-Progress

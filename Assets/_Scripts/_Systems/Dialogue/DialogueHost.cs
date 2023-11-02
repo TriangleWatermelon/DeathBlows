@@ -9,8 +9,6 @@ public class DialogueHost : MonoBehaviour
     DialogueReader d_Reader;
     DialoguePresenter d_Presenter;
 
-    PlayerController player;
-
     int dialogueIndex = 0;
     int dialogueMax;
 
@@ -26,14 +24,12 @@ public class DialogueHost : MonoBehaviour
         dialogueMax = d_Reader.dialogueOptions.Count - 1;
         d_Presenter = GetComponentInChildren<DialoguePresenter>();
         d_Presenter.SetDialogueText(d_Reader.GetDialogue(0));
-        player = FindObjectOfType<PlayerController>();
     }
 
     //In-Progress
     public void PromptDialogue()
     {
         interactObj.SetActive(true);
-        player.SetDialogueHost(this);
     }
 
     //In-Progress
@@ -46,10 +42,7 @@ public class DialogueHost : MonoBehaviour
     //In-Progress
     public void EndDialogue()
     {
-        interactObj.SetActive(false);
         d_Presenter.ShowDialogueBox(false);
-        player.ClearDialogueHost();
-        dialogueIndex = dialogueMax;
     }
 
     //In-Progress
